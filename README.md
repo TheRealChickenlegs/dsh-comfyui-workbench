@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/dsh-comfyui-workbench?label=npm)](https://www.npmjs.com/package/dsh-comfyui-workbench)
 [![CI](https://github.com/TheRealChickenlegs/dsh-comfyui-workbench/actions/workflows/ci.yml/badge.svg)](https://github.com/TheRealChickenlegs/dsh-comfyui-workbench/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/TheRealChickenlegs/dsh-comfyui-workbench?label=release)](https://github.com/TheRealChickenlegs/dsh-comfyui-workbench/releases)
-[![License](https://img.shields.io/github/license/TheRealChickenlegs/dsh-comfyui-workbench)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/)
 
 A local **ComfyUI workbench for DeepSeek Harness (DSH)**.
