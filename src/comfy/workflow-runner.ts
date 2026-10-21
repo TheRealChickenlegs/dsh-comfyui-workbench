@@ -452,6 +452,10 @@ export interface CollectOptions {
   workflow?: ComfyWorkflow
   history?: ComfyHistoryEntry
   signal?: AbortSignal
+  /** Metadata kind label, e.g. audio-generation / video-generation. */
+  kind?: string
+  /** Additional fields merged into the metadata sidecar. */
+  extraMetadata?: Record<string, unknown>
 }
 
 export interface CollectResult {
@@ -595,7 +599,7 @@ export async function collectOutputs(
     const metadata = {
       plugin: PLUGIN_ID,
       pluginVersion: PLUGIN_VERSION,
-      kind: 'workflow-run',
+      kind: options.kind ?? 'workflow-run',
       createdAt: new Date().toISOString(),
       promptId: options.promptId,
       status: entry.status?.status_str ?? 'unknown',
@@ -606,7 +610,8 @@ export async function collectOutputs(
       textOutputs,
       warnings,
       workflow: options.workflow,
-      history: options.history
+      history: options.history,
+      ...(options.extraMetadata ?? {})
     }
     const metadataName = `comfyui-workflow-${stamp}-${promptPart}.json`
     metadataPath = uniqueFilePath(path.join(directory, metadataName))

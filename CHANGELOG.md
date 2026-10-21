@@ -7,6 +7,11 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- **High-level `generate_audio` and `generate_video` tools** with capability detection:
+  - `generate_audio` runs ACE-Step 1.5 from either the AIO checkpoint `ace_step_1.5_turbo_aio.safetensors` or the split diffusion + qwen text encoders + ace VAE layout, with tags, lyrics, duration, BPM, key, language, seed and sampler controls.
+  - `generate_video` runs the tested Wan 2.1 text-to-video graph (Wan T2V diffusion model + UMT5 safetensors encoder + Wan VAE), with dimensions, frames, fps, steps, CFG and seed.
+  - Both tools inspect models and required nodes **before submitting**, and report detected media models plus the exact missing pieces when a setup is incomplete. Other video families are intentionally left to `comfyui_workflow`.
+- [docs/MEDIA.md](docs/MEDIA.md): supported audio/video model layouts, parameters, detection feedback examples and troubleshooting.
 - **Full ComfyUI access through three advanced tools** (registered alongside `generate_image`, which is unchanged):
   - `comfyui_inspect` — read-only discovery of **every installed model** grouped by ComfyUI model folder, **every available
     node** with a compact search and full input/output schema, embeddings, system stats, queue and history. Model discovery
@@ -19,7 +24,7 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - [docs/ADVANCED.md](docs/ADVANCED.md): model/node discovery, workflow validation and execution, uploads, job control,
   raw API examples, safety limits and troubleshooting. The README now has a "Full ComfyUI Access" section.
 - [docs/MIGRATION.md](docs/MIGRATION.md): upgrading from `dsh-comfyui-image`, config/env migration and the legacy support timeline.
-- The test suite grew from 88 to **128 tests**, covering model fallbacks, node schemas, validation failures, workflow
+- The test suite grew from 88 to **134 tests**, covering model fallbacks, node schemas, validation failures, workflow
   execution with exact-file and multi-output saving, uploads, job control and raw API guardrails.
 
 ### Changed

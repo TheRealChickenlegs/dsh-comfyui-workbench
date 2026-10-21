@@ -20,6 +20,7 @@ import {
   createComfyUIInspectTool,
   createComfyUIWorkflowTool
 } from './comfy-tools.js'
+import { AUDIO_TOOL_NAME, VIDEO_TOOL_NAME, createGenerateAudioTool, createGenerateVideoTool } from './media-tools.js'
 
 /** Plugin name (also the default id of the loader entry). */
 export const name = PLUGIN_ID
@@ -67,13 +68,15 @@ export function apply(ctx: HostContextLike, config?: unknown): void {
   }
 
   tools.register(createGenerateImageTool(config))
+  tools.register(createGenerateAudioTool(config))
+  tools.register(createGenerateVideoTool(config))
   tools.register(createComfyUIInspectTool(config))
   tools.register(createComfyUIWorkflowTool(config))
   tools.register(createComfyUIApiTool(config))
 
   // Print one summary line at startup: do **not** make network requests during loading, to avoid slowing DSH startup.
   const resolved = resolveConfig(config)
-  const registered = [TOOL_NAME, ...ADVANCED_TOOL_NAMES].join(', ')
+  const registered = [TOOL_NAME, AUDIO_TOOL_NAME, VIDEO_TOOL_NAME, ...ADVANCED_TOOL_NAMES].join(', ')
   logInfo(
     `${PLUGIN_DISPLAY_NAME} v${PLUGIN_VERSION} ready, registered tools: ${registered}. ComfyUI address: ${resolved.baseUrl}` +
       (resolved.checkpoint ? `, checkpoint: ${resolved.checkpoint}` : ', checkpoint: automatic')
@@ -95,6 +98,21 @@ export { inferMode, normalizeRequest } from './params.js'
 export { formatResult, renderResultText } from './result.js'
 export { runGeneration, pickImageRef, PLUGIN_VERSION } from './runner.js'
 export { createGenerateImageTool, PARAMETERS_SCHEMA, OUTPUT_SCHEMA, TOOL_DESCRIPTION, TOOL_NAME, resolveCwd } from './tool.js'
+export {
+  AUDIO_DESCRIPTION,
+  AUDIO_OUTPUT_SCHEMA,
+  AUDIO_PARAMETERS_SCHEMA,
+  AUDIO_TOOL_NAME,
+  VIDEO_DESCRIPTION,
+  VIDEO_OUTPUT_SCHEMA,
+  VIDEO_PARAMETERS_SCHEMA,
+  VIDEO_TOOL_NAME,
+  createGenerateAudioTool,
+  createGenerateVideoTool
+} from './media-tools.js'
+export { detectAudioSupport, detectVideoSupport, formatAudioCapabilityError, formatVideoCapabilityError } from './media/capabilities.js'
+export { buildAudioWorkflow, buildVideoWorkflow } from './media/workflows.js'
+export { runMediaWorkflow } from './media/runner.js'
 export {
   ADVANCED_TOOL_NAMES,
   API_DESCRIPTION,

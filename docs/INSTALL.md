@@ -258,4 +258,4 @@ If any step goes wrong, check [FAQ.md](./FAQ.md) first; if that doesn't help, fi
 1. **Remove** the bundle in the plugin manager (or manually delete the dependency and the `bundles` entry from the profile's `package.json`), then restart DSH;
 2. Optional cleanup: delete the config file directory `~/.dsh-comfyui-workbench/`;
 3. The plugin **does not** install anything into ComfyUI, and does not touch the ComfyUI config either;
-   the intermediate files it produces all live in ComfyUI's `output/dsh-comfyui-workbench/` subdirectory — delete that directory if you want to clean them up.
+   the image files it produces live in ComfyUI's `output/dsh-comfyui-workbench/` subdirectory; audio/video files use `output/audio/dsh-comfyui-workbench/` and `output/video/dsh-comfyui-workbench/`. Delete those directories if you want to clean them up.

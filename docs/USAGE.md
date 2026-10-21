@@ -130,6 +130,42 @@ When none is installed it errors clearly and lists the installation command for 
 
 ---
 
+## Audio and Video (High-Level Tools)
+
+The plugin also exposes `generate_audio` and `generate_video`. Both detect the local models/nodes first and return a precise missing-dependency list instead of submitting a broken graph.
+
+**Music/audio (ACE-Step 1.5):**
+
+```json
+{
+  "prompt": "warm neo-soul, live drums, brushed hi-hats, 92 BPM",
+  "lyrics": "[Verse]\nLate night glow on your skin",
+  "duration_seconds": 20,
+  "bpm": 92,
+  "keyscale": "E minor",
+  "seed": 42
+}
+```
+
+Supported audio layouts: the AIO checkpoint `ace_step_1.5_turbo_aio.safetensors`, or the split ACE-Step 1.5 diffusion + qwen text encoders + ace VAE files.
+
+**Video (Wan 2.1 text-to-video):**
+
+```json
+{
+  "prompt": "a fox running through a snowy forest, tracking camera, cinematic light",
+  "width": 832,
+  "height": 480,
+  "length_frames": 33,
+  "fps": 16,
+  "seed": 7
+}
+```
+
+Video requires `wan2.1_t2v_*.safetensors`, a UMT5 safetensors encoder and `wan_2.1_vae.safetensors`. Wan 2.2 I2V/VACE and other families are not enabled in the high-level tool; use `comfyui_workflow`.
+
+If the setup is incomplete, the tool reports detected media models and the exact missing pieces. See [MEDIA.md](./MEDIA.md) for model layouts, all parameters and troubleshooting.
+
 ## 5. Pattern: Reproducing the Same Image / Fine-Tuning
 
 The first call's result contains a `seed`; copying it down is the whole reproduction key:

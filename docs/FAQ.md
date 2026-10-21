@@ -283,6 +283,12 @@ Config is **re-resolved on every call**, so normally it takes effect immediately
 No. The plugin only connects to the `baseUrl` you configure, never contacts any third-party service, and never uploads images to a cloud.
 The only network behaviour is talking to your own ComfyUI. See [CONFIG.md §6](./CONFIG.md#6-security-and-privacy).
 
+### `generate_audio` / `generate_video` says the setup is not available
+
+Run `comfyui_inspect` with `scope=models` and `scope=nodes`. Audio needs an ACE-Step 1.5 AIO checkpoint (or the split diffusion + qwen encoders + ace VAE), plus the ACE audio nodes. Video needs a Wan 2.1 T2V diffusion model, a UMT5 **safetensors** encoder, `wan_2.1_vae.safetensors`, and the core Wan/video nodes.
+
+The error lists detected media files and missing pieces. For Wan 2.2 I2V/VACE, HunyuanVideo, LTX-Video or another family, use `comfyui_workflow`; the high-level `generate_video` intentionally only enables the tested Wan 2.1 T2V graph. See [MEDIA.md](./MEDIA.md).
+
 ### The advanced tools (`comfyui_inspect` / `comfyui_workflow` / `comfyui_api`)
 
 These expose the rest of ComfyUI; see [ADVANCED.md](./ADVANCED.md) for the full reference.

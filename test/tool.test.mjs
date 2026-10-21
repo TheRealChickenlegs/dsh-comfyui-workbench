@@ -222,9 +222,16 @@ test('execute: a dirty plugin config does not crash (falls back to the defaults)
   }
 })
 
-test('apply: registers generate_image plus the three advanced ComfyUI tools', () => {
+test('apply: registers image/audio/video tools plus the three advanced ComfyUI tools', () => {
   const registered = []
   const registry = { register: (definition) => registered.push(definition.name) }
   apply({ reflect: { get: () => registry } }, { baseUrl: 'http://127.0.0.1:1' })
-  assert.deepEqual(registered.sort(), ['comfyui_api', 'comfyui_inspect', 'comfyui_workflow', 'generate_image'])
+  assert.deepEqual(registered.sort(), [
+    'comfyui_api',
+    'comfyui_inspect',
+    'comfyui_workflow',
+    'generate_audio',
+    'generate_image',
+    'generate_video'
+  ])
 })

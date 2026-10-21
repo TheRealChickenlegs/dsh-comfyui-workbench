@@ -96,7 +96,13 @@ function node(required, output, category = 'test') {
  * The default node table = "a ComfyUI with the core nodes plus the ComfyUI_essentials removal node pair".
  * `node.name` is set only for readability; the plugin does not read that field.
  */
-export function defaultNodes(checkpoints = ['v1-5-pruned-emaonly.safetensors', 'sd_xl_base_1.0.safetensors']) {
+export function defaultNodes(
+  checkpoints = ['v1-5-pruned-emaonly.safetensors', 'sd_xl_base_1.0.safetensors'],
+  models = {}
+) {
+  const unetModels = models.unetModels ?? ['flux1-dev.safetensors']
+  const clipModels = models.clipModels ?? ['clip_l.safetensors']
+  const vaeModels = models.vaeModels ?? ['vae-ft-mse.safetensors']
   return {
     CheckpointLoaderSimple: node(
       { ckpt_name: [checkpoints, {}] },
@@ -108,15 +114,25 @@ export function defaultNodes(checkpoints = ['v1-5-pruned-emaonly.safetensors', '
       ['MODEL', 'CLIP'],
       'loaders'
     ),
-    VAELoader: node({ vae_name: [['vae-ft-mse.safetensors'], {}] }, ['VAE'], 'loaders'),
+    VAELoader: node({ vae_name: [vaeModels, {}] }, ['VAE'], 'loaders'),
     UpscaleModelLoader: node({ model_name: [['4x-UltraSharp.pth'], {}] }, ['UPSCALE_MODEL'], 'loaders'),
     CLIPLoader: node(
-      { clip_name: [['clip_l.safetensors'], {}], type: [['stable_diffusion', 'sdxl'], {}] },
+      { clip_name: [clipModels, {}], type: [['stable_diffusion', 'sdxl', 'wan'], {}] },
+      ['CLIP'],
+      'loaders'
+    ),
+    DualCLIPLoader: node(
+      {
+        clip_name1: [clipModels, {}],
+        clip_name2: [clipModels, {}],
+        type: [['sdxl', 'sd3', 'flux', 'ace'], {}],
+        device: [['default', 'cpu'], {}]
+      },
       ['CLIP'],
       'loaders'
     ),
     UNETLoader: node(
-      { unet_name: [['flux1-dev.safetensors'], {}], weight_dtype: [['default', 'fp8_e4m3fn'], {}] },
+      { unet_name: [unetModels, {}], weight_dtype: [['default', 'fp8_e4m3fn'], {}] },
       ['MODEL'],
       'loaders'
     ),
@@ -160,6 +176,53 @@ export function defaultNodes(checkpoints = ['v1-5-pruned-emaonly.safetensors', '
       { image: [[], { image_upload: true }], channel: [['red', 'green', 'blue', 'alpha'], {}] },
       ['MASK'],
       'image'
+    ),
+    ModelSamplingAuraFlow: node({ model: ['MODEL'], shift: ['FLOAT', { default: 1.73 }] }, ['MODEL'], 'sampling'),
+    ModelSamplingSD3: node({ model: ['MODEL'], shift: ['FLOAT', { default: 3 }] }, ['MODEL'], 'sampling'),
+    ConditioningZeroOut: node({ conditioning: ['CONDITIONING'] }, ['CONDITIONING'], 'conditioning'),
+    'TextEncodeAceStepAudio1.5': node(
+      {
+        clip: ['CLIP'],
+        tags: ['STRING', { multiline: true }],
+        lyrics: ['STRING', { multiline: true }],
+        seed: ['INT', { default: 0 }],
+        bpm: ['INT', { default: 120, min: 10, max: 300 }],
+        duration: ['FLOAT', { default: 120 }],
+        timesignature: [['2', '3', '4', '6'], {}],
+        language: [['en', 'de', 'ja', 'zh'], {}],
+        keyscale: [['C major', 'E minor'], {}],
+        generate_audio_codes: ['BOOLEAN', { default: true }],
+        cfg_scale: ['FLOAT', { default: 2 }],
+        temperature: ['FLOAT', { default: 0.85 }],
+        top_p: ['FLOAT', { default: 0.9 }],
+        top_k: ['INT', { default: 0 }],
+        min_p: ['FLOAT', { default: 0 }]
+      },
+      ['CONDITIONING'],
+      'audio'
+    ),
+    'EmptyAceStep1.5LatentAudio': node(
+      { seconds: ['FLOAT', { default: 120 }], batch_size: ['INT', { default: 1 }] },
+      ['LATENT'],
+      'audio'
+    ),
+    VAEDecodeAudio: node({ samples: ['LATENT'], vae: ['VAE'] }, ['AUDIO'], 'audio'),
+    SaveAudioMP3: node(
+      { audio: ['AUDIO'], filename_prefix: ['STRING', { default: 'audio/ComfyUI' }], quality: [['V0', '128k', '320k'], {}] },
+      ['AUDIO'],
+      'audio'
+    ),
+    SaveAudio: node({ audio: ['AUDIO'], filename_prefix: ['STRING', { default: 'audio/ComfyUI' }] }, ['AUDIO'], 'audio'),
+    EmptyHunyuanLatentVideo: node(
+      { width: ['INT', { default: 848 }], height: ['INT', { default: 480 }], length: ['INT', { default: 25 }], batch_size: ['INT', { default: 1 }] },
+      ['LATENT'],
+      'video'
+    ),
+    CreateVideo: node({ images: ['IMAGE'], fps: ['FLOAT', { default: 30 }] }, ['VIDEO'], 'video'),
+    SaveVideo: node(
+      { video: ['VIDEO'], filename_prefix: ['STRING', { default: 'video/ComfyUI' }], format: [['auto', 'mp4', 'webm'], {}] },
+      [],
+      'video'
     ),
     // The real shape of ComfyUI_essentials background removal: a session node (REMBG_SESSION) → a consumer node.
     // This is the plugin's highest-priority plan; the single-node shape (only ImageRemoveBackground+) does not
@@ -218,11 +281,20 @@ export function wasNodes(checkpoints) {
  * @param {number}  [options.pollsBeforeDone=2]               how many polls before a result appears
  * @param {string}  [options.failMode]                        null | 'execution_error' | 'no_images' | 'hang' | 'reject'
  * @param {number}  [options.pngWidth], [options.pngHeight]   force the output size (default: read from the workflow)
+ * @param {string[]} [options.unetModels]                    UNETLoader choices
+ * @param {string[]} [options.clipModels]                    CLIPLoader choices
+ * @param {string[]} [options.vaeModels]                     VAELoader choices
  */
 export function createMockComfyUI(options = {}) {
   const state = {
     checkpoints: options.checkpoints ?? ['v1-5-pruned-emaonly.safetensors', 'sd_xl_base_1.0.safetensors'],
-    nodes: options.nodes ?? defaultNodes(options.checkpoints),
+    nodes:
+      options.nodes ??
+      defaultNodes(options.checkpoints, {
+        ...(options.unetModels ? { unetModels: options.unetModels } : {}),
+        ...(options.clipModels ? { clipModels: options.clipModels } : {}),
+        ...(options.vaeModels ? { vaeModels: options.vaeModels } : {})
+      }),
     pollsBeforeDone: options.pollsBeforeDone ?? 2,
     failMode: options.failMode ?? null,
     stats: {
@@ -332,19 +404,39 @@ export function createMockComfyUI(options = {}) {
       return entry
     }
 
+    const mediaClasses = ['SaveImage', 'PreviewImage', 'SaveAudioMP3', 'SaveAudio', 'SaveVideo']
     const saveIds = Object.entries(prompt)
-      .filter(([, nodeDef]) => nodeDef && ['SaveImage', 'PreviewImage'].includes(nodeDef.class_type))
+      .filter(([, nodeDef]) => nodeDef && mediaClasses.includes(nodeDef.class_type))
       .map(([nodeId]) => nodeId)
     const { width, height } = outputSize()
     saveIds.forEach((saveId, index) => {
-      entry.outputs[saveId] = {
-        images: [
-          {
-            filename: `dsh-mock-${promptId}-${index}.png`,
-            subfolder: '',
-            type: prompt[saveId]?.class_type === 'PreviewImage' ? 'temp' : 'output'
-          }
-        ]
+      const classType = prompt[saveId]?.class_type
+      if (classType === 'SaveAudioMP3' || classType === 'SaveAudio') {
+        entry.outputs[saveId] = {
+          audio: [
+            {
+              filename: `dsh-mock-${promptId}-${index}.${classType === 'SaveAudioMP3' ? 'mp3' : 'wav'}`,
+              subfolder: '',
+              type: 'output'
+            }
+          ]
+        }
+      } else if (classType === 'SaveVideo') {
+        entry.outputs[saveId] = {
+          videos: [
+            { filename: `dsh-mock-${promptId}-${index}.mp4`, subfolder: '', type: 'output' }
+          ]
+        }
+      } else {
+        entry.outputs[saveId] = {
+          images: [
+            {
+              filename: `dsh-mock-${promptId}-${index}.png`,
+              subfolder: '',
+              type: classType === 'PreviewImage' ? 'temp' : 'output'
+            }
+          ]
+        }
       }
     })
     entry.__mockPngSize = { width, height }

@@ -1,6 +1,6 @@
 # Full ComfyUI Access
 
-`generate_image` is the simple path: four curated modes with smart defaults. The advanced tools expose the rest of ComfyUI so an Agent can discover what is installed, inspect any node, and run any workflow the server supports.
+`generate_image` is the curated image path; `generate_audio` and `generate_video` are the curated media paths (see [MEDIA.md](./MEDIA.md)). The advanced tools expose the rest of ComfyUI so an Agent can discover what is installed, inspect any node, and run any workflow the server supports.
 
 | Tool | Purpose | Writes? |
 |---|---|---|
@@ -8,7 +8,7 @@
 | `comfyui_workflow` | Validate / run / wait on arbitrary API-format workflows, upload assets, job control | Yes (outputs, uploads, queue/free) |
 | `comfyui_api` | Raw HTTP escape hatch for any other ComfyUI endpoint | Depends on the endpoint |
 
-All three use the same `baseUrl` configuration as `generate_image` and are registered automatically when the plugin loads.
+All three use the same `baseUrl` configuration as the high-level tools and are registered automatically when the plugin loads.
 
 ---
 

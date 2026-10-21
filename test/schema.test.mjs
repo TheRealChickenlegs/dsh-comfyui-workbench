@@ -17,6 +17,9 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   API_DESCRIPTION,
+  AUDIO_DESCRIPTION,
+  AUDIO_OUTPUT_SCHEMA,
+  AUDIO_PARAMETERS_SCHEMA,
   API_OUTPUT_SCHEMA,
   API_PARAMETERS_SCHEMA,
   INSPECT_DESCRIPTION,
@@ -27,7 +30,10 @@ import {
   TOOL_DESCRIPTION,
   WORKFLOW_DESCRIPTION,
   WORKFLOW_OUTPUT_SCHEMA,
-  WORKFLOW_PARAMETERS_SCHEMA
+  WORKFLOW_PARAMETERS_SCHEMA,
+  VIDEO_DESCRIPTION,
+  VIDEO_OUTPUT_SCHEMA,
+  VIDEO_PARAMETERS_SCHEMA
 } from '../lib/index.js'
 
 /** The allowed fields, listed verbatim in json-schema.d.ts. */
@@ -200,7 +206,11 @@ const ADVANCED_SCHEMAS = [
   ['comfyui_workflow parameters', WORKFLOW_PARAMETERS_SCHEMA],
   ['comfyui_workflow output', WORKFLOW_OUTPUT_SCHEMA],
   ['comfyui_api parameters', API_PARAMETERS_SCHEMA],
-  ['comfyui_api output', API_OUTPUT_SCHEMA]
+  ['comfyui_api output', API_OUTPUT_SCHEMA],
+  ['generate_audio parameters', AUDIO_PARAMETERS_SCHEMA],
+  ['generate_audio output', AUDIO_OUTPUT_SCHEMA],
+  ['generate_video parameters', VIDEO_PARAMETERS_SCHEMA],
+  ['generate_video output', VIDEO_OUTPUT_SCHEMA]
 ]
 
 test('advanced schemas: every tree only uses the JSON Schema subset DSH supports', () => {
@@ -230,4 +240,7 @@ test('advanced tool descriptions explain what each tool is for', () => {
   assert.match(WORKFLOW_DESCRIPTION, /run/)
   assert.match(API_DESCRIPTION, /raw|Raw/)
   assert.match(API_DESCRIPTION, /base URL/)
+  assert.match(AUDIO_DESCRIPTION, /ACE-Step/)
+  assert.match(VIDEO_DESCRIPTION, /Wan 2\.1/)
+  assert.match(VIDEO_DESCRIPTION, /detects/i)
 })
