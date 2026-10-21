@@ -1,6 +1,6 @@
 {
   "name": "dsh-comfyui-workbench",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A ComfyUI workbench for DeepSeek Harness (DSH): generate images, audio and video, inspect every installed model and node schema, build and run arbitrary workflows, and reach any ComfyUI endpoint. Zero runtime dependencies.",
   "type": "module",
   "main": "lib/index.js",
