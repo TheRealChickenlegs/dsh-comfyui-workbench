@@ -242,13 +242,19 @@ To disable the plugin temporarily: add `disabled: true`, or use the toggle in th
 
 ### 2.6 Upgrading from `dsh-comfyui-image`
 
-The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available in 0.2.x and removed in 0.3.0.
+The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available through 0.3.x and will be removed in 0.4.0.
 
 See [MIGRATION.md](./MIGRATION.md) for the full steps and environment-variable mapping.
 
 ---
 
-## 3. How to Confirm the Install Succeeded
+## 3. Configure It From the Plugin Page
+
+Open **Plugins → ComfyUI Workbench → Configuration**. The form exposes all server and generation settings, including the ComfyUI server address. Blank fields inherit from the config file, environment variables or defaults; saving writes only changed fields to the active profile.
+
+If you prefer file/env configuration, see [CONFIG.md](./CONFIG.md); both methods remain supported.
+
+## 4. How to Confirm the Install Succeeded
 
 Do these four things in order; each one can be judged on its own:
 
@@ -263,7 +269,7 @@ If any step goes wrong, check [FAQ.md](./FAQ.md) first; if that doesn't help, fi
 
 ---
 
-## 4. Uninstalling
+## 5. Uninstalling
 
 1. **Remove** the bundle in the plugin manager (or manually delete the dependency and the `bundles` entry from the profile's `package.json`), then restart DSH;
 2. Optional cleanup: delete the config file directory `~/.dsh-comfyui-workbench/`;

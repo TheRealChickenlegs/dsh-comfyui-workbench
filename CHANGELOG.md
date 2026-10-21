@@ -3,6 +3,20 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] — 2026-10-21
+
+### Added
+
+- **Plugin-page configuration for every setting**: DSH → Plugins → ComfyUI Workbench → Configuration now exposes the ComfyUI server address, output directory, timeouts, image defaults, output flags and background-removal preference.
+- The page writes only changed fields to the active profile's plugin config; blank fields continue to inherit from `~/.dsh-comfyui-workbench/config.json`, environment variables or built-in defaults. Saves take effect without a DSH restart.
+- A volatile `Config` schema and browser bundle (`lib/client.js`) back the form. The package now depends on `@deepseek-ai/schemastery` for that schema; all other runtime behavior still uses Node built-ins.
+- README and configuration documentation now describe the plugin-page form alongside the file/env/profile methods.
+- Test suite: **139 tests**, including UI schema coverage and client-bundle checks.
+
+### Changed
+
+- Legacy `DSH_COMFYUI_IMAGE_*` and `~/.dsh-comfyui-image/config.json` fallbacks remain available through 0.3.x and will be removed in 0.4.0.
+
 ## [0.2.1] — 2026-10-21
 
 ### Changed

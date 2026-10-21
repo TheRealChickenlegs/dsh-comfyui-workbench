@@ -1,11 +1,14 @@
 {
   "name": "dsh-comfyui-workbench",
-  "version": "0.2.1",
-  "description": "A ComfyUI workbench for DeepSeek Harness (DSH): generate images, audio and video, inspect every installed model and node schema, build and run arbitrary workflows, and reach any ComfyUI endpoint. Zero runtime dependencies.",
+  "version": "0.3.0",
+  "description": "A ComfyUI workbench for DeepSeek Harness (DSH): generate images, audio and video, inspect every installed model and node schema, build and run arbitrary workflows, and reach any ComfyUI endpoint.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
+    "./client": {
+      "default": "./lib/client.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
@@ -21,7 +24,7 @@
     "icon.svg"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/build-client.mjs",
     "watch": "tsc -p tsconfig.json --watch",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "node scripts/run-tests.mjs",
@@ -75,10 +78,16 @@
     },
     "bundle": {
       "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
     }
   },
   "devDependencies": {
     "@types/node": "^22.20.5",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "~3.18.5"
   }
 }

@@ -32,7 +32,7 @@ export const DEFAULT_BASE_URL = 'http://127.0.0.1:8188'
 export const CONFIG_FILE =
   process.env[ENV_CONFIG] || process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${PLUGIN_ID}`, 'config.json')
 
-/** Previous config location, read only when the new config file is absent (0.2.x migration). */
+/** Previous config location, read only when the new config file is absent (0.3.x migration). */
 export const LEGACY_CONFIG_FILE =
   process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${LEGACY_PLUGIN_ID}`, 'config.json')
 
@@ -79,6 +79,18 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+/** Unwrap Schemastery volatile references so plugin config reads as plain values. */
+function unwrapVolatile(value: unknown): unknown {
+  if (isPlainObject(value) && typeof (value as { get?: unknown }).get === 'function') {
+    return unwrapVolatile((value as { get: () => unknown }).get())
+  }
+  if (Array.isArray(value)) return value.map(unwrapVolatile)
+  if (isPlainObject(value)) {
+    return Object.fromEntries(Object.entries(value).map(([key, child]) => [key, unwrapVolatile(child)]))
+  }
+  return value
+}
+
 /** Read the config file; a broken file counts as absent and never takes the plugin down. */
 let legacyConfigWarningShown = false
 
@@ -87,7 +99,7 @@ export function readConfigFile(): PluginConfigInput {
   const target = useLegacy ? LEGACY_CONFIG_FILE : CONFIG_FILE
   if (useLegacy && !legacyConfigWarningShown) {
     logWarn(
-      `Using the legacy config file ${LEGACY_CONFIG_FILE}. Move it to ${CONFIG_FILE}; legacy support ends in 0.3.0.`
+      `Using the legacy config file ${LEGACY_CONFIG_FILE}. Move it to ${CONFIG_FILE}; legacy support ends in 0.4.0.`
     )
     legacyConfigWarningShown = true
   }
@@ -161,11 +173,12 @@ function pickBoolean(...candidates: unknown[]): boolean | undefined {
  * with a trace in the debug log.
  */
 export function resolveConfig(pluginConfig?: unknown, env: NodeJS.ProcessEnv = process.env): ResolvedConfig {
-  const fromPlugin = isPlainObject(pluginConfig) ? (pluginConfig as PluginConfigInput) : {}
+  const plainPluginConfig = unwrapVolatile(pluginConfig)
+  const fromPlugin = isPlainObject(plainPluginConfig) ? (plainPluginConfig as PluginConfigInput) : {}
   const fromFile = readConfigFile()
   const fromEnv = configFromEnv(env)
 
-  if (pluginConfig !== undefined && !isPlainObject(pluginConfig)) {
+  if (pluginConfig !== undefined && !isPlainObject(plainPluginConfig)) {
     logWarn('Plugin config is not an object, ignoring it (only a JSON object is accepted).')
   }
 

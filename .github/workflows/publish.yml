@@ -97,6 +97,13 @@ jobs:
             echo "already=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # Install the package's runtime dependency (the config schema validator) and the
+      # test toolchain. The published tarball includes the compiled lib/, but tests import
+      # lib/index.js and therefore need @deepseek-ai/schemastery present.
+      - name: Install dependencies
+        if: steps.guard.outputs.skip == 'false' && steps.exists.outputs.already == 'false'
+        run: npm ci --no-audit --no-fund
+
       # The package proves itself first: the tests ship with a mock ComfyUI, need no real ComfyUI, and finish in seconds.
       - name: Run tests
         if: steps.guard.outputs.skip == 'false' && steps.exists.outputs.already == 'false'

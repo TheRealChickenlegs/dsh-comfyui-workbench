@@ -8,7 +8,7 @@ import './env-setup.mjs'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import test from 'node:test'
-import { DEFAULTS, LEGACY_CONFIG_FILE, PLUGIN_ID, PLUGIN_VERSION, resolveConfig } from '../lib/index.js'
+import { Config, DEFAULTS, LEGACY_CONFIG_FILE, PLUGIN_ID, PLUGIN_VERSION, resolveConfig } from '../lib/index.js'
 import { isolatePluginConfig, tempDir } from './helpers.mjs'
 
 const configFile = isolatePluginConfig()
@@ -142,4 +142,46 @@ test('identity: package name and version match the runtime constants', () => {
   const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
   assert.equal(PLUGIN_ID, pkg.name)
   assert.equal(PLUGIN_VERSION, pkg.version)
+})
+
+const UI_CONFIG_KEYS = [
+  'baseUrl',
+  'outputDir',
+  'requestTimeoutMs',
+  'timeoutMs',
+  'pollIntervalMs',
+  'checkpoint',
+  'negativePrompt',
+  'steps',
+  'cfgScale',
+  'samplerName',
+  'scheduler',
+  'width',
+  'height',
+  'strength',
+  'inpaintGrowMask',
+  'saveToComfyUI',
+  'writeMetadata',
+  'rembgNode'
+]
+
+test('UI: the Config schema exposes every config key as a volatile field', () => {
+  assert.deepEqual(Object.keys(Config.dict ?? {}).sort(), [...UI_CONFIG_KEYS].sort())
+  for (const [key, field] of Object.entries(Config.dict ?? {})) {
+    assert.equal(field.meta?.volatile, true, `${key} must be volatile`)
+    assert.equal(field.meta?.default, undefined, `${key} must not inject a schema default`)
+  }
+})
+
+test('UI: plugin-page values win, while unset fields still inherit file/env/defaults', () => {
+  clean()
+  const parsed = Config({ baseUrl: 'http://from-ui:8188', steps: 9 })
+  const resolved = resolveConfig(parsed, { COMFYUI_URL: 'http://from-env:8188' })
+  assert.equal(resolved.baseUrl, 'http://from-ui:8188')
+  assert.equal(resolved.steps, 9)
+
+  const empty = Config({})
+  assert.equal(resolveConfig(empty, { COMFYUI_URL: 'http://from-env:8188' }).baseUrl, 'http://from-env:8188')
+  assert.equal(resolveConfig(empty, { COMFYUI_STEPS: '33' }).steps, 33)
+  assert.equal(resolveConfig(empty, {}).baseUrl, DEFAULTS.baseUrl)
 })

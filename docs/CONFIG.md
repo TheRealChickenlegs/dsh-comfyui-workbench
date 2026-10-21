@@ -17,7 +17,20 @@ Why ① is highest: DSH's config tree is the authoritative source for the host/o
 
 > ✨ **Config is resolved on every call** — an edited `config.json` takes effect **immediately, with no DSH restart**.
 >
-> **Upgrading from `dsh-comfyui-image`?** 0.2.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.3.0. See [MIGRATION.md](./MIGRATION.md).
+> **Upgrading from `dsh-comfyui-image`?** 0.3.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.4.0. See [MIGRATION.md](./MIGRATION.md).
+
+---
+
+## 0. Edit Everything in the Plugin Page
+
+Open **Plugins → ComfyUI Workbench → Configuration** in DSH. The page contains **all keys** from the table below, grouped as Connection, Image defaults, Output and Background removal.
+
+- Every field is optional and blank means **inherit** from the config file, environment or built-in default.
+- Saving writes only the fields you changed into the active profile's plugin config (the highest-priority layer); file and environment settings still apply to untouched fields.
+- No DSH restart is needed for a save to take effect.
+- If the deployment reports settings as read-only, the page is visible but disabled.
+
+The rest of this document describes the file, environment and profile methods used by the same resolution chain.
 
 ---
 

@@ -3,7 +3,7 @@
  *
  * Quiet by default: a normal generation only logs under debug, to avoid polluting DSH session
  * output. Enable with the environment variable `DSH_COMFYUI_WORKBENCH_DEBUG=1`
- * (or the legacy `DSH_COMFYUI_IMAGE_DEBUG=1` during the 0.2.x migration window).
+ * (or the legacy `DSH_COMFYUI_IMAGE_DEBUG=1` during the 0.3.x migration window).
  */
 
 import { ENV_DEBUG, LEGACY_ENV_DEBUG, PLUGIN_ID } from './identity.js'
