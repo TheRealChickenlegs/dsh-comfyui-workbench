@@ -15,6 +15,7 @@ import {
   OUTPUT_SCHEMA,
   PARAMETERS_SCHEMA,
   TOOL_NAME,
+  apply,
   createGenerateImageTool,
   resolveCwd
 } from '../lib/index.js'
@@ -219,4 +220,11 @@ test('execute: a dirty plugin config does not crash (falls back to the defaults)
     if (savedUrl === undefined) delete process.env.COMFYUI_URL
     else process.env.COMFYUI_URL = savedUrl
   }
+})
+
+test('apply: registers generate_image plus the three advanced ComfyUI tools', () => {
+  const registered = []
+  const registry = { register: (definition) => registered.push(definition.name) }
+  apply({ reflect: { get: () => registry } }, { baseUrl: 'http://127.0.0.1:1' })
+  assert.deepEqual(registered.sort(), ['comfyui_api', 'comfyui_inspect', 'comfyui_workflow', 'generate_image'])
 })

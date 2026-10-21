@@ -67,3 +67,20 @@ export function fakeExec(cwd, signal) {
     ...(signal ? { signal } : {})
   }
 }
+
+/**
+ * Assert that a tool result exactly matches its declared output schema keys.
+ * DSH validates output schemas strictly (additionalProperties:false), so an undeclared field would
+ * reject the whole result at runtime.
+ */
+export function assertDeclaredKeys(value, schema, label) {
+  const allowed = new Set(Object.keys(schema.properties))
+  for (const key of Object.keys(value)) {
+    if (!allowed.has(key)) {
+      throw new Error(`${label}: undeclared output field "${key}" (DSH would reject the result)`)
+    }
+  }
+  for (const key of schema.required) {
+    if (!(key in value)) throw new Error(`${label}: missing required output field "${key}"`)
+  }
+}

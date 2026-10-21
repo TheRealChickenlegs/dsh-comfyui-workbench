@@ -1,6 +1,6 @@
 # Tool Parameters
 
-There is exactly **one** tool exposed: `generate_image`. This document walks through its parameters, defaults, and when each one is ignored.
+This document covers the high-level `generate_image` tool: its parameters, defaults, and when each one is ignored. For the advanced `comfyui_inspect` / `comfyui_workflow` / `comfyui_api` tools, see [ADVANCED.md](./ADVANCED.md).
 
 - The parameter schema lives in `src/tool.ts` (`PARAMETERS_SCHEMA`); normalization logic lives in `src/params.ts`.
 - The parameters are a **raw JSON Schema** using only the subset DSH supports (`minimum` / `maximum` / `format` are rejected outright),

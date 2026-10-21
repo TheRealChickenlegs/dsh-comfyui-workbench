@@ -1,7 +1,7 @@
 {
   "name": "dsh-comfyui-image",
   "version": "0.1.1",
-  "description": "A DSH image-generation plugin backed by a local ComfyUI server: one unified generate_image tool for text-to-image, image-to-image, inpainting and background removal.",
+  "description": "A DSH plugin backed by a local ComfyUI server: generate_image for text-to-image, image-to-image, inpainting and background removal, plus full model/node inspection and arbitrary workflow execution.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -42,7 +42,9 @@
     "inpaint",
     "remove-background",
     "stable-diffusion",
-    "image-generation"
+    "workflow",
+    "comfyui-api",
+    "model-inspection"
   ],
   "author": "dsh-comfyui-image contributors",
   "license": "MIT",
@@ -59,8 +61,8 @@
     "registry": "https://registry.npmjs.org/"
   },
   "meta": {
-    "title": "ComfyUI Image Generation",
-    "description": "Adds image generation to DSH: draw with a local ComfyUI. One generate_image tool covers text-to-image, image-to-image, inpainting and background removal."
+    "title": "ComfyUI Image Generation & Workflows",
+    "description": "Adds image generation and full ComfyUI access to DSH: generate_image for common modes, comfyui_inspect for every model and node schema, comfyui_workflow for arbitrary workflows, and comfyui_api for raw endpoints."
   },
   "icon": "./icon.svg",
   "dsh": {

@@ -256,3 +256,4 @@ When calling from code (not through the Agent), you get the fields from the [out
 - Every parameter and its default: [PARAMS.md](./PARAMS.md)
 - Configuration and four-layer priority: [CONFIG.md](./CONFIG.md)
 - Troubleshooting: [FAQ.md](./FAQ.md)
+- Full ComfyUI access (models, nodes, arbitrary workflows, raw API): [ADVANCED.md](./ADVANCED.md)

@@ -53,6 +53,22 @@ export function readImageBytes(filePath: string, kind: string): Buffer {
   return fs.readFileSync(filePath)
 }
 
+/** Read arbitrary file bytes; throws an error with a suggestion when missing or empty. */
+export function readFileBytes(filePath: string, kind = 'file'): Buffer {
+  if (!fs.existsSync(filePath)) throw fileMissing(kind, filePath)
+  const stat = fs.statSync(filePath)
+  if (!stat.isFile()) {
+    throw new ImagePluginError(`${kind} is not a file: ${filePath}`, 'Provide a file path, not a directory.')
+  }
+  if (stat.size === 0) {
+    throw new ImagePluginError(
+      `${kind} is an empty file (0 bytes): ${filePath}`,
+      'The file contains no data. Common causes: an interrupted download or a placeholder file.'
+    )
+  }
+  return fs.readFileSync(filePath)
+}
+
 /** Whether the path exists and is a file. */
 export function isFile(filePath: string): boolean {
   try {
@@ -64,23 +80,80 @@ export function isFile(filePath: string): boolean {
 
 const IMAGE_EXTS = new Set(['.png', '.jpg', '.jpeg', '.webp', '.bmp', '.gif', '.tiff'])
 
-/** Guess a MIME type from the extension, for uploading to ComfyUI. */
+const MIME_BY_EXT: Record<string, string> = {
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.webp': 'image/webp',
+  '.bmp': 'image/bmp',
+  '.gif': 'image/gif',
+  '.tiff': 'image/tiff',
+  '.tif': 'image/tiff',
+  '.svg': 'image/svg+xml',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
+  '.mov': 'video/quicktime',
+  '.wav': 'audio/wav',
+  '.mp3': 'audio/mpeg',
+  '.ogg': 'audio/ogg',
+  '.flac': 'audio/flac',
+  '.json': 'application/json',
+  '.txt': 'text/plain',
+  '.md': 'text/markdown',
+  '.safetensors': 'application/octet-stream',
+  '.ckpt': 'application/octet-stream',
+  '.pt': 'application/octet-stream',
+  '.pth': 'application/octet-stream',
+  '.bin': 'application/octet-stream'
+}
+
+/** Guess a MIME type from the extension, for uploading arbitrary files to ComfyUI. */
+export function guessMime(filename: string): string {
+  return MIME_BY_EXT[path.extname(filename).toLowerCase()] ?? 'application/octet-stream'
+}
+
+/** Guess a MIME type from the extension, for uploading images to ComfyUI. */
 export function guessImageMime(filename: string): string {
-  switch (path.extname(filename).toLowerCase()) {
-    case '.jpg':
-    case '.jpeg':
-      return 'image/jpeg'
-    case '.webp':
-      return 'image/webp'
-    case '.bmp':
-      return 'image/bmp'
-    case '.gif':
-      return 'image/gif'
-    case '.tiff':
-      return 'image/tiff'
-    default:
-      return 'image/png'
+  return MIME_BY_EXT[path.extname(filename).toLowerCase()] ?? 'image/png'
+}
+
+/** Map a response content type to a reasonable file extension. */
+export function extensionForMime(contentType: string, fallback = '.bin'): string {
+  const type = contentType.split(';')[0]?.trim().toLowerCase() ?? ''
+  const mapping: Record<string, string> = {
+    'image/png': '.png',
+    'image/jpeg': '.jpg',
+    'image/webp': '.webp',
+    'image/gif': '.gif',
+    'image/bmp': '.bmp',
+    'image/tiff': '.tiff',
+    'image/svg+xml': '.svg',
+    'video/mp4': '.mp4',
+    'video/webm': '.webm',
+    'audio/wav': '.wav',
+    'audio/x-wav': '.wav',
+    'audio/mpeg': '.mp3',
+    'audio/ogg': '.ogg',
+    'application/json': '.json',
+    'text/plain': '.txt',
+    'text/html': '.html'
   }
+  return mapping[type] ?? fallback
+}
+
+/** Return a path that does not exist yet, appending -1 / -2 ... when needed. */
+export function uniqueFilePath(target: string): string {
+  if (!fs.existsSync(target)) return target
+  const ext = path.extname(target)
+  const base = ext ? target.slice(0, target.length - ext.length) : target
+  for (let i = 1; i < 10_000; i += 1) {
+    const candidate = `${base}-${i}${ext}`
+    if (!fs.existsSync(candidate)) return candidate
+  }
+  throw new ImagePluginError(
+    `No free file name left for: ${target}`,
+    'Choose another output directory, or remove the files with the same name first.'
+  )
 }
 
 /** Get the extension from the filename ComfyUI returned (fall back to .png). */

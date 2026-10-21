@@ -48,7 +48,9 @@ export const TOOL_DESCRIPTION = [
   '  - ComfyUI must be running (default http://127.0.0.1:8188); a clear error is returned when it is not.',
   '  - remove_background needs a third-party background-removal node in ComfyUI; if missing, the error says which one to install.',
   '',
-  'Style/character consistency (style_reference / character_reference) is only written to metadata in V1; it does not affect generation yet.'
+  'Style/character consistency (style_reference / character_reference) is only written to metadata in V1; it does not affect generation yet.',
+  '',
+  'For anything beyond these four modes — all installed models, every node schema, arbitrary workflows, custom nodes — use comfyui_inspect / comfyui_workflow / comfyui_api.'
 ].join('\n')
 
 /** The raw JSON Schema for the arguments (only the subset DSH supports). */

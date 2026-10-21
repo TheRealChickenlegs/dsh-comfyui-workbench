@@ -5,6 +5,22 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- **Full ComfyUI access through three advanced tools** (registered alongside `generate_image`, which is unchanged):
+  - `comfyui_inspect` — read-only discovery of **every installed model** grouped by ComfyUI model folder, **every available
+    node** with a compact search and full input/output schema, embeddings, system stats, queue and history. Model discovery
+    prefers `/models` and falls back to loader-node enums, with a dynamic scan of custom-node model inputs.
+  - `comfyui_workflow` — local validation of arbitrary API-format workflows (unknown nodes/inputs, missing required inputs,
+    dangling links, enum/numeric violations), submission, polling, downloading every output, metadata sidecars, input uploads,
+    queue inspection/clear/delete, interrupt and free-memory controls.
+  - `comfyui_api` — raw HTTP access to any other ComfyUI endpoint, with the base URL fixed, path validation, JSON/text/binary
+    handling and binary saving.
+- [docs/ADVANCED.md](docs/ADVANCED.md): model/node discovery, workflow validation and execution, uploads, job control,
+  raw API examples, safety limits and troubleshooting. The README now has a "Full ComfyUI Access" section.
+- The test suite grew from 88 to **124 tests**, covering model fallbacks, node schemas, validation failures, workflow
+  execution with exact-file and multi-output saving, uploads, job control and raw API guardrails.
+
 ### Changed
 
 - **English localization across the whole plugin**: every user-visible string is now English — the tool description and

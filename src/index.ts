@@ -13,6 +13,12 @@ import { resolveConfig } from './config.js'
 import { logInfo, logWarn } from './log.js'
 import { PLUGIN_VERSION } from './runner.js'
 import { createGenerateImageTool, TOOL_NAME } from './tool.js'
+import {
+  ADVANCED_TOOL_NAMES,
+  createComfyUIApiTool,
+  createComfyUIInspectTool,
+  createComfyUIWorkflowTool
+} from './comfy-tools.js'
 
 /** Plugin name (also the default id of the loader entry). */
 export const name = 'dsh-comfyui-image'
@@ -55,16 +61,20 @@ interface ToolRegistryLike {
 export function apply(ctx: HostContextLike, config?: unknown): void {
   const tools = getToolRegistry(ctx)
   if (!tools) {
-    logWarn('Cannot obtain the tools service; generate_image was not registered (check the plugin dependencies in the profile).')
+    logWarn('Cannot obtain the tools service; the ComfyUI tools were not registered (check the plugin dependencies in the profile).')
     return
   }
 
   tools.register(createGenerateImageTool(config))
+  tools.register(createComfyUIInspectTool(config))
+  tools.register(createComfyUIWorkflowTool(config))
+  tools.register(createComfyUIApiTool(config))
 
   // Print one summary line at startup: do **not** make network requests during loading, to avoid slowing DSH startup.
   const resolved = resolveConfig(config)
+  const registered = [TOOL_NAME, ...ADVANCED_TOOL_NAMES].join(', ')
   logInfo(
-    `v${PLUGIN_VERSION} ready, registered tool ${TOOL_NAME} (four modes). ComfyUI address: ${resolved.baseUrl}` +
+    `v${PLUGIN_VERSION} ready, registered tools: ${registered}. ComfyUI address: ${resolved.baseUrl}` +
       (resolved.checkpoint ? `, checkpoint: ${resolved.checkpoint}` : ', checkpoint: automatic')
   )
   if (resolved.baseUrl.includes('0.0.0.0')) {
@@ -83,4 +93,47 @@ export { inferMode, normalizeRequest } from './params.js'
 export { formatResult, renderResultText } from './result.js'
 export { runGeneration, pickImageRef, PLUGIN_VERSION } from './runner.js'
 export { createGenerateImageTool, PARAMETERS_SCHEMA, OUTPUT_SCHEMA, TOOL_DESCRIPTION, TOOL_NAME, resolveCwd } from './tool.js'
+export {
+  ADVANCED_TOOL_NAMES,
+  API_DESCRIPTION,
+  API_OUTPUT_SCHEMA,
+  API_PARAMETERS_SCHEMA,
+  API_TOOL_NAME,
+  INSPECT_DESCRIPTION,
+  INSPECT_OUTPUT_SCHEMA,
+  INSPECT_PARAMETERS_SCHEMA,
+  INSPECT_TOOL_NAME,
+  WORKFLOW_DESCRIPTION,
+  WORKFLOW_OUTPUT_SCHEMA,
+  WORKFLOW_PARAMETERS_SCHEMA,
+  WORKFLOW_TOOL_NAME,
+  createComfyUIApiTool,
+  createComfyUIInspectTool,
+  createComfyUIWorkflowTool
+} from './comfy-tools.js'
+export {
+  describeNode,
+  formatHistorySummary,
+  formatModelCatalog,
+  formatNodeDetail,
+  formatNodeList,
+  formatQueueSummary,
+  formatSystemStats,
+  listModels,
+  searchNodes,
+  summarizeHistory,
+  summarizeNode,
+  summarizeQueue
+} from './comfy/introspect.js'
+export {
+  collectOutputs,
+  formatValidation,
+  formatWorkflowRunText,
+  historyIssues,
+  loadWorkflow,
+  submitWorkflow,
+  validateWorkflow,
+  waitForPrompt,
+  workflowFromHistory
+} from './comfy/workflow-runner.js'
 export type { GenerateImageArgs, GenerateMode, NormalizedRequest } from './types.js'

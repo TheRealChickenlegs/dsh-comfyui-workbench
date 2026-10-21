@@ -21,11 +21,18 @@ export interface ComfyNodeInfo {
   name?: string
   display_name?: string
   category?: string
+  description?: string
+  python_module?: string
   output?: unknown[]
   output_name?: unknown[]
+  output_node?: boolean
   input?: {
     required?: Record<string, unknown>
     optional?: Record<string, unknown>
+  }
+  input_order?: {
+    required?: string[]
+    optional?: string[]
   }
 }
 
@@ -48,6 +55,36 @@ export interface UploadResult {
   name: string
   subfolder: string
   type: string
+}
+
+/** A queue entry as returned by ComfyUI: [number, prompt_id, prompt, extra_data, outputs_to_execute]. */
+export type ComfyQueueEntry = unknown[]
+
+export interface ComfyQueue {
+  queue_running: ComfyQueueEntry[]
+  queue_pending: ComfyQueueEntry[]
+}
+
+/** Options for a raw request against the configured ComfyUI base URL. */
+export interface RawRequestOptions {
+  method: string
+  pathname: string
+  query?: Record<string, unknown>
+  body?: unknown
+  bodyText?: string
+  headers?: Record<string, string>
+  timeoutMs?: number
+  signal?: AbortSignal
+}
+
+/** A raw HTTP response, with bytes kept intact (decode `text` only for textual content). */
+export interface RawResponse {
+  status: number
+  ok: boolean
+  contentType: string
+  headers: Record<string, string>
+  bytes: Buffer
+  text?: string
 }
 
 /** Combine an external AbortSignal with a timeout, preserving "who triggered it" information. */
@@ -135,6 +172,27 @@ export class ComfyUIClient {
     }
   }
 
+  /**
+   * Like `json`, but treats a 404 as "endpoint not supported by this ComfyUI version"
+   * and returns undefined. Used for optional discovery endpoints such as /models.
+   */
+  private async optionalJson<T>(
+    pathname: string,
+    init: RequestInit,
+    external?: AbortSignal,
+    timeoutMs?: number
+  ): Promise<T | undefined> {
+    const response = await this.request(pathname, init, external, timeoutMs)
+    if (response.status === 404) return undefined
+    const text = await response.text()
+    if (!response.ok) throw this.httpError(pathname, response.status, text)
+    try {
+      return JSON.parse(text) as T
+    } catch {
+      return undefined
+    }
+  }
+
   private httpError(pathname: string, status: number, body: string): ImagePluginError {
     const snippet = body.slice(0, 500).replace(/\s+/g, ' ').trim()
     if (status === 404) {
@@ -196,9 +254,21 @@ export class ComfyUIClient {
     return (await this.nodeInfo(classType, external)) !== undefined
   }
 
-  /** Upload a local image into ComfyUI's input directory. */
-  async uploadImage(
-    input: { filename: string; bytes: Buffer; mime: string; subfolder?: string; overwrite?: boolean },
+  /**
+   * Upload a local file into ComfyUI's input directory.
+   *
+   * `/upload/image` accepts images, masks and arbitrary input files; ComfyUI's `/upload/mask` is a
+   * different endpoint (it rewrites a mask annotation over an existing output image via `original_ref`),
+   * so it must not be used for ordinary workflow inputs.
+   */
+  async uploadFile(
+    input: {
+      filename: string
+      bytes: Buffer
+      mime: string
+      subfolder?: string
+      overwrite?: boolean
+    },
     external?: AbortSignal
   ): Promise<UploadResult> {
     const form = new FormData()
@@ -209,14 +279,104 @@ export class ComfyUIClient {
     if (input.subfolder) form.append('subfolder', input.subfolder)
     form.append('type', 'input')
 
-    const result = await this.json<UploadResult>(
-      '/upload/image',
-      { method: 'POST', body: form },
+    const result = await this.json<UploadResult>('/upload/image', { method: 'POST', body: form }, external, 60_000)
+    logDebug('Upload succeeded via /upload/image', result)
+    return result
+  }
+
+  /** Upload a local image into ComfyUI's input directory. */
+  async uploadImage(
+    input: { filename: string; bytes: Buffer; mime: string; subfolder?: string; overwrite?: boolean },
+    external?: AbortSignal
+  ): Promise<UploadResult> {
+    return this.uploadFile(input, external)
+  }
+
+  /** List installed model folder names (undefined when this ComfyUI version has no /models endpoint). */
+  async modelFolders(external?: AbortSignal): Promise<string[] | undefined> {
+    const data = await this.optionalJson<unknown>('/models', { method: 'GET' }, external, 20_000)
+    if (data === undefined) return undefined
+    if (Array.isArray(data)) return data.map((item) => String(item)).filter(Boolean)
+    if (data && typeof data === 'object') {
+      const value = (data as { folders?: unknown }).folders
+      if (Array.isArray(value)) return value.map((item) => String(item)).filter(Boolean)
+    }
+    return undefined
+  }
+
+  /** List the files in one model folder (undefined when the folder or endpoint does not exist). */
+  async modelFiles(folder: string, external?: AbortSignal): Promise<string[] | undefined> {
+    const pathname = `/models/${encodeURIComponent(folder)}`
+    const data = await this.optionalJson<unknown>(pathname, { method: 'GET' }, external, 20_000)
+    if (data === undefined) return undefined
+    if (Array.isArray(data)) {
+      return data
+        .map((item) => {
+          if (typeof item === 'string') return item
+          if (item && typeof item === 'object' && 'name' in item) return String((item as { name: unknown }).name)
+          return ''
+        })
+        .filter(Boolean)
+    }
+    return undefined
+  }
+
+  /** List text embeddings reported by ComfyUI (undefined when unsupported). */
+  async embeddings(external?: AbortSignal): Promise<string[] | undefined> {
+    const data = await this.optionalJson<unknown>('/embeddings', { method: 'GET' }, external, 20_000)
+    if (!Array.isArray(data)) return undefined
+    return data.map((item) => String(item)).filter(Boolean)
+  }
+
+  /** Current running and pending queue entries. */
+  async queue(external?: AbortSignal): Promise<ComfyQueue> {
+    const data = await this.json<Partial<ComfyQueue>>('/queue', { method: 'GET' }, external, 15_000)
+    return {
+      queue_running: Array.isArray(data.queue_running) ? data.queue_running : [],
+      queue_pending: Array.isArray(data.queue_pending) ? data.queue_pending : []
+    }
+  }
+
+  /** All history entries (ComfyUI caps and ages this server-side). */
+  async historyAll(external?: AbortSignal): Promise<Record<string, ComfyHistoryEntry>> {
+    return this.json<Record<string, ComfyHistoryEntry>>('/history', { method: 'GET' }, external, 30_000)
+  }
+
+  /** Ask ComfyUI to unload models / free memory. */
+  async free(options: { unloadModels?: boolean; freeMemory?: boolean }, external?: AbortSignal): Promise<void> {
+    await this.json<unknown>(
+      '/free',
+      {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          unload_models: Boolean(options.unloadModels),
+          free_memory: Boolean(options.freeMemory)
+        })
+      },
       external,
       60_000
     )
-    logDebug('Image uploaded successfully', result)
-    return result
+  }
+
+  /** Send a control body to /queue (clear the queue or delete specific prompt ids). */
+  async queueAction(body: Record<string, unknown>, external?: AbortSignal): Promise<void> {
+    await this.json<unknown>(
+      '/queue',
+      { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) },
+      external,
+      20_000
+    )
+  }
+
+  /** Remove every pending item from the queue. */
+  async clearQueue(external?: AbortSignal): Promise<void> {
+    await this.queueAction({ clear: true }, external)
+  }
+
+  /** Remove specific pending items from the queue. */
+  async deleteQueueItems(promptIds: string[], external?: AbortSignal): Promise<void> {
+    await this.queueAction({ delete: promptIds }, external)
   }
 
   /**
@@ -283,8 +443,8 @@ export class ComfyUIClient {
     return data[promptId]
   }
 
-  /** Fetch the produced image bytes. */
-  async viewImage(ref: ComfyImageRef, external?: AbortSignal): Promise<Buffer> {
+  /** Fetch a produced file (image, gif, audio, ...) by its ComfyUI output reference. */
+  async fetchFile(ref: ComfyImageRef, external?: AbortSignal): Promise<Buffer> {
     const params = new URLSearchParams({
       filename: ref.filename,
       subfolder: ref.subfolder ?? '',
@@ -299,12 +459,96 @@ export class ComfyUIClient {
     return Buffer.from(arrayBuffer)
   }
 
+  /** Fetch the produced image bytes (kept as an alias for existing callers). */
+  async viewImage(ref: ComfyImageRef, external?: AbortSignal): Promise<Buffer> {
+    return this.fetchFile(ref, external)
+  }
+
+  /** Cancel the currently running job, surfacing failures (used by the job-control tool). */
+  async interruptNow(external?: AbortSignal): Promise<void> {
+    await this.json<unknown>('/interrupt', { method: 'POST' }, external, 10_000)
+  }
+
   /** Cancel the currently running job (best effort; a failure does not affect the main flow). */
   async interrupt(external?: AbortSignal): Promise<void> {
     try {
-      await this.json<unknown>('/interrupt', { method: 'POST' }, external, 10_000)
+      await this.interruptNow(external)
     } catch (error) {
       logDebug('interrupt failed (ignored)', String(error))
+    }
+  }
+
+  /**
+   * Raw request against the configured ComfyUI base URL.
+   *
+   * This is the escape hatch behind the comfyui_api tool: it keeps the base URL fixed, supports query
+   * parameters and JSON/text bodies, and returns the response bytes untouched. Callers decide whether
+   * to parse JSON, show text, or save binary content.
+   */
+  async rawRequest(options: RawRequestOptions): Promise<RawResponse> {
+    const method = options.method.toUpperCase()
+    const params = new URLSearchParams()
+    for (const [key, value] of Object.entries(options.query ?? {})) {
+      if (value === undefined || value === null) continue
+      if (Array.isArray(value)) {
+        for (const item of value) params.append(key, String(item))
+      } else {
+        params.append(key, String(value))
+      }
+    }
+    const separator = options.pathname.includes('?') ? '&' : '?'
+    const pathname = params.toString()
+      ? `${options.pathname}${separator}${params.toString()}`
+      : options.pathname
+
+    const headers: Record<string, string> = { accept: '*/*', ...(options.headers ?? {}) }
+    let body: string | undefined
+    if (options.bodyText !== undefined && options.body !== undefined) {
+      throw new ImagePluginError(
+        'Provide either body or body_text, not both.',
+        'Use body for JSON endpoints, or body_text for endpoints that expect plain text.'
+      )
+    }
+    if (options.bodyText !== undefined) {
+      if (method === 'GET' || method === 'HEAD') {
+        throw new ImagePluginError(`A ${method} request cannot have a body.`, 'Use POST/PUT/PATCH for requests with a body.')
+      }
+      body = options.bodyText
+      if (!Object.keys(headers).some((key) => key.toLowerCase() === 'content-type')) {
+        headers['content-type'] = 'text/plain; charset=utf-8'
+      }
+    } else if (options.body !== undefined) {
+      if (method === 'GET' || method === 'HEAD') {
+        throw new ImagePluginError(`A ${method} request cannot have a body.`, 'Use POST/PUT/PATCH for requests with a body.')
+      }
+      body = JSON.stringify(options.body)
+      if (!Object.keys(headers).some((key) => key.toLowerCase() === 'content-type')) {
+        headers['content-type'] = 'application/json'
+      }
+    }
+
+    const response = await this.request(
+      pathname,
+      { method, headers, redirect: 'manual', ...(body !== undefined ? { body } : {}) },
+      options.signal,
+      options.timeoutMs
+    )
+    const bytes = Buffer.from(await response.arrayBuffer())
+    const contentType = response.headers.get('content-type') ?? ''
+    const responseHeaders: Record<string, string> = {}
+    response.headers.forEach((value, key) => {
+      responseHeaders[key] = value
+    })
+    const isText =
+      contentType === '' ||
+      /json|text|xml|javascript|html|x-www-form-urlencoded/i.test(contentType)
+    return {
+      status: response.status,
+      ok: response.ok,
+      contentType,
+      headers: responseHeaders,
+      bytes,
+      ...(isText ? { text: bytes.toString('utf8') } : {})
     }
   }
 }

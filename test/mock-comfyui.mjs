@@ -101,23 +101,40 @@ export function defaultNodes(checkpoints = ['v1-5-pruned-emaonly.safetensors', '
     CheckpointLoaderSimple: node(
       { ckpt_name: [checkpoints, {}] },
       ['MODEL', 'CLIP', 'VAE'],
-      'CheckpointLoaderSimple'
+      'loaders'
+    ),
+    LoraLoader: node(
+      { model: ['MODEL'], clip: ['CLIP'], lora_name: [['detail.safetensors'], {}], strength_model: ['FLOAT', { default: 1 }], strength_clip: ['FLOAT', { default: 1 }] },
+      ['MODEL', 'CLIP'],
+      'loaders'
+    ),
+    VAELoader: node({ vae_name: [['vae-ft-mse.safetensors'], {}] }, ['VAE'], 'loaders'),
+    UpscaleModelLoader: node({ model_name: [['4x-UltraSharp.pth'], {}] }, ['UPSCALE_MODEL'], 'loaders'),
+    CLIPLoader: node(
+      { clip_name: [['clip_l.safetensors'], {}], type: [['stable_diffusion', 'sdxl'], {}] },
+      ['CLIP'],
+      'loaders'
+    ),
+    UNETLoader: node(
+      { unet_name: [['flux1-dev.safetensors'], {}], weight_dtype: [['default', 'fp8_e4m3fn'], {}] },
+      ['MODEL'],
+      'loaders'
     ),
     CLIPTextEncode: node(
       { text: ['STRING', { multiline: true }], clip: ['CLIP'] },
       ['CONDITIONING'],
-      'CLIPTextEncode'
+      'conditioning'
     ),
     EmptyLatentImage: node(
       { width: ['INT', { default: 512 }], height: ['INT', { default: 512 }], batch_size: ['INT', { default: 1 }] },
       ['LATENT'],
-      'EmptyLatentImage'
+      'latent'
     ),
     KSampler: node(
       {
         model: ['MODEL'],
         seed: ['INT', { default: 0 }],
-        steps: ['INT', { default: 20 }],
+        steps: ['INT', { default: 20, min: 1, max: 500 }],
         cfg: ['FLOAT', { default: 8 }],
         sampler_name: [['euler', 'euler_ancestral', 'dpmpp_2m', 'ddim'], {}],
         scheduler: [['normal', 'karras', 'exponential'], {}],
@@ -127,22 +144,22 @@ export function defaultNodes(checkpoints = ['v1-5-pruned-emaonly.safetensors', '
         denoise: ['FLOAT', { default: 1 }]
       },
       ['LATENT'],
-      'KSampler'
+      'sampling'
     ),
-    VAEDecode: node({ samples: ['LATENT'], vae: ['VAE'] }, ['IMAGE'], 'VAEDecode'),
-    VAEEncode: node({ pixels: ['IMAGE'], vae: ['VAE'] }, ['LATENT'], 'VAEEncode'),
+    VAEDecode: node({ samples: ['LATENT'], vae: ['VAE'] }, ['IMAGE'], 'latent'),
+    VAEEncode: node({ pixels: ['IMAGE'], vae: ['VAE'] }, ['LATENT'], 'latent'),
     VAEEncodeForInpaint: node(
       { pixels: ['IMAGE'], vae: ['VAE'], mask: ['MASK'], grow_mask_by: ['INT', { default: 6 }] },
       ['LATENT'],
-      'VAEEncodeForInpaint'
+      'latent'
     ),
-    SaveImage: node({ images: ['IMAGE'], filename_prefix: ['STRING', { default: 'ComfyUI' }] }, [], 'SaveImage'),
-    PreviewImage: node({ images: ['IMAGE'] }, [], 'PreviewImage'),
-    LoadImage: node({ image: [[], { image_upload: true }] }, ['IMAGE', 'MASK'], 'LoadImage'),
+    SaveImage: node({ images: ['IMAGE'], filename_prefix: ['STRING', { default: 'ComfyUI' }] }, [], 'image'),
+    PreviewImage: node({ images: ['IMAGE'] }, [], 'image'),
+    LoadImage: node({ image: [[], { image_upload: true }] }, ['IMAGE', 'MASK'], 'image'),
     LoadImageMask: node(
       { image: [[], { image_upload: true }], channel: [['red', 'green', 'blue', 'alpha'], {}] },
       ['MASK'],
-      'LoadImageMask'
+      'image'
     ),
     // The real shape of ComfyUI_essentials background removal: a session node (REMBG_SESSION) → a consumer node.
     // This is the plugin's highest-priority plan; the single-node shape (only ImageRemoveBackground+) does not
@@ -156,12 +173,12 @@ export function defaultNodes(checkpoints = ['v1-5-pruned-emaonly.safetensors', '
         providers: [['CPU', 'CUDA', 'DirectML'], {}]
       },
       ['REMBG_SESSION'],
-      'RemBGSession+'
+      'image'
     ),
     'ImageRemoveBackground+': node(
       { rembg_session: ['REMBG_SESSION'], image: ['IMAGE'] },
       ['IMAGE', 'MASK'],
-      'ImageRemoveBackground+'
+      'image'
     )
   }
 }
@@ -208,9 +225,28 @@ export function createMockComfyUI(options = {}) {
     nodes: options.nodes ?? defaultNodes(options.checkpoints),
     pollsBeforeDone: options.pollsBeforeDone ?? 2,
     failMode: options.failMode ?? null,
-    stats: { system_stats: 0, object_info: 0, object_info_one: 0, upload: 0, prompt: 0, history: 0, view: 0, interrupt: 0 },
+    stats: {
+      system_stats: 0,
+      object_info: 0,
+      object_info_one: 0,
+      upload: 0,
+      prompt: 0,
+      history: 0,
+      view: 0,
+      interrupt: 0,
+      models: 0,
+      embeddings: 0,
+      free: 0,
+      queue_control: 0,
+      api: 0
+    },
     prompts: new Map(),
+    history: new Map(),
     uploads: new Map(),
+    queue: {
+      queue_running: options.queueRunning ?? [],
+      queue_pending: options.queuePending ?? []
+    },
     lastPrompt: null,
     lastClientId: null,
     lastUploadFilename: null
@@ -255,10 +291,18 @@ export function createMockComfyUI(options = {}) {
   function buildHistoryEntry(promptId) {
     const record = state.prompts.get(promptId)
     const prompt = record?.prompt ?? {}
+    const startedAt = Date.now()
     const entry = {
-      prompt: [0, promptId, prompt, { client_id: state.lastClientId }, []],
+      prompt: [1, promptId, prompt, { client_id: state.lastClientId }, []],
       outputs: {},
-      status: { status_str: 'success', completed: true, messages: [] }
+      status: {
+        status_str: 'success',
+        completed: true,
+        messages: [
+          ['execution_start', { prompt_id: promptId, timestamp: startedAt }],
+          ['execution_success', { prompt_id: promptId, timestamp: startedAt + 1 }]
+        ]
+      }
     }
 
     if (state.failMode === 'execution_error') {
@@ -266,11 +310,12 @@ export function createMockComfyUI(options = {}) {
         status_str: 'error',
         completed: false,
         messages: [
-          ['execution_start', { prompt_id: promptId }],
+          ['execution_start', { prompt_id: promptId, timestamp: startedAt }],
           [
             'execution_error',
             {
               prompt_id: promptId,
+              timestamp: startedAt + 1,
               node_id: findNodeIdByClass(prompt, ['KSampler']) ?? '5',
               node_type: 'KSampler',
               exception_message: 'CUDA out of memory (deliberately caused by the mock)',
@@ -287,13 +332,21 @@ export function createMockComfyUI(options = {}) {
       return entry
     }
 
-    const saveId = findNodeIdByClass(prompt, ['SaveImage', 'PreviewImage'])
+    const saveIds = Object.entries(prompt)
+      .filter(([, nodeDef]) => nodeDef && ['SaveImage', 'PreviewImage'].includes(nodeDef.class_type))
+      .map(([nodeId]) => nodeId)
     const { width, height } = outputSize()
-    if (saveId) {
+    saveIds.forEach((saveId, index) => {
       entry.outputs[saveId] = {
-        images: [{ filename: `dsh-mock-${promptId}.png`, subfolder: '', type: 'output' }]
+        images: [
+          {
+            filename: `dsh-mock-${promptId}-${index}.png`,
+            subfolder: '',
+            type: prompt[saveId]?.class_type === 'PreviewImage' ? 'temp' : 'output'
+          }
+        ]
       }
-    }
+    })
     entry.__mockPngSize = { width, height }
     return entry
   }
@@ -333,6 +386,71 @@ export function createMockComfyUI(options = {}) {
         return sendJson(200, found ? { [classType]: found } : {})
       }
 
+      // ── model discovery ──
+      if (url.pathname === '/models') {
+        state.stats.models += 1
+        if (options.noModelsEndpoint) return sendJson(404, { error: 'not found' })
+        const folders = options.modelFolders ?? [
+          'checkpoints',
+          'loras',
+          'vae',
+          'upscale_models',
+          'text_encoders',
+          'diffusion_models'
+        ]
+        return sendJson(200, folders)
+      }
+      if (url.pathname.startsWith('/models/')) {
+        state.stats.models += 1
+        if (options.noModelsEndpoint) return sendJson(404, { error: 'not found' })
+        const folder = decodeURIComponent(url.pathname.slice('/models/'.length))
+        const files =
+          options.modelFiles?.[folder] ??
+          (folder === 'checkpoints'
+            ? state.checkpoints
+            : folder === 'loras'
+              ? ['detail.safetensors']
+              : folder === 'vae'
+                ? ['vae-ft-mse.safetensors']
+                : folder === 'upscale_models'
+                  ? ['4x-UltraSharp.pth']
+                  : folder === 'text_encoders'
+                    ? ['clip_l.safetensors']
+                    : folder === 'diffusion_models'
+                      ? ['flux1-dev.safetensors']
+                      : [])
+        return sendJson(200, files)
+      }
+      if (url.pathname === '/embeddings') {
+        state.stats.embeddings += 1
+        if (options.noEmbeddingsEndpoint) return sendJson(404, { error: 'not found' })
+        return sendJson(200, options.embeddings ?? ['easynegative', 'detail_slider'])
+      }
+
+      // ── queue ──
+      if (url.pathname === '/queue' && req.method === 'GET') {
+        return sendJson(200, state.queue)
+      }
+      if (url.pathname === '/queue' && req.method === 'POST') {
+        state.stats.queue_control += 1
+        let parsed = {}
+        try {
+          parsed = JSON.parse(body.toString('utf8') || '{}')
+        } catch {
+          return sendJson(400, { error: 'request body is not JSON' })
+        }
+        if (parsed.clear) state.queue.queue_pending = []
+        if (Array.isArray(parsed.delete)) {
+          const ids = new Set(parsed.delete.map(String))
+          state.queue.queue_pending = state.queue.queue_pending.filter((entry) => !ids.has(String(entry[1])))
+        }
+        return sendJson(200, {})
+      }
+      if (url.pathname === '/free' && req.method === 'POST') {
+        state.stats.free += 1
+        return sendJson(200, {})
+      }
+
       // ── upload ──
       if (url.pathname === '/upload/image' && req.method === 'POST') {
         state.stats.upload += 1
@@ -343,6 +461,35 @@ export function createMockComfyUI(options = {}) {
         state.uploads.set(name, body)
         state.lastUploadFilename = name
         return sendJson(200, { name, subfolder: '', type: 'input' })
+      }
+      // ── raw API test endpoints ──
+      if (url.pathname === '/api/echo') {
+        state.stats.api += 1
+        let parsed = null
+        if (body.length > 0) {
+          try {
+            parsed = JSON.parse(body.toString('utf8'))
+          } catch {
+            parsed = body.toString('utf8')
+          }
+        }
+        return sendJson(200, {
+          method: req.method,
+          query: Object.fromEntries(url.searchParams),
+          body: parsed,
+          content_type: req.headers['content-type'] ?? null
+        })
+      }
+      if (url.pathname === '/api/redirect') {
+        state.stats.api += 1
+        res.writeHead(302, { location: 'http://example.com/elsewhere' })
+        return res.end()
+      }
+      if (url.pathname === '/api/binary') {
+        state.stats.api += 1
+        const png = makePng(32, 24)
+        res.writeHead(200, { 'content-type': 'image/png', 'content-length': png.length })
+        return res.end(png)
       }
 
       // ── submit workflow ──
@@ -372,6 +519,12 @@ export function createMockComfyUI(options = {}) {
         return sendJson(200, { prompt_id: promptId, number: state.prompts.size, node_errors: {} })
       }
 
+      // ── history (all) ──
+      if (url.pathname === '/history') {
+        state.stats.history += 1
+        return sendJson(200, Object.fromEntries(state.history))
+      }
+
       // ── poll history ──
       if (url.pathname.startsWith('/history/')) {
         state.stats.history += 1
@@ -382,6 +535,7 @@ export function createMockComfyUI(options = {}) {
         record.polls += 1
         if (record.polls < state.pollsBeforeDone) return sendJson(200, {})
         const entry = buildHistoryEntry(promptId)
+        state.history.set(promptId, entry)
         // Stash the mock image size on the server for /view.
         server.__mockPngSize = entry.__mockPngSize
         delete entry.__mockPngSize

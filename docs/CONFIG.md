@@ -185,3 +185,4 @@ The first section of the output is the **effective configuration**:
 - It does not upload your images to any cloud (only to your local ComfyUI's `/upload/image`);
 - It neither reads nor writes ComfyUI's config/model directories (except through its HTTP API);
 - The only places it writes: the output directory you specify, `~/.dsh-comfyui-image/`, and the `.json` sidecar next to each image.
+- The advanced tools are equally local, but `comfyui_workflow` executes arbitrary workflows and `comfyui_api` can call any endpoint (including `/free`, `/queue` and `/settings`). Treat them as privileged local operations.

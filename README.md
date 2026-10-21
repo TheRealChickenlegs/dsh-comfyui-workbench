@@ -6,7 +6,7 @@
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/)
 [![npm](https://img.shields.io/npm/v/dsh-comfyui-image?label=npm)](https://www.npmjs.com/package/dsh-comfyui-image)
 
-A plugin that gives **DeepSeek Harness** (DSH) an **image generation capability**: the backend talks to a **local ComfyUI**, and it exposes exactly **one** Agent tool, `generate_image` — text-to-image, image-to-image, inpainting and background removal in one. It depends on no external commercial API and has **zero third-party runtime dependencies** (it only uses Node's built-in `fetch` / `FormData`).
+A plugin that gives **DeepSeek Harness** (DSH) an **image generation capability**: the backend talks to a **local ComfyUI**. The high-level `generate_image` tool covers text-to-image, image-to-image, inpainting and background removal, while three advanced tools expose every installed model, every node schema, and arbitrary workflow execution. It depends on no external commercial API and has **zero third-party runtime dependencies** (it only uses Node's built-in `fetch` / `FormData`).
 
 > In one sentence: install ComfyUI, enable the plugin, then tell the Agent "generate a picture of a corgi astronaut" — that's it.
 
@@ -25,8 +25,9 @@ A plugin that gives **DeepSeek Harness** (DSH) an **image generation capability*
 - [Installation](#installation)
 - [Enabling and Verifying](#enabling-and-verifying)
 - [Letting the Agent Use It](#letting-the-agent-use-it)
+- [Full ComfyUI Access](#full-comfyui-access-advanced-tools)
 - [Configuration](#configuration)
-- [Tool Parameters Cheat Sheet](#tool-parameters-cheat-sheet)
+- [`generate_image` Parameters Cheat Sheet](#generate_image-parameters-cheat-sheet)
 - [Mode Inference and Error Rules](#mode-inference-and-error-rules)
 - [Output and Files](#output-and-files)
 - [Style / Character Consistency (V1 Status)](#style--character-consistency-v1-status)
@@ -44,7 +45,7 @@ A plugin that gives **DeepSeek Harness** (DSH) an **image generation capability*
 
 DSH has no image generation of its own, while the Agent frequently needs to "draw a picture". This plugin wires in a **local ComfyUI**:
 
-- Agent side: it adds just one tool, `generate_image`, with few parameters, sensible defaults, and errors that tell you what to do next;
+- Agent side: a high-level `generate_image` tool with few parameters, sensible defaults, and errors that tell you what to do next — plus advanced tools when it needs the full ComfyUI surface;
 - User side: images land directly in the **current project root**, and the returned absolute path can be clicked open right inside DSH;
 - Ops side: the ComfyUI address / checkpoint / default parameters all live in a config file, and changes take effect **immediately** — no DSH restart required.
 
@@ -63,7 +64,8 @@ Other capabilities:
 - It **never overwrites** an existing file: if the target already exists, it automatically appends a `-1` / `-2` suffix;
 - A **`.json` metadata sidecar** is written next to every image (containing the full parameters and the workflow submitted to ComfyUI), so results are reproducible and debuggable;
 - `remove_background` picks the **best available** option among four verified background-removal node packs, and when none is installed it lists "what to install and how";
-- For anything V1 doesn't build in (outpainting / upscaling / batch generation), use [`extra_options.workflow_path`](#extension-handing-generation-over-to-a-custom-workflow) to plug in your own workflow.
+- For anything V1 doesn't build in (outpainting / upscaling / batch generation), use [`extra_options.workflow_path`](#extension-handing-generation-over-to-a-custom-workflow) to plug in your own workflow;
+- **Full ComfyUI access** through three advanced tools: complete model catalogue, every node and its schema, arbitrary API-format workflows, uploads, queue control, and a raw HTTP escape hatch — see [Full ComfyUI Access](#full-comfyui-access-advanced-tools).
 
 ## Requirements
 
@@ -114,7 +116,7 @@ dsh plugin --profile <your profile> add dsh-comfyui-image
 ```
 
 Equivalent: `npm i dsh-comfyui-image`, or entering `dsh-comfyui-image` as the target in DSH's
-**Settings → Plugins**. The published `lib/` (13 files) is already compiled — **no TypeScript, no build step**.
+**Settings → Plugins**. The published `lib/` (16 files) is already compiled — **no TypeScript, no build step**.
 Restart DSH afterwards.
 
 **Option B: one command, straight from GitHub (no npm account needed, verified)**
@@ -166,7 +168,7 @@ git clone <this repository> dsh-comfyui-image
 cd dsh-comfyui-image
 npm install          # installs only typescript and @types/node (for development)
 npm run build        # only needed if you changed src/; lib/ is already committed
-npm test             # 88 tests, ships with a mock ComfyUI, no real ComfyUI needed
+npm test             # 124 tests, ships with a mock ComfyUI, no real ComfyUI needed
 ```
 
 After that, link it into the profile following Option C.
@@ -175,7 +177,7 @@ After that, link it into the profile following Option C.
 
 Once installed:
 
-1. **It appears in the plugin list**: the entry name is `dsh-comfyui-image` (display name "ComfyUI Image Generation");
+1. **It appears in the plugin list**: the entry name is `dsh-comfyui-image` (display name "ComfyUI Image Generation & Workflows");
 2. **It can be toggled**: it is an ordinary bundle entry — toggle it with the plugin manager, or write `disabled: true` in the profile's patch;
 3. **The Agent can see the tool**: an extra `generate_image` shows up on the model side (this session's tool table already carries its full schema);
 4. **Whether this machine can actually generate images** — running a self-check is the least effort:
@@ -223,6 +225,49 @@ ComfyUI: http://127.0.0.1:8188 (prompt_id=8f3c…)
 
 For more usage (call examples for the four modes, reproduction and fine-tuning, batching ideas), see [docs/USAGE.md](./docs/USAGE.md).
 
+## Full ComfyUI Access (Advanced Tools)
+
+`generate_image` is the curated path. The plugin also registers three tools that expose the rest of ComfyUI:
+
+| Tool | What it does |
+|---|---|
+| `comfyui_inspect` | Read-only discovery: **every installed model** grouped by ComfyUI folder, **every available node** with full input/output schema, embeddings, system stats, queue and history |
+| `comfyui_workflow` | Validate and run **any API-format workflow**, wait for completion, download every output, upload input assets, cancel/clear queue entries and free memory |
+| `comfyui_api` | Raw HTTP access to any other ComfyUI endpoint (settings, user data, custom-node manager APIs, newer endpoints) |
+
+Typical Agent loop:
+
+1. `comfyui_inspect` `scope=models` — confirm checkpoint/LoRA/VAE file names.
+2. `comfyui_inspect` `scope=nodes` `query=controlnet` — find the nodes for the task.
+3. `comfyui_inspect` `scope=node` `node=KSampler` — read required inputs, enums and defaults.
+4. `comfyui_workflow` `action=validate` — catch unknown nodes/inputs, dangling links and missing required inputs.
+5. `comfyui_workflow` `action=run` — execute and save outputs with a metadata sidecar.
+
+A minimal custom workflow:
+
+```json
+{
+  "1": { "class_type": "CheckpointLoaderSimple", "inputs": { "ckpt_name": "sd_xl_base_1.0.safetensors" } },
+  "2": { "class_type": "CLIPTextEncode", "inputs": { "text": "a corgi astronaut", "clip": ["1", 1] } },
+  "3": { "class_type": "CLIPTextEncode", "inputs": { "text": "blurry, watermark", "clip": ["1", 1] } },
+  "4": { "class_type": "EmptyLatentImage", "inputs": { "width": 1024, "height": 1024, "batch_size": 1 } },
+  "5": { "class_type": "KSampler", "inputs": {
+    "seed": 42, "steps": 20, "cfg": 7, "sampler_name": "euler", "scheduler": "normal", "denoise": 1,
+    "model": ["1", 0], "positive": ["2", 0], "negative": ["3", 0], "latent_image": ["4", 0]
+  } },
+  "6": { "class_type": "VAEDecode", "inputs": { "samples": ["5", 0], "vae": ["1", 2] } },
+  "7": { "class_type": "SaveImage", "inputs": { "filename_prefix": "agent", "images": ["6", 0] } }
+}
+```
+
+Run it with:
+
+```json
+{ "action": "run", "workflow": { "...": "..." }, "output_path": "D:/images/run-1" }
+```
+
+See [docs/ADVANCED.md](./docs/ADVANCED.md) for the full parameter reference, model discovery details, raw API examples, validation rules and safety notes.
+
 ## Configuration
 
 Configuration has **four layers of sources, and the higher one wins**:
@@ -251,7 +296,7 @@ The most commonly used `~/.dsh-comfyui-image/config.json` looks like this:
 
 For the complete key table, the environment variable mapping, and "what to do when config doesn't take effect", see [docs/CONFIG.md](./docs/CONFIG.md).
 
-## Tool Parameters Cheat Sheet
+## `generate_image` Parameters Cheat Sheet
 
 | Parameter | Type | Description |
 |---|---|---|
@@ -348,6 +393,8 @@ Remember to end the workflow with `SaveImage` / `PreviewImage`, otherwise you'll
 | Generation is slow / times out | Raise `timeoutMs`, or lower `steps` / the dimensions; check the ComfyUI console |
 | Changing `config.json` seems to have no effect | Is that same key also set in the profile's plugin `config:`? Plugin config takes priority |
 | Passing `width` has no effect | Only `text2img` honors `width` / `height`; for other modes the canvas is determined by the input image |
+| `comfyui_workflow` says `Unknown node type` | The custom node is not installed/loaded, or the class name is wrong. Search with `comfyui_inspect scope=nodes` and pass `refresh=true` after installing nodes |
+| An advanced workflow runs but saves no files | End the workflow with an output node (`SaveImage`, `PreviewImage`, `SaveAudio`, ...); see [docs/ADVANCED.md](./docs/ADVANCED.md) |
 
 For the complete troubleshooting checklist (including how to read `doctor` output and a table of raw error messages), see [docs/FAQ.md](./docs/FAQ.md).
 
@@ -364,12 +411,15 @@ src/
   result.ts           Result text / output structure
   errors.ts           Error types that carry "what to do next"
   log.ts              Debug logging
+  comfy-tools.ts      Advanced tools: comfyui_inspect / comfyui_workflow / comfyui_api
   comfy/
     client.ts         ComfyUI HTTP client (/system_stats /object_info /upload/image /prompt /history /view /interrupt)
     nodes.ts          Capability probing: pick the checkpoint, validate samplers, choose the best background-removal option
     workflows.ts      Pure-function workflow building (four modes + custom workflow token substitution)
+    introspect.ts     Model catalogue, node search/schema, system/queue/history summaries
+    workflow-runner.ts Arbitrary workflow validation, submission, polling and output saving
 lib/                  TypeScript build output (**committed on purpose**: it runs without TS installed)
-test/                 88 tests + a mock ComfyUI (real PNG encode/decode, real uploads, real polling, real error paths)
+test/                 124 tests + a mock ComfyUI (real PNG encode/decode, real uploads, real polling, real error paths)
 scripts/doctor.mjs    Self-check script
 docs/                 install / config / usage / params / FAQ / roadmap
 ```
@@ -387,7 +437,7 @@ and the **execution layer** (`runner.ts` + `comfy/`) can be changed freely — s
 npm install
 npm run build      # tsc → lib/
 npm run typecheck  # check only, no output
-npm test           # 88 tests (ships with a mock ComfyUI)
+npm test           # 124 tests (ships with a mock ComfyUI)
 npm run doctor     # health-check against a real ComfyUI
 ```
 
@@ -410,6 +460,7 @@ Plans beyond V1 (upscaling / outpainting / batching / multiple backends / consis
 | [docs/INSTALL.md](./docs/INSTALL.md) | Installation guide: ComfyUI (including Windows / Intel GPUs) + plugin installation + background-removal nodes |
 | [docs/CONFIG.md](./docs/CONFIG.md) | Configuration: the four-layer priority, the complete key table, environment variables, examples |
 | [docs/USAGE.md](./docs/USAGE.md) | Usage examples: the four modes + reproduction / fine-tuning + custom workflows |
+| [docs/ADVANCED.md](./docs/ADVANCED.md) | Full ComfyUI access: model/node inspection, arbitrary workflows, uploads, job control, raw API |
 | [docs/PARAMS.md](./docs/PARAMS.md) | Item-by-item documentation of the tool parameters and the output structure |
 | [docs/FAQ.md](./docs/FAQ.md) | FAQ and troubleshooting |
 | [docs/ROADMAP.md](./docs/ROADMAP.md) | Future expansion plans |

@@ -279,6 +279,23 @@ Config is **re-resolved on every call**, so normally it takes effect immediately
 No. The plugin only connects to the `baseUrl` you configure, never contacts any third-party service, and never uploads images to a cloud.
 The only network behaviour is talking to your own ComfyUI. See [CONFIG.md §6](./CONFIG.md#6-security-and-privacy).
 
+### The advanced tools (`comfyui_inspect` / `comfyui_workflow` / `comfyui_api`)
+
+These expose the rest of ComfyUI; see [ADVANCED.md](./ADVANCED.md) for the full reference.
+
+- **`comfyui_inspect` says no models**: ComfyUI may be too old for `/models`. The plugin falls back to loader-node enums,
+  so at least checkpoints/LoRAs should still appear; check `ComfyUI/models/` and refresh the ComfyUI UI.
+- **`Unknown node type "..."`**: the custom node is not installed/loaded, or the class name is wrong. Search with
+  `comfyui_inspect scope=nodes` and pass `refresh=true` after installing nodes.
+- **`Missing required input "..."`**: read `comfyui_inspect scope=node` for that node; API workflows must provide required
+  inputs explicitly.
+- **Workflow runs but no files are saved**: add an output node (`SaveImage`, `PreviewImage`, `SaveAudio`, ...) at the end, or
+  check the result's `warnings` for download errors.
+- **`comfyui_api` returns 404**: the endpoint is not available on this ComfyUI version; use the structured tools or a
+  version-specific path.
+- **Workflow is still running after `action=run`**: use `comfyui_inspect scope=queue` / `scope=history`, then
+  `comfyui_workflow action=wait` with the `prompt_id` and a larger `timeout_ms`.
+
 ### How to report a problem
 
 Include these and it can usually be located in one pass:

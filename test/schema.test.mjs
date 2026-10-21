@@ -15,7 +15,20 @@
 import './env-setup.mjs'
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { OUTPUT_SCHEMA, PARAMETERS_SCHEMA, TOOL_DESCRIPTION } from '../lib/index.js'
+import {
+  API_DESCRIPTION,
+  API_OUTPUT_SCHEMA,
+  API_PARAMETERS_SCHEMA,
+  INSPECT_DESCRIPTION,
+  INSPECT_OUTPUT_SCHEMA,
+  INSPECT_PARAMETERS_SCHEMA,
+  OUTPUT_SCHEMA,
+  PARAMETERS_SCHEMA,
+  TOOL_DESCRIPTION,
+  WORKFLOW_DESCRIPTION,
+  WORKFLOW_OUTPUT_SCHEMA,
+  WORKFLOW_PARAMETERS_SCHEMA
+} from '../lib/index.js'
 
 /** The allowed fields, listed verbatim in json-schema.d.ts. */
 const ALLOWED_KEYWORDS = new Set([
@@ -177,4 +190,44 @@ test('tool description: says the backend is ComfyUI, names the four modes, and e
     assert.ok(TOOL_DESCRIPTION.includes(mode), `the description should mention ${mode}`)
   }
   assert.match(TOOL_DESCRIPTION, /mode/, 'the description should tell the model there is a mode parameter')
+})
+
+/* ─────────────────────────── advanced tool schemas ─────────────────────────── */
+
+const ADVANCED_SCHEMAS = [
+  ['comfyui_inspect parameters', INSPECT_PARAMETERS_SCHEMA],
+  ['comfyui_inspect output', INSPECT_OUTPUT_SCHEMA],
+  ['comfyui_workflow parameters', WORKFLOW_PARAMETERS_SCHEMA],
+  ['comfyui_workflow output', WORKFLOW_OUTPUT_SCHEMA],
+  ['comfyui_api parameters', API_PARAMETERS_SCHEMA],
+  ['comfyui_api output', API_OUTPUT_SCHEMA]
+]
+
+test('advanced schemas: every tree only uses the JSON Schema subset DSH supports', () => {
+  for (const [label, schema] of ADVANCED_SCHEMAS) {
+    const problems = collect(schema, label)
+    assert.deepEqual(problems, [], `${label}:\n${problems.join('\n')}`)
+  }
+})
+
+test('advanced schemas: object roots, required fields declared, descriptions present', () => {
+  for (const [label, schema] of ADVANCED_SCHEMAS) {
+    assert.equal(schema.type, 'object', `${label} should be an object root`)
+    assert.equal(schema.additionalProperties, false, `${label} should reject undeclared output/parameter fields`)
+    assert.ok(Array.isArray(schema.required), `${label} should declare required`)
+    const declared = Object.keys(schema.properties ?? {})
+    for (const name of schema.required) assert.ok(declared.includes(name), `${label}: required ${name} is undeclared`)
+    for (const [name, spec] of Object.entries(schema.properties ?? {})) {
+      assert.equal(typeof spec.description, 'string', `${label}: ${name} needs a description`)
+    }
+  }
+})
+
+test('advanced tool descriptions explain what each tool is for', () => {
+  assert.match(INSPECT_DESCRIPTION, /models/)
+  assert.match(INSPECT_DESCRIPTION, /nodes/)
+  assert.match(WORKFLOW_DESCRIPTION, /validate/)
+  assert.match(WORKFLOW_DESCRIPTION, /run/)
+  assert.match(API_DESCRIPTION, /raw|Raw/)
+  assert.match(API_DESCRIPTION, /base URL/)
 })
