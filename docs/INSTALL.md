@@ -3,10 +3,10 @@
 Installing this plugin takes two steps: **① get ComfyUI running** → **② install the plugin into DSH**. The second step takes a minute; the first one is the real work.
 
 > Don't feel like reading a long document? Shortest path: install the ComfyUI portable build → double-click to start it → drop a checkpoint into `models/checkpoints/` →
-> install this fork in the DSH plugin manager (enter `github:TheRealChickenlegs/dsh-comfyui-workbench`, or `link:<plugin directory>` if you already cloned it) →
+> install `dsh-comfyui-workbench` from npm in the DSH plugin manager (or use `github:TheRealChickenlegs/dsh-comfyui-workbench` / `link:<plugin directory>`) →
 > run `npm run doctor` and see four ✓ — done.
 >
-> This repository is **self-contained**: it is installed from this repository or a local checkout, not from an external npm package.
+> The package is published on npm as **`dsh-comfyui-workbench`**. GitHub and local-link installs are also supported.
 
 ---
 
@@ -117,24 +117,33 @@ With `npm run doctor` you can see which set was finally selected:
 
 ## 2. Install the Plugin into DSH
 
-> Four ways to install it, easiest first: **Option A installs straight from GitHub** (recommended);
-> **Option B is the plugin manager** (GitHub target or local link);
+> Four ways to install it, easiest first: **Option A installs from npm or GitHub** (recommended);
+> **Option B is the plugin manager** (npm, GitHub or local link);
 > **Option C is the manual profile edit**; **Option D verifies the plugin without DSH**.
 
-### 2.1 Option A: Install from GitHub (Recommended)
+### 2.1 Option A: Install from npm or GitHub (Recommended)
+
+From the official npm registry:
+
+```bash
+dsh plugin --profile <your profile> add dsh-comfyui-workbench
+```
+
+Or directly from GitHub:
 
 ```bash
 dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-workbench
 ```
 
-Equivalent: entering `github:TheRealChickenlegs/dsh-comfyui-workbench` as the install target in
-DSH → **Settings → Plugins**. The repository's `lib/` is already compiled — **no build step, no npm account**.
+Equivalent: enter `dsh-comfyui-workbench` (npm) or `github:TheRealChickenlegs/dsh-comfyui-workbench`
+as the install target in DSH → **Settings → Plugins**. Both ship the already-compiled `lib/`, so no build step is needed.
 Restart DSH afterwards.
 
-### 2.2 Option B: the DSH Plugin Manager (GitHub Target or Local Link)
+### 2.2 Option B: the DSH Plugin Manager (npm, GitHub or Local Link)
 
-> The target can be `github:TheRealChickenlegs/dsh-comfyui-workbench`: the manager fetches it from GitHub, so you do **not**
-> need to clone it locally. The equivalent command line is
+> The target can be `dsh-comfyui-workbench` (npm) or `github:TheRealChickenlegs/dsh-comfyui-workbench`;
+> the manager fetches the package without requiring a local clone. The equivalent command lines are
+> `dsh plugin --profile <your profile> add dsh-comfyui-workbench` and
 > `dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-workbench`.
 
 To link a local checkout instead, get the plugin code first:
@@ -143,12 +152,13 @@ To link a local checkout instead, get the plugin code first:
 - Or just use the local directory you already have (for example `D:/dsh/plugins/dsh-comfyui-workbench` on this machine)
 
 You do **not** need to run `npm install` / `npm run build` — the repository already ships a compiled `lib/`.
-You only need to do that when you're changing the source (see the [Development section of the README](../README.md#development)).
+You only need to do that when you're changing the source (see the [Development section of the README](../README.md#development-and-testing)).
 
 1. Open DSH → **Settings → Plugins** (the plugin manager);
-2. Choose **Install** and enter either the GitHub target, or a local path prefixed with `link:`:
+2. Choose **Install** and enter the npm package, the GitHub target, or a local path prefixed with `link:`:
 
    ```
+   dsh-comfyui-workbench
    github:TheRealChickenlegs/dsh-comfyui-workbench
    link:D:/dsh/plugins/dsh-comfyui-workbench
    ```

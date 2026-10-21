@@ -120,4 +120,4 @@ npm pack --dry-run
 ## Related Documentation
 
 - [INSTALL.md](./INSTALL.md) — installation from this GitHub repository or a local directory
-- [README development section](../README.md#development) — local build and test
+- [README development section](../README.md#development-and-testing) — local build and test

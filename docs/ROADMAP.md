@@ -142,7 +142,7 @@ Written down here to avoid re-discussing it:
 
 ## 5. Want to Contribute?
 
-- For the code structure see [the architecture section of the README](../README.md#architecture-and-directory-layout); tests do not need a real ComfyUI (a mock ships with the repo);
+- For the code structure see [the architecture section of the README](../README.md#architecture); tests do not need a real ComfyUI (a mock ships with the repo);
 - When filing an issue, include the output of `npm run doctor --json` and the raw error text; that speeds up diagnosis a lot;
 - If you plan to add a parameter / a mode, read the comments in `src/types.ts` and `src/tool.ts` first —
   the layering convention there (public contract / parameter layer / execution layer) is the extension interface.

@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Rewrote the README around the full workbench: all six tools, audio/video model requirements and detection, advanced workflows, configuration, outputs and troubleshooting.
+- Added npm installation as the primary path in the README and installation guide.
+
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
