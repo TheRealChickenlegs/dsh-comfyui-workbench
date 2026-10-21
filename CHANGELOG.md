@@ -3,6 +3,13 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] — 2026-10-21
+
+### Fixed
+
+- The plugin-page configuration section now appears in DSH: the browser half declares the settings and plugin-manager dependencies, registers after its settings namespace is served, and the host marks the entry as a custom settings page.
+- Registered the client half for immediate loading so its configuration page is present when the Plugins page opens.
+
 ## [0.3.0] — 2026-10-21
 
 ### Added

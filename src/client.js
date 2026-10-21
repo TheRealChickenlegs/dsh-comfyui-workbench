@@ -270,17 +270,22 @@ window.__ModuleLoader__.load({
     function apply(ctx) {
       installStyles()
       var form = ctx.configForms.get(ENTRY_ID)
-      ctx.slots.inject('plugins.bundle.config', function () {
-        return ctx.slots.register({
-          name: 'plugins.bundle.config',
-          key: PACKAGE_ID,
-          inject: function () { return { form: form } }
-        }, ConfigPage)
-      })
+      ctx.effect(function () {
+        return ctx.configForms.whileServed([ENTRY_ID], function () {
+          return ctx.slots.inject('plugins.bundle.config', function () {
+            return ctx.slots.register({
+              name: 'plugins.bundle.config',
+              key: PACKAGE_ID,
+              inject: function () { return { form: form } }
+            }, ConfigPage)
+          })
+        })
+      }, 'comfyui-workbench: settings page')
     }
 
     exports.apply = apply
     exports.inject = ['slots', 'configForms']
+    exports.name = 'comfyui-workbench'
     return module.exports
   }
 })

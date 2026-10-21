@@ -23,6 +23,11 @@ test('client: the bundle is a module-loader bundle for this package', () => {
 test('client: the package declares the client half and every UI field', () => {
   const pkg = JSON.parse(read('package.json'))
   assert.equal(pkg.dsh?.client?.platform, 'web')
+  assert.equal(pkg.dsh?.client?.immediately, true)
+  assert.deepEqual(pkg.dsh?.client?.inject, [
+    '@deepseek-ai/dsh-client-ui-settings',
+    '@deepseek-ai/dsh-client-ui-plugin-manager'
+  ])
   assert.equal(pkg.exports?.['./client']?.default, './lib/client.js')
   const source = read('lib/client.js')
   for (const key of [
@@ -69,7 +74,14 @@ test('client: apply registers a bundle configuration page with the package key',
     let registered
     const form = { getSnapshot: () => ({ status: 'ready', value: {}, revision: 0, writable: true }), subscribe: () => () => {}, mutate: async () => true }
     const ctx = {
-      configForms: { get: (id) => { assert.equal(id, 'dsh-comfyui-workbench'); return form } },
+      effect: (callback) => callback(),
+      configForms: {
+        get: (id) => { assert.equal(id, 'dsh-comfyui-workbench'); return form },
+        whileServed: (ids, callback) => {
+          assert.deepEqual(ids, ['dsh-comfyui-workbench'])
+          return callback()
+        }
+      },
       slots: {
         inject: (name, callback) => { assert.equal(name, 'plugins.bundle.config'); injected = callback },
         register: (options, component) => { registered = { options, component }; return () => {} }

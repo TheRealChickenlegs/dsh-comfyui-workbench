@@ -32,6 +32,9 @@ export const inject = ['tools']
 interface HostContextLike {
   reflect?: { get?: (key: string, strict?: boolean) => unknown }
   get?: (key: string) => unknown
+  inject?: (services: string[], callback: (context: HostContextLike) => void) => void
+  fiber?: unknown
+  settings?: { configure?: (options: { auto: boolean }, fiber: unknown) => void }
 }
 
 /** Get the tool registry; returns undefined when unavailable (the plugin must not take DSH down). */
@@ -73,6 +76,19 @@ export function apply(ctx: HostContextLike, config?: unknown): void {
   tools.register(createComfyUIInspectTool(config))
   tools.register(createComfyUIWorkflowTool(config))
   tools.register(createComfyUIApiTool(config))
+
+  // The plugin page is custom, so tell DSH's settings service not to expose an
+  // auto-generated form for this entry. The child is optional: the tools keep
+  // working on hosts that do not compose the settings service.
+  if (typeof ctx.inject === 'function') {
+    ctx.inject(['settings'], (settingsCtx) => {
+      try {
+        settingsCtx.settings?.configure?.({ auto: false }, ctx.fiber)
+      } catch {
+        /* an older settings service may not support the policy; the page still works */
+      }
+    })
+  }
 
   // Print one summary line at startup: do **not** make network requests during loading, to avoid slowing DSH startup.
   const resolved = resolveConfig(config)
