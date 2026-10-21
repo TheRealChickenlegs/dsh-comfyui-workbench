@@ -1,29 +1,29 @@
-# 配置说明
+# Configuration
 
-插件的配置有**四个来源，优先级从高到低**：
+The plugin's configuration has **four sources, highest priority first**:
 
 ```
-① 插件配置    profile 的 cordis.patch.yml 里那条 entry 的 config:   ← 最高
-② 配置文件    ~/.dsh-comfyui-image/config.json
-③ 环境变量    COMFYUI_URL 等
-④ 内置默认值  src/config.ts 里的 DEFAULTS                          ← 最低
+1. Plugin config    the config: of that entry in the profile's cordis.patch.yml   ← highest
+2. Config file      ~/.dsh-comfyui-image/config.json
+3. Environment      COMFYUI_URL etc.
+4. Built-in defaults   DEFAULTS in src/config.ts                                  ← lowest
 ```
 
-合并规则是**逐键**的：某一项在①里没有、在②里有，就用②。非法值（负数步数、非数字超时…）
-**不会**让插件崩，而是被丢掉并退回默认值（debug 日志里有痕迹）。
+Merging is **per key**: if a setting is absent from ① but present in ②, ② is used. Invalid values (negative steps, a non-numeric timeout...)
+do **not** crash the plugin — they are dropped and replaced with the default (with a trace in the debug log).
 
-为什么①最高：DSH 的配置树是运维/宿主的权威来源，写了就该它说了算。
-而②③是给「只想改个地址，不想动 YAML」的人准备的便利层。
+Why ① is highest: DSH's config tree is the authoritative source for the host/operator, so an explicit config should win.
+② and ③ are convenience layers for people who "just want to change an address without touching YAML".
 
-> ✨ **配置是每次调用时重新解析的** —— 改完 `config.json` **立即生效，不用重启 DSH**。
+> ✨ **Config is resolved on every call** — an edited `config.json` takes effect **immediately, with no DSH restart**.
 
 ---
 
-## 一、最常用的方式：改配置文件
+## 1. The Most Common Way: Edit the Config File
 
-路径：`~/.dsh-comfyui-image/config.json`（Windows 上是 `C:\Users\<你>\.dsh-comfyui-image\config.json`）
+Path: `~/.dsh-comfyui-image/config.json` (on Windows: `C:\Users\<you>\.dsh-comfyui-image\config.json`)
 
-不存在就自己建（目录一起建）。一份典型配置：
+Create it if it does not exist (create the directory too). A typical config:
 
 ```json
 {
@@ -37,71 +37,71 @@
 }
 ```
 
-**所有键都是可选的**，只写你要改的那几个。
+**Every key is optional**; write only the ones you want to change.
 
 ---
 
-## 二、全部配置项
+## 2. All Configuration Options
 
-### 连接与位置
+### Connection and locations
 
-| 键 | 类型 | 默认值 | 环境变量 | 说明 |
+| Key | Type | Default | Environment variable | Description |
 |---|---|---|---|---|
-| `baseUrl` | string | `http://127.0.0.1:8188` | `COMFYUI_URL` / `COMFYUI_BASE_URL` | ComfyUI 地址；末尾的 `/` 会被自动去掉。**别填 `0.0.0.0`**（那是监听地址，不是请求地址），插件会警告并建议改 `127.0.0.1` |
-| `outputDir` | string | 无（落当前项目根目录） | `DSH_COMFYUI_IMAGE_OUTPUT` | 默认输出目录。工具参数 `output_path` 优先级更高；支持 `~` 展开 |
-| `requestTimeoutMs` | number | `30000` | — | 单次 HTTP 请求超时（毫秒），合法区间 `1000`~`600000` |
-| `timeoutMs` | number | `300000` | `COMFYUI_TIMEOUT_MS` | **等出图**的总超时（毫秒），合法区间 `1000`~`3600000`。慢机器 / 大模型就调大 |
-| `pollIntervalMs` | number | `700` | — | 轮询 `/history` 的间隔（毫秒），合法区间 `100`~`10000` |
+| `baseUrl` | string | `http://127.0.0.1:8188` | `COMFYUI_URL` / `COMFYUI_BASE_URL` | ComfyUI address; a trailing `/` is removed automatically. **Do not use `0.0.0.0`** (that is a listen address, not a request address); the plugin warns and suggests `127.0.0.1` |
+| `outputDir` | string | none (the current project root) | `DSH_COMFYUI_IMAGE_OUTPUT` | Default output directory. The tool argument `output_path` takes precedence; `~` is expanded |
+| `requestTimeoutMs` | number | `30000` | — | Timeout for a single HTTP request (ms), valid range `1000`–`600000` |
+| `timeoutMs` | number | `300000` | `COMFYUI_TIMEOUT_MS` | Total timeout **waiting for an image** (ms), valid range `1000`–`3600000`. Raise it on slow machines / big models |
+| `pollIntervalMs` | number | `700` | — | Interval for polling `/history` (ms), valid range `100`–`10000` |
 
-### 生成默认值
+### Generation defaults
 
-| 键 | 类型 | 默认值 | 环境变量 | 说明 |
+| Key | Type | Default | Environment variable | Description |
 |---|---|---|---|---|
-| `checkpoint` | string | 自动挑 | `COMFYUI_CHECKPOINT` | 底模文件名（`models/checkpoints` 下的名字）。不填就自动挑一个可用的，**优先带 `xl` 的** |
-| `negativePrompt` | string | 见下 | — | 默认负向提示词；工具参数 `negative_prompt` 会覆盖它 |
-| `steps` | number | `20` | `COMFYUI_STEPS` | 采样步数，合法区间 `1`~`500` |
-| `cfgScale` | number | `7` | `COMFYUI_CFG_SCALE` | CFG，合法区间 `0`~`100` |
-| `samplerName` | string | `euler` | `COMFYUI_SAMPLER` | 采样器；**本机不存在时会自动回退**并在结果 `notes` 里说明 |
-| `scheduler` | string | `normal` | `COMFYUI_SCHEDULER` | 调度器；同样会自动回退并说明 |
-| `width` / `height` | number | `1024` / `1024` | — | 默认尺寸，合法区间 `64`~`8192`。**只对 `text2img` 生效**；若底模名字像 SD1.5 会自动改用 512×512 |
-| `strength` | number | `0.6` | — | 图生图默认改动幅度，合法区间 `0`~`1`（`inpaint` 的默认值是写死的 `1.0`） |
-| `inpaintGrowMask` | number | `6` | — | 局部重绘时遮罩向外扩张的像素数，合法区间 `0`~`256`。调大能让接缝更自然，调 0 会留下硬边 |
+| `checkpoint` | string | auto-pick | `COMFYUI_CHECKPOINT` | Checkpoint file name (the name under `models/checkpoints`). Picks an available one automatically when empty, **preferring names containing `xl`** |
+| `negativePrompt` | string | see below | — | Default negative prompt; the tool argument `negative_prompt` overrides it |
+| `steps` | number | `20` | `COMFYUI_STEPS` | Sampling steps, valid range `1`–`500` |
+| `cfgScale` | number | `7` | `COMFYUI_CFG_SCALE` | CFG, valid range `0`–`100` |
+| `samplerName` | string | `euler` | `COMFYUI_SAMPLER` | Sampler; **falls back automatically** when it does not exist on this machine, with a note in the result's `notes` |
+| `scheduler` | string | `normal` | `COMFYUI_SCHEDULER` | Scheduler; also falls back automatically with a note |
+| `width` / `height` | number | `1024` / `1024` | — | Default size, valid range `64`–`8192`. **Only effective for `text2img`**; an SD1.5-like checkpoint name switches it to 512×512 automatically |
+| `strength` | number | `0.6` | — | Default img2img change amount, valid range `0`–`1` (`inpaint`'s default is hard-coded to `1.0`) |
+| `inpaintGrowMask` | number | `6` | — | How many pixels the mask grows outward during inpainting, valid range `0`–`256`. Larger values make seams more natural; `0` leaves hard edges |
 
-内置默认负向提示词：
+Built-in default negative prompt:
 
 ```text
 lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, jpeg artifacts, signature, watermark, username, blurry
 ```
 
-### 输出与元数据
+### Output and metadata
 
-| 键 | 类型 | 默认值 | 环境变量 | 说明 |
+| Key | Type | Default | Environment variable | Description |
 |---|---|---|---|---|
-| `saveToComfyUI` | boolean | `true` | — | `true` = 工作流用 `SaveImage`，产出同时留在 ComfyUI 的 `output/dsh-comfyui-image/`；`false` = 改用 `PreviewImage`，**不污染** ComfyUI 的 output 目录 |
-| `writeMetadata` | boolean | `true` | — | 是否在图片旁写 `<图片>.json` 元数据 sidecar（含完整参数与工作流，未来做一致性要靠它） |
+| `saveToComfyUI` | boolean | `true` | — | `true` = the workflow uses `SaveImage`, so the output also stays in ComfyUI's `output/dsh-comfyui-image/`; `false` = uses `PreviewImage`, **not polluting** ComfyUI's output directory |
+| `writeMetadata` | boolean | `true` | — | Whether to write a `<image>.json` metadata sidecar next to the image (full parameters and workflow; future consistency work will rely on it) |
 
-### 背景移除
+### Background removal
 
-| 键 | 类型 | 默认值 | 环境变量 | 说明 |
+| Key | Type | Default | Environment variable | Description |
 |---|---|---|---|---|
-| `rembgNode` | string | 自动择优 | `COMFYUI_REMBG_NODE` | 指定去背方案，**只影响 `remove_background`**。可填方案 key：`essentials` / `bria` / `layerstyle` / `was`，也可以直接填节点类名（如 `RemBGSession+`、`ImageRemoveBackground+`）。指定的方案在本机不存在时会**明确报错**（而不是偷偷换别的） |
+| `rembgNode` | string | auto-pick | `COMFYUI_REMBG_NODE` | Select the background-removal plan; **only affects `remove_background`**. Accepts a plan key: `essentials` / `bria` / `layerstyle` / `was`, or a node class name (such as `RemBGSession+`, `ImageRemoveBackground+`). A specified plan missing on this machine produces a **clear error** (rather than quietly using another) |
 
-### 插件自身
+### The plugin itself
 
-| 环境变量 | 说明 |
+| Environment variable | Description |
 |---|---|
-| `DSH_COMFYUI_IMAGE_CONFIG` | 覆盖**配置文件路径本身**（默认 `~/.dsh-comfyui-image/config.json`）。测试和多环境切换用 |
-| `DSH_COMFYUI_IMAGE_DEBUG` | 设为 `1` / `true` / `yes` 打开调试日志（带 `[dsh-comfyui-image]` 前缀）：配置解析结果、选中的去背方案、上传给 ComfyUI 的文件名、HTTP 细节等。**默认关闭**，避免污染 DSH 会话输出 |
+| `DSH_COMFYUI_IMAGE_CONFIG` | Overrides the **config file path itself** (default `~/.dsh-comfyui-image/config.json`). For tests and multi-environment switching |
+| `DSH_COMFYUI_IMAGE_DEBUG` | Set to `1` / `true` / `yes` to enable debug logging (prefixed `[dsh-comfyui-image]`): resolved config, the chosen background-removal plan, file names uploaded to ComfyUI, HTTP details, and so on. **Off by default** to avoid polluting DSH session output |
 
 ---
 
-## 三、环境变量速查表
+## 3. Environment Variable Cheat Sheet
 
-按字母序，方便往 Docker / 启动脚本里抄：
+Alphabetical, easy to copy into Docker / startup scripts:
 
 ```bash
 COMFYUI_URL=http://127.0.0.1:8188          # = baseUrl
-COMFYUI_BASE_URL=http://127.0.0.1:8188     # = baseUrl（别名）
+COMFYUI_BASE_URL=http://127.0.0.1:8188     # = baseUrl (alias)
 COMFYUI_CHECKPOINT=sd_xl_base_1.0.safetensors
 COMFYUI_STEPS=25
 COMFYUI_CFG_SCALE=7
@@ -110,21 +110,21 @@ COMFYUI_SCHEDULER=normal
 COMFYUI_TIMEOUT_MS=600000
 COMFYUI_REMBG_NODE=essentials
 DSH_COMFYUI_IMAGE_OUTPUT=D:/images         # = outputDir
-DSH_COMFYUI_IMAGE_CONFIG=/etc/dsh-cii.json # 配置文件路径本身
-DSH_COMFYUI_IMAGE_DEBUG=1                  # 打开调试日志
+DSH_COMFYUI_IMAGE_CONFIG=/etc/dsh-cii.json # the config file path itself
+DSH_COMFYUI_IMAGE_DEBUG=1                  # enable debug logging
 ```
 
-布尔项（`saveToComfyUI` / `writeMetadata`）只认 `true` / `false` / `1` / `0`（大小写不敏感）。
+Boolean options (`saveToComfyUI` / `writeMetadata`) have no environment variable: set them as JSON `true` / `false` in the config file or the profile config.
 
-> 环境变量是整个 DSH 进程级的 —— 想让某个键对**所有人**生效但优先级又低于 profile，
-> 就写配置文件；只想一次性覆盖，用环境变量。另外**注意**：从图形界面启动的 DSH 未必继承你
-> 在终端里 `set` 的环境变量（Windows 尤其容易踩）。
+> Environment variables are process-wide for the whole DSH process — if a key should apply to **everyone** but rank below the profile,
+> put it in the config file; if you want a one-off override, use an environment variable. Also **note**: DSH launched from a
+> graphical interface may not inherit variables you `set` in a terminal (especially easy to hit on Windows).
 
 ---
 
-## 四、写在 profile 配置树里（优先级最高）
+## 4. Writing It in the Profile Config Tree (Highest Priority)
 
-编辑 `~/.dsh/profiles/<profile>/cordis.patch.yml`：
+Edit `~/.dsh/profiles/<profile>/cordis.patch.yml`:
 
 ```yaml
 - id: dsh-comfyui-image
@@ -136,51 +136,52 @@ DSH_COMFYUI_IMAGE_DEBUG=1                  # 打开调试日志
     timeoutMs: 900000
 ```
 
-改完重启 DSH（配置树是启动时读的）。想临时关掉插件：同一处加 `disabled: true`，
-或者在插件管理器里关。
+Restart DSH afterwards (the config tree is read at startup). To disable the plugin temporarily: add `disabled: true` in the same place,
+or toggle it in the plugin manager.
 
-Cordis 在没有导出 `Config` schema 时会把原始对象**原样**交给 `apply`，所以这里不需要任何 schema 声明。
+When a plugin does not export a `Config` schema, Cordis hands the raw object to `apply` **as-is**, so no schema declaration is needed here.
 
 ---
 
-## 五、确认配置真的生效
+## 5. Confirming the Config Really Took Effect
 
 ```bash
-cd <插件目录>
+cd <plugin-directory>
 npm run doctor
 ```
 
-输出的第一段就是**生效配置**和它来自哪里：
+The first section of the output is the **effective configuration**:
 
 ```
-【生效配置】来源优先级：插件配置 > ~/.dsh-comfyui-image/config.json > 环境变量 > 默认值
-  配置文件：C:\Users\me\.dsh-comfyui-image\config.json（存在：是）
-  ComfyUI 地址：http://127.0.0.1:8188
-  底模：自动选择
-  默认尺寸：1024x1024　steps=20　cfg=7　采样器=euler/normal
-  超时：300 秒　输出目录：当前工作目录
+[Configuration]
+  Config file: C:\Users\me\.dsh-comfyui-image\config.json
+  ComfyUI address: http://127.0.0.1:8188
+  Checkpoint: (not set, one will be picked automatically)
+  Default sampling: euler / normal, steps=20, cfg=7
+  Default size: 1024x1024 (SD1.5-family drops to 512 automatically)
+  Output directory: (not set, defaults to the current project root)
 ```
 
-`--json` 可以拿到机器可读版本，便于对比和贴 issue。
+`--json` gives a machine-readable version, handy for comparisons and for pasting into an issue.
 
-**配置没生效的三条自查顺序**：
+**Three checks, in order, when config does not take effect**:
 
-1. 这一项是不是**同时**写在 profile 的插件 `config:` 里了？（它优先级更高，会盖掉配置文件）
-2. 可能是环境变量在盖：`COMFYUI_URL` 一类是不是在别处设过？
-3. JSON 语法错了吗？—— 配置**读不了时插件不会崩**，会**静默退回默认值**并在日志里警告，
-   所以「文件明明改了却没反应」最常见的原因就是拼错了一个逗号。单独验一下语法即可：
+1. Is that key **also** written in the profile's plugin `config:`? (It has higher priority and overrides the config file.)
+2. Maybe an environment variable is overriding it: was `COMFYUI_URL` or similar set elsewhere?
+3. Is the JSON malformed? — the plugin **does not crash** when the config cannot be read; it **silently falls back to defaults** with a
+   warning in the log, so "the file was clearly edited but nothing changed" is most often a misplaced comma. Just validate the syntax:
 
    ```bash
-   node -e "const fs=require('fs'),os=require('os'),p=require('path');JSON.parse(fs.readFileSync(p.join(os.homedir(),'.dsh-comfyui-image','config.json'),'utf8'));console.log('JSON 语法 OK')"
+   node -e "const fs=require('fs'),os=require('os'),p=require('path');JSON.parse(fs.readFileSync(p.join(os.homedir(),'.dsh-comfyui-image','config.json'),'utf8'));console.log('JSON syntax OK')"
    ```
 
-   或者直接看 `doctor` 打印的「生效配置」——它显示的就是**合并之后真正会用的值**。
+   Or just look at the "Configuration" section `doctor` prints — it shows the **merged values that will really be used**.
 
 ---
 
-## 六、安全与隐私
+## 6. Security and Privacy
 
-- 插件**只**连你配置的 `baseUrl`，不发往任何第三方服务；
-- 不上传你的图片到任何云（只上传到本地 ComfyUI 的 `/upload/image`）；
-- 不读也不写 ComfyUI 的配置/模型目录（除了走它的 HTTP API）；
-- 唯一写入的位置：你指定的输出目录、`~/.dsh-comfyui-image/`、以及图片旁的 `.json` sidecar。
+- The plugin talks **only** to the `baseUrl` you configure; it never contacts any third-party service;
+- It does not upload your images to any cloud (only to your local ComfyUI's `/upload/image`);
+- It neither reads nor writes ComfyUI's config/model directories (except through its HTTP API);
+- The only places it writes: the output directory you specify, `~/.dsh-comfyui-image/`, and the `.json` sidecar next to each image.

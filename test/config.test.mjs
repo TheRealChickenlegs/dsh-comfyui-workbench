@@ -1,8 +1,8 @@
 /**
- * 配置解析的测试：四层优先级 + 越界值兜底 + 默认输出目录语义。
+ * Config resolution tests: four-layer precedence + out-of-range fallbacks + default output directory semantics.
  *
- * 所有用例都显式传 `env`，完全不读进程环境，避免受机器上真实
- * `COMFYUI_URL` 之类变量的影响。
+ * Every case passes `env` explicitly and never reads the process environment, so it cannot be affected
+ * by a real `COMFYUI_URL` or similar on the machine.
  */
 import './env-setup.mjs'
 import assert from 'node:assert/strict'
@@ -17,11 +17,11 @@ function clean() {
   try {
     fs.rmSync(configFile, { force: true })
   } catch {
-    /* 忽略 */
+    /* ignore */
   }
 }
 
-test('什么都没配 → 用内置默认值', () => {
+test('nothing configured → built-in defaults', () => {
   clean()
   const config = resolveConfig(undefined, {})
   assert.equal(config.baseUrl, DEFAULTS.baseUrl)
@@ -31,13 +31,13 @@ test('什么都没配 → 用内置默认值', () => {
   assert.equal(config.scheduler, DEFAULTS.scheduler)
 })
 
-test('默认不设 outputDir —— 这样默认输出才会落在「项目根目录」而不是 DSH 进程目录', () => {
+test('outputDir is unset by default — so default output lands in the "project root", not the DSH process directory', () => {
   clean()
   const config = resolveConfig(undefined, {})
   assert.equal(config.outputDir, undefined)
 })
 
-test('环境变量能生效', () => {
+test('environment variables take effect', () => {
   clean()
   const config = resolveConfig(undefined, {
     COMFYUI_URL: 'http://10.0.0.5:8188/',
@@ -45,30 +45,30 @@ test('环境变量能生效', () => {
     COMFYUI_STEPS: '30',
     DSH_COMFYUI_IMAGE_OUTPUT: 'D:\\env-out'
   })
-  assert.equal(config.baseUrl, 'http://10.0.0.5:8188', '结尾斜杠应被去掉')
+  assert.equal(config.baseUrl, 'http://10.0.0.5:8188', 'the trailing slash should be removed')
   assert.equal(config.checkpoint, 'env-model.safetensors')
   assert.equal(config.steps, 30)
   assert.equal(config.outputDir, 'D:\\env-out')
 })
 
-test('优先级：插件配置 > 配置文件 > 环境变量', () => {
+test('priority: plugin config > config file > environment variables', () => {
   clean()
   const env = { COMFYUI_URL: 'http://from-env:8188' }
 
-  // 只有环境变量
+  // Environment variables only
   assert.equal(resolveConfig(undefined, env).baseUrl, 'http://from-env:8188')
 
-  // 配置文件压过环境变量
+  // The config file beats environment variables
   fs.writeFileSync(configFile, JSON.stringify({ baseUrl: 'http://from-file:8188' }), 'utf8')
   assert.equal(resolveConfig(undefined, env).baseUrl, 'http://from-file:8188')
 
-  // 插件配置（cordis.patch.yml 里的 config）压过一切
+  // Plugin config (the config in cordis.patch.yml) beats everything
   assert.equal(resolveConfig({ baseUrl: 'http://from-plugin:8188' }, env).baseUrl, 'http://from-plugin:8188')
 
   clean()
 })
 
-test('越界值被丢弃并退回默认（而不是把非法值传进 ComfyUI）', () => {
+test('out-of-range values are dropped and replaced with defaults (never passed to ComfyUI)', () => {
   clean()
   const config = resolveConfig(
     { steps: 9999, cfgScale: -5, pollIntervalMs: 5, timeoutMs: 10, width: 1, height: 999999 },
@@ -82,18 +82,18 @@ test('越界值被丢弃并退回默认（而不是把非法值传进 ComfyUI）
   assert.equal(config.height, DEFAULTS.height)
 })
 
-test('插件配置不是对象 → 忽略并退回默认值，不抛异常', () => {
+test('plugin config that is not an object → ignored, defaults used, no exception', () => {
   clean()
-  const config = resolveConfig('这不是配置', {})
+  const config = resolveConfig('this is not config', {})
   assert.equal(config.baseUrl, DEFAULTS.baseUrl)
 })
 
-test('配置文件损坏（非法 JSON）→ 当成没有，不拖垮插件', () => {
+test('broken config file (invalid JSON) → treated as absent, does not take the plugin down', () => {
   clean()
-  fs.writeFileSync(configFile, '{ 这不是合法 json', 'utf8')
+  fs.writeFileSync(configFile, '{ this is not valid json', 'utf8')
   try {
     const config = resolveConfig(undefined, {})
-    assert.equal(config.baseUrl, DEFAULTS.baseUrl, '坏配置应被忽略并退回默认值')
+    assert.equal(config.baseUrl, DEFAULTS.baseUrl, 'the broken config should be ignored and fall back to defaults')
   } finally {
     clean()
   }

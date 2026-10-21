@@ -1,13 +1,14 @@
 /**
- * 能力探测层：把「本机 ComfyUI 到底有什么」问清楚，并把结果翻译成工作流能直接用的**事实**。
+ * Capability probing: find out what the local ComfyUI actually has, and translate the result into
+ * **facts** the workflow builder can use directly.
  *
- * 为什么单独一层：所有网络访问都集中在这里，`workflows.ts` 因此是纯函数、
- * 可以离线单测（见 test/test-workflows.mjs）。这个分界是刻意的。
+ * Why a separate layer: all network access is concentrated here, which keeps `workflows.ts` a pure
+ * function that can be unit-tested offline. That boundary is deliberate.
  *
- * 探测三件事：
- *   1. 底模      —— 没指定就自动挑一个，并告诉用户有哪些可选
- *   2. 采样器    —— 校验 sampler_name / scheduler 是否真的存在，不存在就退默认并说明
- *   3. 背景移除  —— 纯核心 ComfyUI 没有去背节点，所以要按可用性挑一套第三方方案
+ * Three things are probed:
+ *   1. Checkpoint   — pick one automatically when unspecified, and report what is available
+ *   2. Samplers     — verify sampler_name / scheduler really exist, fall back with an explanation if not
+ *   3. Background removal — core ComfyUI has no removal node, so pick one of the third-party options
  */
 import type { ResolvedConfig } from '../types.js'
 import { ImagePluginError } from '../errors.js'
@@ -15,14 +16,14 @@ import { logDebug } from '../log.js'
 import type { ComfyNodeInfo, ComfyUIClient } from './client.js'
 import type { ComfyNode, ComfyWorkflow } from '../types.js'
 
-/* ────────────────────────── /object_info 的小工具 ────────────────────────── */
+/* ────────────────────────── small /object_info helpers ────────────────────────── */
 
 /**
- * ComfyUI 的输入项格式（实测于 /object_info）：
+ * ComfyUI's input format (observed in /object_info):
  *   ["INT",   { default: 20, min: 1, max: 10000 }]
  *   ["FLOAT", { default: 7.0, min: 0, max: 100 }]
- *   [["euler","dpmpp_2m"], { default: "euler" }]      ← 枚举：第一项是字符串数组
- *   ["IMAGE"], ["MASK"], ["MODEL"]                    ← 连线类
+ *   [["euler","dpmpp_2m"], { default: "euler" }]      ← enum: the first item is a string array
+ *   ["IMAGE"], ["MASK"], ["MODEL"]                    ← link types
  */
 export function declaredInputs(info: ComfyNodeInfo | undefined): Record<string, unknown> {
   return { ...(info?.input?.required ?? {}), ...(info?.input?.optional ?? {}) }
@@ -32,7 +33,7 @@ export function requiredInputs(info: ComfyNodeInfo | undefined): Record<string, 
   return { ...(info?.input?.required ?? {}) }
 }
 
-/** 枚举输入的可选值；不是枚举就返回 undefined。 */
+/** The choices of an enum input; undefined when it is not an enum. */
 export function enumChoices(spec: unknown): string[] | undefined {
   if (!Array.isArray(spec)) return undefined
   const first = spec[0]
@@ -42,13 +43,13 @@ export function enumChoices(spec: unknown): string[] | undefined {
   return undefined
 }
 
-/** 输入项声明的类型名（"INT" / "STRING" / "IMAGE" / ...）。 */
+/** The declared type name of an input ("INT" / "STRING" / "IMAGE" / ...). */
 export function inputTypeName(spec: unknown): string | undefined {
   if (Array.isArray(spec) && typeof spec[0] === 'string') return spec[0]
   return undefined
 }
 
-/** 输入项声明的默认值。 */
+/** The declared default value of an input. */
 export function specDefault(spec: unknown): unknown {
   if (!Array.isArray(spec)) return undefined
   const meta = spec[1]
@@ -58,7 +59,7 @@ export function specDefault(spec: unknown): unknown {
   return undefined
 }
 
-/** 在一组已声明的键名里，挑第一个命中候选名单的。 */
+/** Pick the first candidate name that is actually declared. */
 export function pickDeclaredKey(
   declared: Record<string, unknown>,
   candidates: readonly string[]
@@ -69,7 +70,7 @@ export function pickDeclaredKey(
   return undefined
 }
 
-/** 只填「节点确实声明过」的键，避免把不存在的输入塞进去导致 /prompt 拒收。 */
+/** Only fill keys the node really declares, so we never inject a non-existent input and get /prompt rejected. */
 export function fillInputs(
   info: ComfyNodeInfo | undefined,
   wanted: Record<string, unknown>
@@ -83,11 +84,12 @@ export function fillInputs(
 }
 
 /**
- * 在 `fillInputs` 的基础上，把**我们没提供、但节点要求必填的枚举类输入**用它的默认值补上。
+ * On top of `fillInputs`, fill **required enum inputs we did not provide** with the node's own default.
  *
- * 这是应对第三方节点参数名各异的关键一招：例如某个去背节点多出一个必填的 `model`，
- * 我们不需要知道它叫什么，只要它是个枚举，就能用节点自己的默认值填进去。
- * 只补枚举（不会误填 IMAGE 这类连线输入）。
+ * This is the key trick for third-party nodes with varying parameter names: for example, a
+ * background-removal node may have an extra required `model`; we do not need to know its name, as
+ * long as it is an enum we can fill it from the node's own default.
+ * Only enums are filled (never link inputs such as IMAGE).
  */
 export function autoFillRequired(
   info: ComfyNodeInfo | undefined,
@@ -104,7 +106,7 @@ export function autoFillRequired(
   return out
 }
 
-/* ────────────────────────────── 底模选择 ────────────────────────────── */
+/* ────────────────────────────── checkpoint selection ────────────────────────────── */
 
 export interface CheckpointChoice {
   checkpoint: string
@@ -112,10 +114,10 @@ export interface CheckpointChoice {
 }
 
 /**
- * 挑底模：
- *   1. 用户/配置指定了，且确实存在 → 用它
- *   2. 没指定 → 优先带 "xl" 的（更通用），否则第一个
- *   3. 指定了但不存在 → **报错并列出可选项**（比默默换一个更可预测）
+ * Pick a checkpoint:
+ *   1. the user/config specified one and it exists → use it
+ *   2. nothing specified → prefer a name containing "xl" (more general), otherwise the first
+ *   3. specified but missing → **error and list the options** (more predictable than silently swapping)
  */
 export async function chooseCheckpoint(
   client: ComfyUIClient,
@@ -125,8 +127,8 @@ export async function chooseCheckpoint(
   const info = await client.nodeInfo('CheckpointLoaderSimple', signal)
   if (!info) {
     throw new ImagePluginError(
-      'ComfyUI 里没有 CheckpointLoaderSimple 节点。',
-      '这个节点是 ComfyUI 核心自带的。请确认 baseUrl 指向的是真的 ComfyUI，且版本不过旧。'
+      'ComfyUI has no CheckpointLoaderSimple node.',
+      'That node ships with core ComfyUI. Confirm that baseUrl points at real ComfyUI and that the version is not too old.'
     )
   }
   const spec = requiredInputs(info).ckpt_name
@@ -134,30 +136,31 @@ export async function chooseCheckpoint(
 
   if (available.length === 0) {
     throw new ImagePluginError(
-      'ComfyUI 报告没有任何可用的底模（models/checkpoints 是空的）。',
-      '请往 ComfyUI 的 models/checkpoints 目录放一个 .safetensors / .ckpt 底模（例如 SDXL 或 SD1.5），' +
-        '然后在 ComfyUI 界面里刷新一下。'
+      'ComfyUI reports no available checkpoints (models/checkpoints is empty).',
+      'Put a .safetensors / .ckpt checkpoint (for example SDXL or SD1.5) into ComfyUI/models/checkpoints, ' +
+        'then refresh in the ComfyUI UI.'
     )
   }
 
   if (preferred) {
     if (available.includes(preferred)) return { checkpoint: preferred, available }
     throw new ImagePluginError(
-      `指定的底模不存在：${preferred}`,
-      `本机可用的底模有：${available.slice(0, 12).join('、')}${available.length > 12 ? ` 等 ${available.length} 个` : ''}。` +
-        '请把 model 改成其中之一，或清空该配置让插件自动挑。'
+      `The specified checkpoint does not exist: ${preferred}`,
+      `Checkpoints available on this machine: ${available.slice(0, 12).join(', ')}${
+        available.length > 12 ? ` and ${available.length} in total` : ''
+      }. ` + 'Change model to one of them, or clear that config setting to let the plugin pick automatically.'
     )
   }
 
   const preferredDefault = available.find((name) => /xl/i.test(name)) ?? available[0]
   if (!preferredDefault) {
-    throw new ImagePluginError('ComfyUI 返回的底模列表为空。', '请往 models/checkpoints 放一个底模。')
+    throw new ImagePluginError('ComfyUI returned an empty checkpoint list.', 'Put a checkpoint into models/checkpoints.')
   }
-  logDebug(`自动选用底模：${preferredDefault}（可选 ${available.length} 个）`)
+  logDebug(`Auto-selected checkpoint: ${preferredDefault} (${available.length} available)`)
   return { checkpoint: preferredDefault, available }
 }
 
-/* ────────────────────────────── 采样器校验 ────────────────────────────── */
+/* ────────────────────────────── sampler validation ────────────────────────────── */
 
 export interface SamplerChoice {
   samplerName: string
@@ -165,7 +168,7 @@ export interface SamplerChoice {
   notes: string[]
 }
 
-/** 校验采样器/调度器：用户显式给的错了就报错；只是配置默认值错了就退回可用的并说明。 */
+/** Validate sampler/scheduler: a bad explicit value is an error; a stale config default falls back with a note. */
 export async function chooseSampler(
   client: ComfyUIClient,
   request: { samplerName: string; scheduler: string },
@@ -176,8 +179,8 @@ export async function chooseSampler(
   const notes: string[] = []
   if (!info) {
     throw new ImagePluginError(
-      'ComfyUI 里没有 KSampler 节点。',
-      'KSampler 是 ComfyUI 核心节点，缺它说明地址可能不是 ComfyUI 服务。'
+      'ComfyUI has no KSampler node.',
+      'KSampler is a core ComfyUI node; if it is missing, the address is probably not a ComfyUI service.'
     )
   }
   const required = requiredInputs(info)
@@ -192,11 +195,11 @@ export async function chooseSampler(
     const fallback = samplerOptions.includes(config.samplerName) ? config.samplerName : (samplerOptions[0] as string)
     if (userPickedSampler) {
       throw new ImagePluginError(
-        `采样器不存在：${samplerName}`,
-        `本机可用：${samplerOptions.join('、')}`
+        `Sampler does not exist: ${samplerName}`,
+        `Available on this machine: ${samplerOptions.join(', ')}`
       )
     }
-    notes.push(`采样器 ${samplerName} 在本机不存在，已改用 ${fallback}。`)
+    notes.push(`Sampler ${samplerName} does not exist on this machine; switched to ${fallback}.`)
     samplerName = fallback
   }
 
@@ -205,26 +208,26 @@ export async function chooseSampler(
     const fallback = schedulerOptions.includes(config.scheduler) ? config.scheduler : (schedulerOptions[0] as string)
     if (userPickedScheduler) {
       throw new ImagePluginError(
-        `调度器不存在：${scheduler}`,
-        `本机可用：${schedulerOptions.join('、')}`
+        `Scheduler does not exist: ${scheduler}`,
+        `Available on this machine: ${schedulerOptions.join(', ')}`
       )
     }
-    notes.push(`调度器 ${scheduler} 在本机不存在，已改用 ${fallback}。`)
+    notes.push(`Scheduler ${scheduler} does not exist on this machine; switched to ${fallback}.`)
     scheduler = fallback
   }
 
   return { samplerName, scheduler, notes }
 }
 
-/* ────────────────────────── 背景移除策略探测 ────────────────────────── */
+/* ────────────────────────── background-removal strategy probing ────────────────────────── */
 
-/** 一套去背方案的构建结果：节点表 + 最终 IMAGE 输出在哪里。 */
+/** The build result of one background-removal plan: the node table + where the final IMAGE output is. */
 export interface RembgBuildResult {
   nodes: ComfyWorkflow
   output: [string, number]
 }
 
-/** 一套去背方案。`build` 在探测阶段就把节点定义闭包住了，之后是纯函数。 */
+/** One background-removal plan. `build` closes over the node definitions at probe time, then behaves as a pure function. */
 export interface RembgPlan {
   key: string
   label: string
@@ -233,9 +236,9 @@ export interface RembgPlan {
   build: (input: [string, number]) => RembgBuildResult
 }
 
-/** 图像输入键的候选名（不同作者的节点叫法不一）。 */
+/** Candidate names for the image input key (different authors name things differently). */
 const IMAGE_KEY_CANDIDATES = ['image', 'images', 'input_image', 'img', 'pixels', 'image_in'] as const
-/** 模型输入键的候选名。 */
+/** Candidate names for the model input key. */
 const MODEL_KEY_CANDIDATES = [
   'model',
   'bria_rmbg_model',
@@ -248,62 +251,63 @@ const MODEL_KEY_CANDIDATES = [
 interface RembgPreset {
   key: string
   label: string
-  /** 依次尝试的节点组合；全部存在才算可用。 */
+  /** Node combinations tried in order; all must exist for the preset to be usable. */
   chains: string[][]
   installHint: string
-  /** 单节点方案：直接把输入图接进这个节点。 */
+  /** Single-node plan: wire the input image straight into this node. */
   single?: string
-  /** 双节点方案：[加载器, 消费者]。 */
+  /** Two-node plan: [loader, consumer]. */
   pair?: [string, string]
 }
 
 /**
- * 已核实的第三方去背方案（precedence 从高到低）。
- * 纯核心 ComfyUI **没有**去背节点，所以这一节必然依赖 custom_nodes——
- * 缺依赖时给的是「装什么、怎么装」，而不是一句干巴巴的报错。
+ * Verified third-party background-removal options (highest precedence first).
+ * Core ComfyUI **has no** background-removal node, so this section necessarily depends on custom_nodes —
+ * and when a dependency is missing it gives "what to install and how", not a dry error.
  *
- * 仓库与类名的对应关系取自 ComfyUI-Manager 的 extension-node-map.json（权威索引），
- * **不要凭记忆改**：索引里根本不存在叫 `RemBG` 的节点，也不存在
- * `Limbicnation/ComfyUI_RemBG-U2Net` 这个仓库——这类「听起来很合理」的名字是本文件
- * 早期版本的错误来源。改这里之前请先查索引，或直接看目标仓库的 NODE_CLASS_MAPPINGS。
+ * The repository/class-name mapping comes from ComfyUI-Manager's extension-node-map.json (the
+ * authoritative index). **Do not change it from memory**: there is no node called `RemBG` in the
+ * index, and no repository called `Limbicnation/ComfyUI_RemBG-U2Net` — plausible-sounding names like
+ * that were the source of errors in early versions of this file. Check the index, or the target
+ * repository's NODE_CLASS_MAPPINGS, before editing this.
  */
 const REMBG_PRESETS: RembgPreset[] = [
   {
     key: 'essentials',
-    label: 'ComfyUI_essentials（RemBGSession+ → ImageRemoveBackground+）',
+    label: 'ComfyUI_essentials (RemBGSession+ → ImageRemoveBackground+)',
     chains: [['RemBGSession+', 'ImageRemoveBackground+']],
     pair: ['RemBGSession+', 'ImageRemoveBackground+'],
     installHint:
-      '装去背节点：git clone https://github.com/cubiq/ComfyUI_essentials 到 ComfyUI/custom_nodes/，' +
-      '再用 ComfyUI 自己的 Python 执行 pip install "rembg[cpu]"（少了 [cpu] 就没有 onnxruntime 后端，' +
-      'import rembg 会直接报错），然后重启 ComfyUI。首次去背会自动下载 u2net 权重（约 176MB）。'
+      'Install the background-removal nodes: git clone https://github.com/cubiq/ComfyUI_essentials into ComfyUI/custom_nodes/, ' +
+      'then use ComfyUI\'s own Python to run pip install "rembg[cpu]" (without [cpu] there is no onnxruntime backend, and ' +
+      'import rembg fails outright), then restart ComfyUI. The first removal downloads the u2net weights (about 176 MB).'
   },
   {
     key: 'bria',
-    label: 'ComfyUI-BRIA_AI-RMBG（BRIA_RMBG_ModelLoader_Zho → BRIA_RMBG_Zho）',
+    label: 'ComfyUI-BRIA_AI-RMBG (BRIA_RMBG_ModelLoader_Zho → BRIA_RMBG_Zho)',
     chains: [['BRIA_RMBG_ModelLoader_Zho', 'BRIA_RMBG_Zho']],
     pair: ['BRIA_RMBG_ModelLoader_Zho', 'BRIA_RMBG_Zho'],
     installHint:
-      '装去背节点：git clone https://github.com/ZHO-ZHO-ZHO/ComfyUI-BRIA_AI-RMBG 到 ComfyUI/custom_nodes/，' +
-      '重启 ComfyUI；首次使用会自动下载 BRIA 权重。'
+      'Install the background-removal nodes: git clone https://github.com/ZHO-ZHO-ZHO/ComfyUI-BRIA_AI-RMBG into ComfyUI/custom_nodes/, ' +
+      'restart ComfyUI; the first use downloads the BRIA weights automatically.'
   },
   {
     key: 'layerstyle',
-    label: 'ComfyUI-LayerStyle（LayerMask: RemBgUltra 节点）',
+    label: 'ComfyUI-LayerStyle (LayerMask: RemBgUltra node)',
     chains: [['LayerMask: RemBgUltra']],
     single: 'LayerMask: RemBgUltra',
     installHint:
-      '装去背节点：git clone https://github.com/chflame163/ComfyUI_LayerStyle 到 ComfyUI/custom_nodes/，' +
-      '按它的 README 装依赖（rembg / onnxruntime），重启 ComfyUI。'
+      'Install the background-removal nodes: git clone https://github.com/chflame163/ComfyUI_LayerStyle into ComfyUI/custom_nodes/, ' +
+      'install its dependencies (rembg / onnxruntime) following its README, then restart ComfyUI.'
   },
   {
     key: 'was',
-    label: 'WAS Node Suite（Image Rembg (Remove Background) 节点）',
+    label: 'WAS Node Suite (Image Rembg (Remove Background) node)',
     chains: [['Image Rembg (Remove Background)']],
     single: 'Image Rembg (Remove Background)',
     installHint:
-      '装去背节点：git clone https://github.com/ltdrdata/was-node-suite-comfyui 到 ComfyUI/custom_nodes/，' +
-      '按它的 requirements 装依赖（含 rembg / onnxruntime），重启 ComfyUI。'
+      'Install the background-removal nodes: git clone https://github.com/ltdrdata/was-node-suite-comfyui into ComfyUI/custom_nodes/, ' +
+      'install its requirements (including rembg / onnxruntime), then restart ComfyUI.'
   }
 ]
 
@@ -312,8 +316,8 @@ function buildSingle(className: string, info: ComfyNodeInfo | undefined, input: 
   const imageKey = pickDeclaredKey(declared, IMAGE_KEY_CANDIDATES)
   if (!imageKey) {
     throw new ImagePluginError(
-      `节点 ${className} 没有可识别的图像输入。`,
-      `它声明的输入是：${Object.keys(declared).join('、') || '(空)'}。请把该节点的输入名告诉我，或改用别的去背节点。`
+      `Node ${className} has no recognisable image input.`,
+      `Its declared inputs are: ${Object.keys(declared).join(', ') || '(none)'}. Tell me the input name for that node, or use a different background-removal node.`
     )
   }
   const inputs = autoFillRequired(info, { [imageKey]: input })
@@ -333,8 +337,8 @@ function buildPair(
   const modelKey = pickDeclaredKey(declared, MODEL_KEY_CANDIDATES)
   if (!imageKey) {
     throw new ImagePluginError(
-      `节点 ${consumer} 没有可识别的图像输入。`,
-      `它声明的输入是：${Object.keys(declared).join('、') || '(空)'}。`
+      `Node ${consumer} has no recognisable image input.`,
+      `Its declared inputs are: ${Object.keys(declared).join(', ') || '(none)'}.`
     )
   }
   const wanted: Record<string, unknown> = { [imageKey]: input }
@@ -345,18 +349,18 @@ function buildPair(
   }
   if (!modelKey) {
     throw new ImagePluginError(
-      `节点 ${consumer} 没有可识别的模型输入。`,
-      `它声明的输入是：${Object.keys(declared).join('、') || '(空)'}。`
+      `Node ${consumer} has no recognisable model input.`,
+      `Its declared inputs are: ${Object.keys(declared).join(', ') || '(none)'}.`
     )
   }
   return { nodes, output: ['rb2', 0] }
 }
 
 /**
- * 挑一套可用的去背方案。
+ * Pick a usable background-removal plan.
  *
- * @param forced 配置里 `rembgNode` 指定的方案 key 或节点类名；给了就只用它（不存在则明确报错）
- * @throws ImagePluginError 一套都不可用时，列出全部方案与安装方法
+ * @param forced The plan key or node class name given by `rembgNode`; when set, only that one is used (a clear error if missing)
+ * @throws ImagePluginError when no plan is usable, listing every option and how to install it
  */
 export async function chooseRembgPlan(
   client: ComfyUIClient,
@@ -377,8 +381,8 @@ export async function chooseRembgPlan(
 
   if (forced && candidates.length === 0) {
     throw new ImagePluginError(
-      `配置里的 rembgNode=${forced} 不在已知方案里。`,
-      `已知：${REMBG_PRESETS.map((p) => `${p.key}（${p.label}）`).join('；')}`
+      `rembgNode=${forced} in the config is not a known plan.`,
+      `Known: ${REMBG_PRESETS.map((p) => `${p.key} (${p.label})`).join('; ')}`
     )
   }
 
@@ -388,7 +392,7 @@ export async function chooseRembgPlan(
       missing.push(preset)
       continue
     }
-    logDebug(`去背方案选用：${preset.key}（${chain.join(' → ')}）`)
+    logDebug(`Background-removal plan selected: ${preset.key} (${chain.join(' → ')})`)
     const snapshot = all
     return {
       key: preset.key,
@@ -403,26 +407,29 @@ export async function chooseRembgPlan(
     }
   }
 
-  const tried = (forced ? candidates : missing).map((p) => `${p.label} → 需要节点 ${p.chains[0]?.join(' + ')}`).join('\n  ')
+  const tried = (forced ? candidates : missing)
+    .map((p) => `${p.label} → requires nodes ${p.chains[0]?.join(' + ')}`)
+    .join('\n  ')
   throw new ImagePluginError(
-    `本机 ComfyUI 里没有任何可用的背景移除节点。`,
-    'remove_background 依赖第三方自定义节点（核心 ComfyUI 0.3x 起自带的 RemoveBackground 输出的是遮罩、' +
-      '且需自备 models/background_removal 模型，本插件暂未接入）。已尝试：\n  ' +
+    'No usable background-removal node exists in the local ComfyUI.',
+    'remove_background depends on third-party custom nodes (core ComfyUI 0.3x ships RemoveBackground, ' +
+      'but it outputs a mask and needs a model under models/background_removal; this plugin does not wire ' +
+      'it up yet). Tried:\n  ' +
       tried +
-      `\n任选一套安装即可：\n  ${missing.map((p) => p.installHint).join('\n  ')}`
+      `\nInstall any one of these:\n  ${missing.map((p) => p.installHint).join('\n  ')}`
   )
 }
 
-/** 某个模式在这台 ComfyUI 上到底能不能跑——用于给出「为什么不行」的明确回答。 */
+/** Whether a mode can actually run on this ComfyUI — used to give a clear "why not" answer. */
 export async function checkModeSupport(
   client: ComfyUIClient,
   mode: string,
   signal?: AbortSignal
 ): Promise<{ supported: boolean; detail: string }> {
-  if (mode !== 'remove_background') return { supported: true, detail: '核心节点，无需额外安装。' }
+  if (mode !== 'remove_background') return { supported: true, detail: 'Core nodes; no extra installation needed.' }
   try {
     const plan = await chooseRembgPlan(client, undefined, signal)
-    return { supported: true, detail: `可用方案：${plan.label}` }
+    return { supported: true, detail: `Available plan: ${plan.label}` }
   } catch (error) {
     return {
       supported: false,

@@ -1,17 +1,20 @@
 /**
- * 全插件共享的类型定义。
+ * Shared type definitions for the whole plugin.
  *
- * 设计原则（对应需求书第五节「统一抽象参数层」）：
- *   - `GenerateImageArgs`   = **对外**契约，就是 Agent 看到的那些参数，尽量少、尽量好懂。
- *   - `NormalizedRequest`   = **对内**契约，默认值全部填好、模式已确定、路径已解析，
- *                            后面所有模块（工作流构建 / 执行 / 落盘）只认它。
- *   两层分开的好处：以后要改 ComfyUI 细节，只动工作流模块；要加对外参数，只动 args + params。
+ * Design principles (the "unified parameter layer" section of the spec):
+ *   - `GenerateImageArgs`   = the **public** contract: exactly the arguments the Agent sees.
+ *                             Keep it small and easy to understand.
+ *   - `NormalizedRequest`   = the **internal** contract: defaults filled in, mode decided,
+ *                             paths resolved. Every downstream module (workflow building /
+ *                             execution / writing results) depends only on this.
+ *   Keeping the two apart means: changes to ComfyUI internals only touch the workflow module,
+ *   while new public arguments only touch args + params.
  */
 
-/** V1 对 Agent 暴露的四种操作模式。 */
+/** The four operation modes V1 exposes to the Agent. */
 export type GenerateMode = 'text2img' | 'img2img' | 'inpaint' | 'remove_background'
 
-/** 顺序即「模式推断」的判定顺序，别随意改。 */
+/** The order here is the precedence used by mode inference. Do not change it casually. */
 export const GENERATE_MODES: readonly GenerateMode[] = [
   'text2img',
   'img2img',
@@ -24,72 +27,75 @@ export function isGenerateMode(value: unknown): value is GenerateMode {
 }
 
 /**
- * 统一的对外参数层。
+ * The unified public argument layer.
  *
- * 刻意**不**把 ComfyUI 的底层参数原样倒出来；只保留真正需要调的旋钮，
- * 其余（batch_size、vae、clip skip、节点 id……）由插件自己决定。
+ * It deliberately does **not** expose ComfyUI's low-level parameters verbatim; only the knobs
+ * that genuinely need tuning are kept. Everything else (batch_size, vae, clip skip, node ids, ...)
+ * is decided by the plugin.
  *
- * `style_reference` / `character_reference` / `extra_options` 属于**预留位**：
- * V1 会接收并存进元数据，但不会真的改变生成结果（详见 README 的「一致性」一节）。
+ * `style_reference` / `character_reference` / `extra_options` are **reserved slots**:
+ * V1 accepts them and records them in the metadata, but they do not change the generated result
+ * (see the "consistency" section of the README).
  */
 export interface GenerateImageArgs {
-  /** 操作模式。不传则按 input_image / mask_image 自动推断（推断规则见 README）。 */
+  /** Operation mode. If omitted, it is inferred from input_image / mask_image (see README). */
   mode?: GenerateMode
-  /** 正向提示词。text2img / img2img / inpaint 必填；remove_background 忽略。 */
+  /** Positive prompt. Required for text2img / img2img / inpaint; ignored by remove_background. */
   prompt?: string
-  /** 负向提示词。可选，不传用插件默认值。 */
+  /** Negative prompt. Optional; the plugin default is used when omitted. */
   negative_prompt?: string
-  /** 输入图片的本地路径（img2img / inpaint / remove_background 必填）。 */
+  /** Local path of the input image (required for img2img / inpaint / remove_background). */
   input_image?: string
-  /** 遮罩图片的本地路径（inpaint 必填）。白/亮区 = 要重绘的区域。 */
+  /** Local path of the mask image (required for inpaint). White/bright = the region to repaint. */
   mask_image?: string
-  /** 输出宽度。仅对 text2img 生效（其余模式由输入图决定，见 README）。 */
+  /** Output width. Only effective for text2img (other modes take their canvas from the input image). */
   width?: number
-  /** 输出高度。仅对 text2img 生效。 */
+  /** Output height. Only effective for text2img. */
   height?: number
-  /** 随机种子。不传则自动生成；同 seed + 同 prompt 可复现同一张图。 */
+  /** Random seed. Generated automatically when omitted; same seed + same prompt reproduces the image. */
   seed?: number
-  /** 输出目录或输出文件路径。不传则落到当前项目根目录。 */
+  /** Output directory or output file path. Defaults to the current project root. */
   output_path?: string
-  /** 【预留】风格参考图路径。 */
+  /** [Reserved] Path to a style reference image. */
   style_reference?: string
-  /** 【预留】角色参考图路径。 */
+  /** [Reserved] Path to a character reference image. */
   character_reference?: string
-  /** 图生图强度 / 重绘幅度（0~1）。img2img 默认 0.6，inpaint 默认 1.0。 */
+  /** img2img strength / denoise amount (0~1). Defaults to 0.6 for img2img and 1.0 for inpaint. */
   strength?: number
-  /** 采样步数。默认 20。 */
+  /** Sampling steps. Default 20. */
   steps?: number
-  /** CFG scale。默认 7。 */
+  /** CFG scale. Default 7. */
   cfg_scale?: number
-  /** 底模文件名（ComfyUI 里 models/checkpoints 下的名字）。不传则自动挑一个可用的。 */
+  /** Checkpoint file name (the name under models/checkpoints in ComfyUI). One is picked automatically when omitted. */
   model?: string
-  /** 采样器名字（可选）。不传用插件默认值。 */
+  /** Sampler name (optional). Uses the plugin default when omitted. */
   sampler_name?: string
-  /** 调度器名字（可选）。不传用插件默认值。 */
+  /** Scheduler name (optional). Uses the plugin default when omitted. */
   scheduler?: string
-  /** 【预留】扩展字段。`workflow_path` 可指定自定义 API 格式工作流来接管本次生成。 */
+  /** [Reserved] Extension fields. `workflow_path` can hand this generation over to a custom API-format workflow. */
   extra_options?: Record<string, unknown>
 }
 
 /**
- * 归一化后的请求：默认值已填、模式已定、路径已解析。
- * 所有下游模块只依赖这个结构。
+ * A normalized request: defaults filled in, mode decided, paths resolved.
+ * All downstream modules depend only on this structure.
  */
 export interface NormalizedRequest {
   mode: GenerateMode
   prompt: string
   negativePrompt: string
-  /** 已 resolve 成绝对路径；仅在需要输入图的模式下存在。 */
+  /** Already resolved to an absolute path; only present in modes that take an input image. */
   inputImage?: string
   maskImage?: string
   styleReference?: string
   characterReference?: string
-  /** text2img 使用；其余模式忽略。 */
+  /** Used by text2img; ignored by other modes. */
   width: number
   height: number
   /**
-   * 该维度是否由调用方**显式**给出（width / height 参数）。
-   * false 表示「还没定」——底模最终选定后可以按底模自适应，见 applyModelAwareSize。
+   * Whether this dimension was given **explicitly** by the caller (the width / height arguments).
+   * false means "not decided yet" — once the checkpoint is chosen it can adapt to it,
+   * see applyModelAwareSize.
    */
   widthFromArgs: boolean
   heightFromArgs: boolean
@@ -97,55 +103,55 @@ export interface NormalizedRequest {
   strength: number
   steps: number
   cfgScale: number
-  /** 未指定时为空串，表示「让工作流模块自动挑一个」。 */
+  /** An empty string means "let the workflow module pick one automatically". */
   checkpoint: string
   samplerName: string
   scheduler: string
-  /** 已 resolve 成绝对路径的最终输出文件。 */
+  /** The final output file, already resolved to an absolute path. */
   outputPath: string
-  /** 本次请求的用户可读提醒（例如「width/height 在 inpaint 下被忽略」）。 */
+  /** User-readable notes for this request (for example "width/height are ignored for inpaint"). */
   notes: string[]
-  /** 原样保留的扩展字段。 */
+  /** Extension fields preserved verbatim. */
   extra: Record<string, unknown>
 }
 
-/** ComfyUI API 格式工作流中的一个节点。 */
+/** One node in a ComfyUI API-format workflow. */
 export interface ComfyNode {
   class_type: string
-  /** 键值对：字面量，或 `[上游节点id, 输出索引]` 形式的连线。 */
+  /** Key/value pairs: literals, or links of the form `[upstream_node_id, output_index]`. */
   inputs: Record<string, unknown>
   _meta?: { title?: string }
 }
 
-/** ComfyUI API 格式工作流：节点 id → 节点。 */
+/** A ComfyUI API-format workflow: node id → node. */
 export type ComfyWorkflow = Record<string, ComfyNode>
 
-/** ComfyUI `/history` 里描述一张产出图片的结构。 */
+/** The structure ComfyUI's `/history` uses to describe one produced image. */
 export interface ComfyImageRef {
   filename: string
   subfolder: string
   type: string
 }
 
-/** 一次生成的成功结果。 */
+/** One successful generation result. */
 export interface GenerationOutcome {
-  /** 已写入磁盘的输出文件绝对路径（当前固定 1 张）。 */
+  /** Absolute paths of the output files written to disk (currently always 1). */
   outputPaths: string[]
-  /** 元数据 sidecar 的路径（写元数据时才存在）。 */
+  /** Path to the metadata sidecar (only present when metadata is written). */
   metadataPath?: string
-  /** ComfyUI 内部的图片引用，便于用户自己去 ComfyUI 里找。 */
+  /** The image reference inside ComfyUI, so users can find it there themselves. */
   comfyImage: ComfyImageRef
-  /** ComfyUI 返回的 prompt_id。 */
+  /** The prompt_id returned by ComfyUI. */
   promptId: string
-  /** 实际使用的 ComfyUI 地址。 */
+  /** The ComfyUI address actually used. */
   comfyUrl: string
-  /** 从提交到取回图片的耗时（毫秒）。 */
+  /** Time from submission to fetching the image (milliseconds). */
   durationMs: number
-  /** 本次生成用的实际参数（元数据用）。 */
+  /** The actual parameters used for this generation (for metadata). */
   request: NormalizedRequest
 }
 
-/** 插件配置：全部可选，来源见 config.ts。 */
+/** Plugin configuration: everything optional; sources are described in config.ts. */
 export interface PluginConfigInput {
   baseUrl?: string
   outputDir?: string
@@ -168,11 +174,12 @@ export interface PluginConfigInput {
 }
 
 /**
- * 解析完毕、可以放心使用的配置。
+ * A fully resolved configuration that is safe to use.
  *
- * 刻意**显式**列出每个键，而不是写 `Required<Omit<PluginConfigInput, ...>>`：
- * 那种映射类型一旦源接口带索引签名，TS 会把所有具名属性塌进索引签名，
- * 于是 `config.width` 就变成 `unknown` 了（踩过，编译器会直接报出来）。
+ * Every key is deliberately listed **explicitly** instead of using
+ * `Required<Omit<PluginConfigInput, ...>>`: once the source interface has an index signature,
+ * TypeScript collapses all named properties into that index signature, so `config.width`
+ * becomes `unknown` (learned the hard way; the compiler reports it immediately).
  */
 export interface ResolvedConfig {
   baseUrl: string

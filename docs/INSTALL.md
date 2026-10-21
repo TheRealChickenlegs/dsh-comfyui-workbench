@@ -1,35 +1,32 @@
-[English](./INSTALL.en.md) | **简体中文**
+# Installation Guide
 
-# 安装教程
+Installing this plugin takes two steps: **① get ComfyUI running** → **② install the plugin into DSH**. The second step takes a minute; the first one is the real work.
 
-装这个插件分两步：**① 让 ComfyUI 跑起来** → **② 把插件装进 DSH**。第二步只花一分钟，第一步才是重活。
-
-> 不想读长文？最短路径：装 ComfyUI 便携版 → 双击启动 → 往 `models/checkpoints/` 放一个底模 →
-> 在 DSH 插件管理器里装 `dsh-comfyui-image`（想从 GitHub 装就填 `github:wbb316/dsh-comfyui-image`；
-> 已经 clone 到本地就用 `link:<插件目录>`）→
-> 跑 `npm run doctor` 看到四个 ✓ 就成了。
+> Don't feel like reading a long document? Shortest path: install the ComfyUI portable build → double-click to start it → drop a checkpoint into `models/checkpoints/` →
+> install `dsh-comfyui-image` in the DSH plugin manager (enter `github:wbb316/dsh-comfyui-image` to install from
+> GitHub instead, or `link:<plugin directory>` if you already cloned it) → run `npm run doctor` and see four ✓ — done.
 
 ---
 
-## 一、安装并启动 ComfyUI
+## 1. Install and Start ComfyUI
 
-### 1.1 选一种安装方式
+### 1.1 Pick an Installation Method
 
-| 方式 | 适合谁 | 说明 |
+| Method | Who it suits | Notes |
 |---|---|---|
-| **官方 Windows 便携版** | Windows 用户，最省事 | 从 [ComfyUI Releases](https://github.com/comfyanonymous/ComfyUI/releases) 下载 `ComfyUI_windows_portable.7z`，解压（路径别带中文/空格，省事），双击 `run_nvidia_gpu.bat` |
-| **Comfy Desktop** | 想图形化装 / 管理 | [ComfyUI 官网](https://www.comfy.org/) 的桌面版，装完直接能跑 |
-| **源码安装** | 想自己控环境 / Linux | 见 [ComfyUI 仓库](https://github.com/comfyanonymous/ComfyUI) 的 README：`git clone` → 建 venv → `pip install -r requirements.txt` → `python main.py` |
-| **已有 ComfyUI** | 你已经跑着 | 跳过本节，只确认监听地址 |
+| **Official Windows portable build** | Windows users, least hassle | Download `ComfyUI_windows_portable.7z` from [ComfyUI Releases](https://github.com/comfyanonymous/ComfyUI/releases), extract it (keep the path free of non-ASCII characters/spaces — that saves trouble), double-click `run_nvidia_gpu.bat` |
+| **Comfy Desktop** | Want a graphical install / management | The desktop build from the [ComfyUI website](https://www.comfy.org/); it runs right after installing |
+| **Install from source** | Want to control the environment yourself / Linux | See the README of the [ComfyUI repository](https://github.com/comfyanonymous/ComfyUI): `git clone` → create a venv → `pip install -r requirements.txt` → `python main.py` |
+| **Already have ComfyUI** | You already have it running | Skip this section; just confirm the listening address |
 
-### 1.2 确认服务真的起来了
+### 1.2 Confirm the Service Is Actually Up
 
-启动后浏览器打开这两个地址：
+Once it has started, open these two addresses in a browser:
 
-- `http://127.0.0.1:8188/system_stats` → 返回一段 JSON（里面有 `system` / `devices`）
-- `http://127.0.0.1:8188/` → ComfyUI 的节点界面
+- `http://127.0.0.1:8188/system_stats` → returns some JSON (containing `system` / `devices`)
+- `http://127.0.0.1:8188/` → the ComfyUI node interface
 
-命令行也可以：
+You can also do it from the command line:
 
 ```powershell
 # Windows PowerShell
@@ -41,130 +38,135 @@ Invoke-WebRequest http://127.0.0.1:8188/system_stats -UseBasicParsing | Select-O
 curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8188/system_stats
 ```
 
-`200` 就是好的。**不是 200 就别往下走**，插件那边一定连不上。
+`200` means it's healthy. **If it isn't 200, don't go any further** — the plugin will definitely not be able to connect.
 
-### 1.3 放一个底模（必须）
+### 1.3 Add a Checkpoint (Required)
 
-插件会去问 ComfyUI「你有哪些底模」，一个都没有就没法出图。
+The plugin asks ComfyUI "which checkpoints do you have"; with none at all it cannot generate images.
 
-把底模（`.safetensors` / `.ckpt`）放进：
+Put the checkpoint (`.safetensors` / `.ckpt`) into:
 
 ```
 <ComfyUI>/models/checkpoints/
 ```
 
-推荐起步模型（任选一个）：
+Recommended starter models (pick either one):
 
-- **SDXL 系**（默认按 1024×1024 出图）：`sd_xl_base_1.0.safetensors`
-- **SD1.5 系**（插件识别到名字里像 SD1.5 时会自动改用 512×512）：`v1-5-pruned-emaonly.safetensors`
+- **SDXL family** (defaults to generating at 1024×1024): `sd_xl_base_1.0.safetensors`
+- **SD1.5 family** (the plugin switches to 512×512 when it recognises an SD1.5-like name): `v1-5-pruned-emaonly.safetensors`
 
-放好后**在 ComfyUI 界面里刷新一下**（或重启），让它重新扫模型目录。命令行确认：
+Once it's in place, **refresh in the ComfyUI interface** (or restart it) so it rescans the model directory. Confirm from the command line:
 
 ```bash
 curl -s http://127.0.0.1:8188/object_info/CheckpointLoaderSimple
-# 返回 JSON 里 ckpt_name 的枚举值就是它当前认识的底模列表
+# the enum values of ckpt_name in the returned JSON are the checkpoint list it currently knows about
 ```
 
-### 1.4 关于显卡的额外注意
+### 1.4 Extra Notes on GPUs
 
-这套插件只管「调 ComfyUI」，出图快不快、能不能跑，全看 ComfyUI 那边：
+This plugin only handles "talking to ComfyUI" — how fast generation is and whether it runs at all depends entirely on the ComfyUI side:
 
-- **NVIDIA**：装 CUDA 版 PyTorch，用 `run_nvidia_gpu.bat`（便携版自带环境）。
-- **AMD**：Windows 上通常走 DirectML 或 ROCm（Linux），按 ComfyUI README 的对应章节走。
-- **Intel（Arc 独显 / 核显）**：ComfyUI 官方主线对 Intel 的支持不如 CUDA 顺，
-  常见做法是走 **IPEX-LLM** 的 ComfyUI 支持（见 [ipex-llm](https://github.com/intel/ipex-llm) 的 ComfyUI 章节），
-  或者退回 CPU 模式（能跑，但一张 1024 图可能要几分钟）。
-- **纯 CPU**：启动时加 `--cpu`。功能不缺，只是慢——出图慢的时候先把 `steps` 和尺寸调小。
+- **NVIDIA**: install the CUDA build of PyTorch and use `run_nvidia_gpu.bat` (the portable build ships its own environment).
+- **AMD**: on Windows you usually go through DirectML, or ROCm on Linux — follow the corresponding section of the ComfyUI README.
+- **Intel (Arc discrete / integrated graphics)**: the official ComfyUI mainline doesn't support Intel as smoothly as CUDA,
+  the common approach is to go through **IPEX-LLM**'s ComfyUI support (see the ComfyUI section of [ipex-llm](https://github.com/intel/ipex-llm)),
+  or fall back to CPU mode (it runs, but a single 1024 image may take several minutes).
+- **Pure CPU**: add `--cpu` at startup. No features are missing, it's just slow — when generation is slow, first turn `steps` and the dimensions down.
 
-> 插件侧不需要任何显卡设置：显存不够、模型不兼容这类问题会以 ComfyUI 的报错原文返回给你。
+> The plugin needs no GPU configuration at all: problems such as insufficient VRAM or an incompatible model come back to you as ComfyUI's own error text.
 
-### 1.5 （可选）装背景移除节点
+### 1.5 (Optional) Install Background-Removal Nodes
 
-**只有 `remove_background` 模式需要**，其余三种模式纯核心 ComfyUI 就能跑。
-插件会在下面四套里自动择优（按顺序），装**任意一套**即可：
+**Only the `remove_background` mode needs these**; the other three modes run on core ComfyUI alone.
+The plugin automatically picks the best available option among the four sets below (in order); installing **any one set** is enough:
 
-| 方案 key | 需要的节点 | 安装 |
+| Option key | Required nodes | Installation |
 |---|---|---|
-| `essentials` | `RemBGSession+` → `ImageRemoveBackground+` | `git clone https://github.com/cubiq/ComfyUI_essentials` 到 `custom_nodes/`，再用 ComfyUI 自己的 Python 执行 `pip install "rembg[cpu]"` |
-| `bria` | `BRIA_RMBG_ModelLoader_Zho` → `BRIA_RMBG_Zho` | `git clone https://github.com/ZHO-ZHO-ZHO/ComfyUI-BRIA_AI-RMBG` 到 `custom_nodes/`（首次使用会自动下权重） |
-| `layerstyle` | `LayerMask: RemBgUltra` | `git clone https://github.com/chflame163/ComfyUI_LayerStyle` 到 `custom_nodes/`，按它的 README 装 `rembg` / `onnxruntime` |
-| `was` | `Image Rembg (Remove Background)` | `git clone https://github.com/ltdrdata/was-node-suite-comfyui` 到 `custom_nodes/`，按它的 requirements 装依赖（含 `rembg` / `onnxruntime`） |
+| `essentials` | `RemBGSession+` → `ImageRemoveBackground+` | `git clone https://github.com/cubiq/ComfyUI_essentials` into `custom_nodes/`, then run `pip install "rembg[cpu]"` with ComfyUI's own Python |
+| `bria` | `BRIA_RMBG_ModelLoader_Zho` → `BRIA_RMBG_Zho` | `git clone https://github.com/ZHO-ZHO-ZHO/ComfyUI-BRIA_AI-RMBG` into `custom_nodes/` (weights are downloaded automatically on first use) |
+| `layerstyle` | `LayerMask: RemBgUltra` | `git clone https://github.com/chflame163/ComfyUI_LayerStyle` into `custom_nodes/`, and install `rembg` / `onnxruntime` per its README |
+| `was` | `Image Rembg (Remove Background)` | `git clone https://github.com/ltdrdata/was-node-suite-comfyui` into `custom_nodes/`, and install its requirements (including `rembg` / `onnxruntime`) |
 
-> **两个实测踩出来的坑**：
-> 1. `rembg` 2.0 起**不再自动带 onnxruntime**。只写 `pip install rembg` 的话，`import rembg`
->    会直接报「No onnxruntime backend found」，必须写 `pip install "rembg[cpu]"`（或 `rembg[gpu]`）。
-> 2. 类名要**逐字**照抄：essentials 的注册键是 `RemBGSession+`（**带加号**），`RemBGSession`
->    只是它的 Python 类名，`/object_info` 里没有这个名字，写错了插件就永远挑不到这套方案。
+> **Two pitfalls discovered by testing on a real machine**:
+> 1. Since `rembg` 2.0, onnxruntime is **no longer** pulled in automatically. With a plain
+>    `pip install rembg`, importing rembg fails outright with "No onnxruntime backend found";
+>    use `pip install "rembg[cpu]"` (or `rembg[gpu]`) instead.
+> 2. Copy class names **character for character**: the registered key in essentials is
+>    `RemBGSession+` (**with the trailing plus**). `RemBGSession` is only its Python class name and
+>    does not exist in `/object_info`; get it wrong and the plugin can never select that set.
 >
-> 首次去背还会自动下载 u2net 权重（约 176MB）到 `~/.u2net/`。
+> The first background removal also downloads the u2net weights (about 176MB) into `~/.u2net/`.
 
-装完**重启 ComfyUI**。想让插件只用其中某一套，就设配置 `rembgNode`（值可以是上表的方案 key，
-如 `essentials` / `bria` / `layerstyle` / `was`，也可以直接写节点类名）。
+After installing, **restart ComfyUI**. If you want the plugin to use only one specific set, set the `rembgNode` config option (the value can be an option key from the table above,
+such as `essentials` / `bria` / `layerstyle` / `was`, or you can write the node class name directly).
 
-用 `npm run doctor` 可以看到最终选中的是哪一套：
+With `npm run doctor` you can see which set was finally selected:
 
 ```
-✓ 去背方案：ComfyUI_essentials（RemBGSession+ → ImageRemoveBackground+）（节点 RemBGSession+ → ImageRemoveBackground+）
+✓ Background-removal plan: ComfyUI_essentials (RemBGSession+ → ImageRemoveBackground+) (nodes RemBGSession+ → ImageRemoveBackground+)
 ```
 
-> **核心 ComfyUI 呢？** 0.3x 起核心自带了 `LoadBackgroundRemovalModel` + `RemoveBackground`
-> （输入图 → 输出 MASK，需要自己往 `models/background_removal/` 放模型）。它的产物是遮罩而不是
-> 「一张图进、一张图出」，与插件现有的去背路径不同，**本插件暂未接入**（见 [ROADMAP.md](./ROADMAP.md)）。
+> **What about core ComfyUI?** Since 0.3x, core ships `LoadBackgroundRemovalModel` + `RemoveBackground`
+> (image → MASK; you must supply your own model under `models/background_removal/`). Its output is a mask
+> rather than "one image in, one image out", which does not fit the plugin's current background-removal
+> path, so it is **not wired up yet** (see [ROADMAP.md](./ROADMAP.md)).
 
 ---
 
-## 二、把插件装进 DSH
+## 2. Install the Plugin into DSH
 
-> 三种装法，按方便程度排序：**方式 A 从 npm 装**（已发布，最省事）；**方式 B 插件管理器**
-> （可以直接填 `github:wbb316/dsh-comfyui-image`，不必先 clone）；**方式 C 手动改 profile**。
+> Four ways to install it, easiest first: **Option A installs from npm** (published, least work);
+> **Option B is the plugin manager** (you can enter `github:wbb316/dsh-comfyui-image` and skip cloning);
+> **Option C is the manual profile edit**; **Option D verifies the plugin without DSH**.
 
-### 2.1 方式 A：从 npm 装（推荐）
+### 2.1 Option A: Install from npm (Recommended)
 
 ```bash
-dsh plugin --profile <你的 profile> add dsh-comfyui-image
+dsh plugin --profile <your profile> add dsh-comfyui-image
 ```
 
-等价写法：`npm i dsh-comfyui-image`，或在 DSH → **设置 → 插件** 里把安装目标填成 `dsh-comfyui-image`。
-包里带的 `lib/` 是编译好的，**不需要构建**。装完重启 DSH。
+Equivalent: `npm i dsh-comfyui-image`, or entering `dsh-comfyui-image` as the install target in
+DSH → **Settings → Plugins**. The published `lib/` is already compiled — **no build step**. Restart DSH afterwards.
 
-### 2.2 方式 B：DSH 插件管理器（可以不用 clone）
+### 2.2 Option B: the DSH Plugin Manager (Cloning Optional)
 
-> 目标也可以直接填 `github:wbb316/dsh-comfyui-image`：管理器会从 GitHub 拉取，**不需要你 clone 到本地**。
-> 命令行等价写法是 `dsh plugin --profile <你的 profile> add github:wbb316/dsh-comfyui-image`（实测 21.6 秒）。
+> The target can also be `github:wbb316/dsh-comfyui-image`: the manager fetches it from GitHub, so you do **not**
+> need to clone it locally. The equivalent command line is
+> `dsh plugin --profile <your profile> add github:wbb316/dsh-comfyui-image` (measured: 21.6 s).
 
-先拿到插件代码（目标填 `github:` 时跳过这一步）：
+Get the plugin code first (skip this when you enter the `github:` target):
 
-- 从仓库 clone：`git clone <本仓库地址> D:/dsh/plugins/dsh-comfyui-image`
-- 或者直接用你已有的本地目录（例如本机上的 `D:/dsh/plugins/dsh-comfyui-image`）
+- Clone from the repository: `git clone <this repository's URL> D:/dsh/plugins/dsh-comfyui-image`
+- Or just use the local directory you already have (for example `D:/dsh/plugins/dsh-comfyui-image` on this machine)
 
-**不需要**跑 `npm install` / `npm run build` —— 仓库里已经带了编译好的 `lib/`。
-只有你要改源码时才需要（见 [README 的开发一节](../README.md#开发)）。
+You do **not** need to run `npm install` / `npm run build` — the repository already ships a compiled `lib/`.
+You only need to do that when you're changing the source (see the [Development section of the README](../README.md#development)).
 
-1. 打开 DSH → **设置 → 插件**（插件管理器）；
-2. 选择**安装**，目标填本地路径，前缀 `link:`：
+1. Open DSH → **Settings → Plugins** (the plugin manager);
+2. Choose **Install** and enter a local path as the target, prefixed with `link:`:
 
    ```
    link:D:/dsh/plugins/dsh-comfyui-image
    ```
 
-3. 管理器会自己改当前 profile 的 `package.json`：加一条 `dsh-comfyui-image: link:...` 依赖，
-   并把 `dsh-comfyui-image` 追加进 `dsh.profile.bundles`；失败会自动回滚。
-4. 装完重启 DSH（或按界面提示重载）。
+3. The manager edits the current profile's `package.json` itself: it adds a `dsh-comfyui-image: link:...` dependency,
+   and appends `dsh-comfyui-image` to `dsh.profile.bundles`; on failure it rolls back automatically.
+4. After installing, restart DSH (or reload when the interface prompts you to).
 
-### 2.3 方式 C：手动改 profile
+### 2.3 Option C: Edit the Profile Manually
 
-编辑 `~/.dsh/profiles/<你的 profile>/package.json`：
+Edit `~/.dsh/profiles/<your profile>/package.json`:
 
 ```jsonc
 {
   "dependencies": {
-    // ……
+    // ...
     "dsh-comfyui-image": "link:D:/dsh/plugins/dsh-comfyui-image"
   },
   "dsh": {
     "profile": {
       "bundles": [
-        // ……（保留原有条目）
+        // ... (keep the existing entries)
         "dsh-comfyui-image"
       ]
     }
@@ -172,38 +174,38 @@ dsh plugin --profile <你的 profile> add dsh-comfyui-image
 }
 ```
 
-然后在 profile 目录里装一次依赖：
+Then install the dependencies once inside the profile directory:
 
 ```bash
-cd ~/.dsh/profiles/<你的 profile>
-pnpm install        # 或者用 DSH 界面里的「安装/更新插件」
+cd ~/.dsh/profiles/<your profile>
+pnpm install        # or use "Install/Update plugin" in the DSH interface
 ```
 
-重启 DSH。（改 profile 的 `package.json` 前建议先备份 —— 这个文件里还挂着别的插件。）
+Restart DSH. (Before changing the profile's `package.json`, back it up first — other plugins hang off that file too.)
 
-### 2.4 方式 C：不装 DSH，先单独验证
+### 2.4 Option D: No DSH Install, Verify on Its Own First
 
-插件本身**不 import 任何宿主包**，所以可以直接在 Node 里跑，不需要 DSH 在位：
+The plugin itself **imports no host packages**, so you can run it directly under Node, with no DSH in place:
 
 ```bash
-cd <插件目录>
-npm run doctor    # 直接对着 ComfyUI 体检，不经过 DSH
+cd <plugin directory>
+npm run doctor    # run a health check straight against ComfyUI, without going through DSH
 
-# 想手动试一下配置解析和工具定义：
+# to try the config resolution and tool definition by hand:
 node -e "import('./lib/index.js').then(m => {
   const cfg = m.resolveConfig()
-  console.log('ComfyUI 地址：', cfg.baseUrl, '| 默认底模：', cfg.checkpoint ?? '(自动挑)')
-  console.log('工具名：', m.TOOL_NAME, '| 参数：', Object.keys(m.PARAMETERS_SCHEMA.properties).join(', '))
-  console.log('是否已构建：', typeof m.runGeneration === 'function')
+  console.log('ComfyUI address: ', cfg.baseUrl, '| default checkpoint: ', cfg.checkpoint ?? '(auto-pick)')
+  console.log('tool name: ', m.TOOL_NAME, '| parameters: ', Object.keys(m.PARAMETERS_SCHEMA.properties).join(', '))
+  console.log('built or not: ', typeof m.runGeneration === 'function')
 })"
 ```
 
-所以**装插件之前**就能先确认「ComfyUI 那边一切正常」——`doctor` 和真实执行路径调的是同一批探测函数，
-不会出现「自检说能跑、真跑却挑不到底模」。
+So **before installing the plugin** you can already confirm that "everything is normal on the ComfyUI side" — `doctor` and the real execution path call the same set of probe functions,
+so you won't get "the self-check says it can run, but a real run can't find a checkpoint".
 
-### 2.5 插件在 profile 配置树里的样子
+### 2.5 What the Plugin Looks Like in the Profile Config Tree
 
-本包自带一份 `cordis.patch.yml`，装了 bundle 就会自动往配置树里插一条：
+This package ships its own `cordis.patch.yml`; installing the bundle automatically inserts an entry into the config tree:
 
 ```yaml
 - insert:
@@ -211,8 +213,8 @@ node -e "import('./lib/index.js').then(m => {
       name: dsh-comfyui-image
 ```
 
-想在这里直接给插件写配置（优先级最高，见 [CONFIG.md](./CONFIG.md)），就在**profile 的**
-`cordis.patch.yml` 里按 id 覆盖：
+If you want to write config for the plugin right there (it has the highest priority; see [CONFIG.md](./CONFIG.md)), override it by id in **the profile's**
+`cordis.patch.yml`:
 
 ```yaml
 - id: dsh-comfyui-image
@@ -222,28 +224,28 @@ node -e "import('./lib/index.js').then(m => {
     checkpoint: 'sd_xl_base_1.0.safetensors'
 ```
 
-想临时关掉插件：加 `disabled: true`，或用插件管理器里的开关。
+To disable the plugin temporarily: add `disabled: true`, or use the toggle in the plugin manager.
 
 ---
 
-## 三、装完怎么确认成功
+## 3. How to Confirm the Install Succeeded
 
-按顺序做这四件事，每件都能独立判断：
+Do these four things in order; each one can be judged on its own:
 
-| # | 检查 | 期望看到 |
+| # | Check | What you expect to see |
 |---|---|---|
-| 1 | `npm run doctor`（在插件目录） | 打印生效配置 + ComfyUI 版本 + 四种模式的可用性；退出码 `0` |
-| 2 | DSH 设置 → 插件列表 | 能看到 `dsh-comfyui-image`（显示名「ComfyUI 图片生成」），开关可用 |
-| 3 | 对 Agent 说「用 generate_image 生成一张测试图」 | 模型能看到并调用这个工具，返回 `✅ 出图成功` + 一行绝对路径 |
-| 4 | 点/打开返回的路径 | 图片存在，旁边还有一个同名 `.json` 元数据文件 |
+| 1 | `npm run doctor` (in the plugin directory) | prints the effective config + the ComfyUI version + the availability of the four modes; exit code `0` |
+| 2 | DSH Settings → plugin list | `dsh-comfyui-image` is visible (display name "ComfyUI Image Generation"), and the toggle works |
+| 3 | Tell the Agent "use generate_image to generate a test image" | the model can see and call this tool, returning `✅ Image generated` + a line with an absolute path |
+| 4 | Click/open the returned path | the image exists, and next to it there is a same-named `.json` metadata file |
 
-任何一步不对，先看 [FAQ.md](./FAQ.md)；再不行就带上 `npm run doctor --json` 的输出提 issue。
+If any step goes wrong, check [FAQ.md](./FAQ.md) first; if that doesn't help, file an issue with the output of `npm run doctor --json`.
 
 ---
 
-## 四、卸载
+## 4. Uninstalling
 
-1. 插件管理器里**移除**该 bundle（或手动删掉 profile `package.json` 里的依赖与 `bundles` 条目），重启 DSH；
-2. 可选清理：删除配置文件目录 `~/.dsh-comfyui-image/`；
-3. 插件**不会**往 ComfyUI 里装任何东西、也不改 ComfyUI 配置；
-   它产生的中间文件都在 ComfyUI 的 `output/dsh-comfyui-image/` 子目录里，想清就删这个目录。
+1. **Remove** the bundle in the plugin manager (or manually delete the dependency and the `bundles` entry from the profile's `package.json`), then restart DSH;
+2. Optional cleanup: delete the config file directory `~/.dsh-comfyui-image/`;
+3. The plugin **does not** install anything into ComfyUI, and does not touch the ComfyUI config either;
+   the intermediate files it produces all live in ComfyUI's `output/dsh-comfyui-image/` subdirectory — delete that directory if you want to clean them up.

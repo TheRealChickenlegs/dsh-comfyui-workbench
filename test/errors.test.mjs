@@ -1,8 +1,8 @@
 /**
- * 错误路径测试：需求书第七节「错误处理」与验收标准里的「明确报错」。
+ * Error-path tests: the "error handling" requirement, and the "clear errors" acceptance criterion.
  *
- * 这里专门验证「坏了的时候说的话有没有用」——每条都必须能回答
- * 「为什么坏」+「我该怎么办」，而不是一个裸的 fetch failed。
+ * These specifically verify that "what it says when things break is useful" — every message must
+ * answer "why did it break" + "what should I do", instead of a bare fetch failed.
  */
 import './env-setup.mjs'
 import assert from 'node:assert/strict'
@@ -25,7 +25,7 @@ after(async () => {
   for (const mock of running) await mock.close()
 })
 
-/** 抓住错误；没报错就返回 undefined。 */
+/** Capture an error; returns undefined when nothing was thrown. */
 async function captureError(fn) {
   try {
     await fn()
@@ -36,33 +36,33 @@ async function captureError(fn) {
 }
 
 function assertUsefulError(error, pattern, label) {
-  assert.ok(error, `${label}：本应报错，却成功了`)
+  assert.ok(error, `${label}: expected an error, but it succeeded`)
   assert.ok(
     error instanceof ImagePluginError,
-    `${label}：应是 ImagePluginError，实际是 ${error?.constructor?.name}: ${error?.message}`
+    `${label}: expected an ImagePluginError, got ${error?.constructor?.name}: ${error?.message}`
   )
   const text = `${error.message}\n${error.hint ?? ''}`
-  assert.match(text, pattern, `${label}：报错文案没说到点子上 → ${text}`)
+  assert.match(text, pattern, `${label}: the error text missed the point → ${text}`)
   assert.ok(
     typeof error.hint === 'string' && error.hint.trim().length > 0,
-    `${label}：必须带一句「该怎么办」（hint），实际没有`
+    `${label}: it must carry a "what to do" hint, but none was present`
   )
 }
 
-test('ComfyUI 没启动 → 明确说连不上、并指出地址', async () => {
+test('ComfyUI is not running → clearly unreachable, and names the address', async () => {
   const cwd = tempDir('err-down')
   const config = testConfig({ baseUrl: 'http://127.0.0.1:1', requestTimeoutMs: 2000 })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assertUsefulError(error, /127\.0\.0\.1:1/, '连不上')
-  assert.match(`${error.message}${error.hint}`, /ComfyUI/, '应点名是 ComfyUI 的问题')
+  assertUsefulError(error, /127\.0\.0\.1:1/, 'unreachable')
+  assert.match(`${error.message}${error.hint}`, /ComfyUI/, 'it should name ComfyUI as the problem')
 })
 
-test('地址指向的不是 ComfyUI（返回 HTML）→ 说清「这不是 ComfyUI」', async () => {
+test('the address is not ComfyUI (returns HTML) → says "this is not ComfyUI"', async () => {
   const http = await import('node:http')
   const server = http.createServer((_req, res) => {
     res.writeHead(200, { 'content-type': 'text/html' })
-    res.end('<html>我是一个普通网页</html>')
+    res.end('<html>I am an ordinary web page</html>')
   })
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve))
   const { port } = server.address()
@@ -71,50 +71,50 @@ test('地址指向的不是 ComfyUI（返回 HTML）→ 说清「这不是 Comfy
     const cwd = tempDir('err-notcomfy')
     const config = testConfig({ baseUrl: `http://127.0.0.1:${port}` })
     const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-    assertUsefulError(error, /JSON|ComfyUI/, '不是 ComfyUI')
+    assertUsefulError(error, /JSON|ComfyUI/, 'not ComfyUI')
   } finally {
     await new Promise((resolve) => server.close(resolve))
   }
 })
 
-test('工作流执行失败 → 把 ComfyUI 的原始报错带出来', async () => {
+test("workflow execution fails → surfaces ComfyUI's original error", async () => {
   const { baseUrl } = await startMock({ failMode: 'execution_error' })
   const cwd = tempDir('err-exec')
   const config = testConfig({ baseUrl, pollIntervalMs: 100 })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assertUsefulError(error, /CUDA out of memory/, '执行失败')
+  assertUsefulError(error, /CUDA out of memory/, 'execution failed')
 })
 
-test('跑完了却没有图 → 明确说「没产出图片」，而不是静默成功', async () => {
+test('finished but no image → clearly says "produced no images" instead of silently succeeding', async () => {
   const { baseUrl } = await startMock({ failMode: 'no_images' })
   const cwd = tempDir('err-noimg')
   const config = testConfig({ baseUrl, pollIntervalMs: 100 })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assertUsefulError(error, /图/, '没有产出图片')
+  assertUsefulError(error, /produced no images/, 'no output image')
 })
 
-test('工作流被 ComfyUI 拒绝（400 + node_errors）→ 指出是哪个节点错', async () => {
+test('workflow rejected by ComfyUI (400 + node_errors) → identifies which node is wrong', async () => {
   const { baseUrl } = await startMock({ failMode: 'reject' })
   const cwd = tempDir('err-reject')
   const config = testConfig({ baseUrl, pollIntervalMs: 100 })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assertUsefulError(error, /value_not_in_list|拒绝/, '工作流被拒绝')
+  assertUsefulError(error, /value_not_in_list|rejected/, 'workflow rejected')
 })
 
-test('超时 → 报超时，并且尽力让 ComfyUI 别再占着显卡', async () => {
+test('timeout → reports the timeout, and tries to stop ComfyUI occupying the GPU', async () => {
   const { mock, baseUrl } = await startMock({ failMode: 'hang' })
   const cwd = tempDir('err-timeout')
   const config = testConfig({ baseUrl, timeoutMs: 1200, pollIntervalMs: 100 })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assertUsefulError(error, /超时/i, '超时')
-  assert.ok(mock.state.stats.interrupt >= 1, '超时后应调用 /interrupt 取消任务')
+  assertUsefulError(error, /timed out/i, 'timeout')
+  assert.ok(mock.state.stats.interrupt >= 1, 'after a timeout it should call /interrupt to cancel the job')
 })
 
-test('调用方取消 → 报「已取消」，不冒充成功', async () => {
+test('caller cancellation → reports "cancelled", never pretends to succeed', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('err-abort')
   const config = testConfig({ baseUrl, pollIntervalMs: 100 })
@@ -125,68 +125,68 @@ test('调用方取消 → 报「已取消」，不冒充成功', async () => {
   const error = await captureError(() =>
     runGeneration({ args: { prompt: 'x' }, cwd, config, signal: controller.signal })
   )
-  assert.ok(error instanceof ImagePluginError, `应报错，实际 ${error}`)
-  assert.match(`${error.message}${error.hint}`, /取消/)
+  assert.ok(error instanceof ImagePluginError, `expected an error, got ${error}`)
+  assert.match(`${error.message}${error.hint}`, /Cancelled/)
 })
 
-test('ComfyUI 的报告里没有任何底模 → 告诉用户往哪放模型', async () => {
+test("ComfyUI reports no checkpoints → tells the user where to put models", async () => {
   const { baseUrl } = await startMock({ checkpoints: [] })
   const cwd = tempDir('err-nockpt')
   const config = testConfig({ baseUrl })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assertUsefulError(error, /底模/, '没有底模')
-  assert.match(error.hint, /models\/checkpoints/, '要说清模型目录')
+  assertUsefulError(error, /checkpoint/i, 'no checkpoint')
+  assert.match(error.hint, /models\/checkpoints/, 'it must name the model directory')
 })
 
-test('指定的底模不存在 → 报错并列出可选项（而不是偷偷换一个）', async () => {
+test('the specified checkpoint does not exist → errors and lists the options (instead of quietly swapping)', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('err-badckpt')
   const config = testConfig({ baseUrl })
 
   const error = await captureError(() =>
-    runGeneration({ args: { prompt: 'x', model: '我不是一个真模型.safetensors' }, cwd, config })
+    runGeneration({ args: { prompt: 'x', model: 'not-a-real-model.safetensors' }, cwd, config })
   )
-  assertUsefulError(error, /我不是一个真模型/, '底模不存在')
-  assert.match(error.hint, /sd_xl_base_1\.0\.safetensors/, '要列出本机可用底模')
+  assertUsefulError(error, /not-a-real-model/, 'checkpoint missing')
+  assert.match(error.hint, /sd_xl_base_1\.0\.safetensors/, 'it must list the available checkpoints')
 })
 
-test('显式指定的采样器不存在 → 报错；只是配置默认值过期 → 悄悄换掉并说明', async () => {
+test('an explicitly specified sampler that does not exist → error; a stale config default → silently replaced with a note', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('err-sampler')
 
   const explicit = await captureError(() =>
     runGeneration({
-      args: { prompt: 'x', sampler_name: '不存在的采样器' },
+      args: { prompt: 'x', sampler_name: 'no-such-sampler' },
       cwd,
       config: testConfig({ baseUrl })
     })
   )
-  assertUsefulError(explicit, /采样器不存在/, '采样器不存在')
-  assert.match(explicit.hint, /euler/, '要列出可用采样器')
+  assertUsefulError(explicit, /Sampler does not exist/, 'sampler missing')
+  assert.match(explicit.hint, /euler/, 'it must list the available samplers')
 
   const run = await runGeneration({
     args: { prompt: 'x' },
     cwd,
-    config: testConfig({ baseUrl, samplerName: '过期的采样器名字' })
+    config: testConfig({ baseUrl, samplerName: 'stale-sampler-name' })
   })
   assert.ok(
-    run.notes.some((note) => note.includes('采样器')),
-    '默认采样器在本机不存在时应换掉并留下说明'
+    run.notes.some((note) => note.includes('Sampler')),
+    'when the default sampler does not exist on this machine it should be replaced with a note'
   )
 })
 
-test('取图失败（/view 500）→ 报错而不是写出一个空文件', async () => {
+test('fetching the image fails (/view 500) → error instead of writing an empty file', async () => {
   const { baseUrl } = await startMock({ failMode: 'view_500' })
   const cwd = tempDir('err-view')
   const config = testConfig({ baseUrl, pollIntervalMs: 100 })
 
   const error = await captureError(() => runGeneration({ args: { prompt: 'x' }, cwd, config }))
-  assert.ok(error instanceof ImagePluginError, `应报错，实际：${error}`)
-  assert.match(`${error.message}${error.hint}`, /500|取图|HTTP/)
+  assert.ok(error instanceof ImagePluginError, `expected an error, got: ${error}`)
+  assert.match(`${error.message}${error.hint}`, /500|HTTP/)
 })
 
-test('输入图是空文件 → 也要有明确说法', async () => {
+test('an empty input image → also gets a clear explanation', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('err-emptyinput')
   const config = testConfig({ baseUrl })
@@ -197,5 +197,5 @@ test('输入图是空文件 → 也要有明确说法', async () => {
   const error = await captureError(() =>
     runGeneration({ args: { mode: 'img2img', prompt: 'x', input_image: emptyish }, cwd, config })
   )
-  assert.ok(error, '空图片文件不应被当成正常输入')
+  assert.ok(error, 'an empty image file must not be accepted as a normal input')
 })

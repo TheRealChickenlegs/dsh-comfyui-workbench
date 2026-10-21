@@ -1,14 +1,15 @@
 /**
- * 测试公用工具。
+ * Shared test utilities.
  *
- * 两条原则：
- *   1. **绝不碰用户真实的数据**：插件配置文件位置用 `DSH_COMFYUI_IMAGE_CONFIG`
- *      指到临时目录，输出目录也用临时目录。
- *   2. **配置值必须落在合法区间**：`resolveConfig` 里的 `pickNumber(100, 10000, ...)`
- *      会把越界值丢掉退回默认值，所以测试给的 `pollIntervalMs` 不能低于 100，
- *      `timeoutMs` 不能低于 1000——否则测出来的等待时间是假的。
+ * Two principles:
+ *   1. **Never touch real user data**: the plugin config file location is pointed at a temp
+ *      directory via `DSH_COMFYUI_IMAGE_CONFIG`, and the output directory is a temp directory too.
+ *   2. **Config values must stay in their legal ranges**: `pickNumber(100, 10000, ...)` in
+ *      `resolveConfig` drops out-of-range values and falls back to the defaults, so tests must not
+ *      pass `pollIntervalMs` below 100 or `timeoutMs` below 1000 — otherwise the measured wait times
+ *      would be fictitious.
  */
-// 必须排在最前面：它把插件配置文件位置指到临时目录，而 lib 是在加载时固定这个路径的。
+// Must come first: it points the plugin config file at a temp directory, and lib fixes that path at load time.
 import { CONFIG_PATH } from './env-setup.mjs'
 import fs from 'node:fs'
 import os from 'node:os'
@@ -18,27 +19,28 @@ import { resolveConfig } from '../lib/index.js'
 
 let counter = 0
 
-/** 造一个临时目录（不自动删，方便失败后进去看现场）。 */
+/** Create a temp directory (not deleted automatically, so you can inspect the scene after a failure). */
 export function tempDir(tag = 'dsh-cii') {
   counter += 1
   return fs.mkdtempSync(path.join(os.tmpdir(), `${tag}-${process.pid}-${counter}-`))
 }
 
 /**
- * 返回本次测试进程使用的插件配置文件路径。
+ * Return the plugin config file path used by this test process.
  *
- * 注意：**它不会「顺便」生效**——lib 加载时已经把 `CONFIG_FILE` 固定成
- * `env-setup.mjs` 里那个临时路径了。这个函数只是把那同一个路径交给你，
- * 避免测试里出现「设了个新路径却根本没被读取」这种假隔离。
+ * Note: it does **not** "take effect by itself" — lib already fixed `CONFIG_FILE` to the temp path
+ * from `env-setup.mjs` when it loaded. This function just hands you that same path, avoiding the
+ * fake isolation of "set a new path that was never read".
  */
 export function isolatePluginConfig() {
   return CONFIG_PATH
 }
 
 /**
- * 造一份测试用配置。
- * `baseUrl` 默认指向一个必然连不上的端口，只有真的需要连服务时才覆盖它——
- * 这样「意外发起网络请求」会立刻失败，而不是悄悄连到本机 8188 上的真 ComfyUI。
+ * Build a test configuration.
+ * `baseUrl` defaults to a port that can never connect; only override it when a service is really
+ * needed — that way an "accidental network request" fails immediately instead of quietly reaching a
+ * real ComfyUI on the machine's 8188.
  */
 export function testConfig(overrides = {}) {
   isolatePluginConfig()
@@ -51,14 +53,14 @@ export function testConfig(overrides = {}) {
   })
 }
 
-/** 写一张真 PNG 到指定路径，返回路径。 */
+/** Write a real PNG to the given path and return the path. */
 export function writePng(file, width = 64, height = 64) {
   fs.mkdirSync(path.dirname(file), { recursive: true })
   fs.writeFileSync(file, makePng(width, height))
   return file
 }
 
-/** 造一个假的「执行上下文」，把 cwd 挂在 agent.meta.cwd 上（宿主真实形态之一）。 */
+/** Build a fake "execution context" with cwd on agent.meta.cwd (one of the real host shapes). */
 export function fakeExec(cwd, signal) {
   return {
     agent: { meta: { cwd } },

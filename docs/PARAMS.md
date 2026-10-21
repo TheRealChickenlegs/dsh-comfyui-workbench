@@ -1,181 +1,180 @@
-# 工具参数说明
+# Tool Parameters
 
-对外只有**一个**工具：`generate_image`。这份文档逐项说明它的参数、默认值、以及在什么情况下会被忽略。
+There is exactly **one** tool exposed: `generate_image`. This document walks through its parameters, defaults, and when each one is ignored.
 
-- 参数 schema 定义在 `src/tool.ts`（`PARAMETERS_SCHEMA`），归一化逻辑在 `src/params.ts`。
-- 参数是**原始 JSON Schema**，且只用 DSH 支持的子集（`minimum` / `maximum` / `format` 这些键会被直接拒绝），
-  所以取值范围只写在 description 里，由插件在运行时**兜底校验并给出明确报错**。
+- The parameter schema lives in `src/tool.ts` (`PARAMETERS_SCHEMA`); normalization logic lives in `src/params.ts`.
+- The parameters are a **raw JSON Schema** using only the subset DSH supports (`minimum` / `maximum` / `format` are rejected outright),
+  so value ranges live only in the descriptions, and the plugin **validates at runtime and reports a clear error**.
 
 ---
 
-## 一、参数总表
+## 1. Parameter Reference
 
-| 参数 | 类型 | 默认 | 生效模式 | 说明 |
+| Parameter | Type | Default | Effective modes | Description |
 |---|---|---|---|---|
-| `mode` | string 枚举 | 自动推断 | 全部 | `text2img` / `img2img` / `inpaint` / `remove_background`。传了不认识的值得直接报错 |
-| `prompt` | string | — | `text2img` `img2img` `inpaint` | 正向提示词，必填。`remove_background` 传了会被忽略并在 `notes` 里说明 |
-| `negative_prompt` | string | 插件默认负向词 | 生成类 | 覆盖配置里的 `negativePrompt` |
-| `input_image` | string | — | `img2img` `inpaint` `remove_background` | 必填。绝对路径或相对**当前工作目录**；支持 `~` |
-| `mask_image` | string | — | `inpaint` | 必填。**白色/亮色区域 = 要重绘的区域**（alpha 通道不被读取），尺寸需与 `input_image` 一致 |
-| `width` | integer | 按底模（1024 / 512） | **仅** `text2img` | `64`~`8192`，非 8 的倍数会自动对齐并在 `notes` 里说明 |
-| `height` | integer | 按底模（1024 / 512） | **仅** `text2img` | 同上 |
-| `seed` | integer | 随机 | 生成类 | `0`~`4294967295`。同 seed + 同 prompt + 同底模 = 同一张图 |
-| `output_path` | string | 当前工作目录 | 全部 | 给目录 → 里面自动起名；给 `xxx.png` 这种带图片扩展名的 → 当文件路径（已存在则加 `-1`/`-2`，**绝不覆盖**） |
-| `strength` | number | `img2img` 0.6 / `inpaint` 1.0 | `img2img` `inpaint` | `0`~`1`，越小越贴近原图。`remove_background` 传了会被忽略 |
-| `steps` | integer | `20` | 生成类 | `1`~`500`，越大越细越慢 |
-| `cfg_scale` | number | `7` | 生成类 | `0`~`100`，越高越贴提示词、越低越自由 |
-| `model` | string | 自动挑 | 生成类 | 底模文件名。不传则自动选（优先带 `xl` 的），选了什么会写进结果的 `notes` |
-| `sampler_name` | string | `euler` | 生成类 | **显式传**了本机没有的值 → 报错并列出可用值；只是配置默认值在本机不存在时 → 自动回退并在 `notes` 里说明 |
-| `scheduler` | string | `normal` | 生成类 | 同上 |
-| `style_reference` | string | — | **（预留）** | V1 只校验文件存在 + 写进元数据，**不影响出图** |
-| `character_reference` | string | — | **（预留）** | 同上 |
-| `extra_options` | object | — | 全部 | 现在只有 `workflow_path` 有行为：用它指定的 API 格式工作流**接管**本次生成 |
+| `mode` | string enum | inferred | all | `text2img` / `img2img` / `inpaint` / `remove_background`. An unknown value is an error |
+| `prompt` | string | — | `text2img` `img2img` `inpaint` | Positive prompt, required. For `remove_background` it is ignored and `notes` says so |
+| `negative_prompt` | string | plugin default negative prompt | generation modes | Overrides `negativePrompt` from the config |
+| `input_image` | string | — | `img2img` `inpaint` `remove_background` | Required. Absolute, or relative to the **current working directory**; `~` is supported |
+| `mask_image` | string | — | `inpaint` | Required. **White/bright areas = the region to repaint** (the alpha channel is not read); dimensions must match `input_image` |
+| `width` | integer | by checkpoint (1024 / 512) | **only** `text2img` | `64`–`8192`; values not divisible by 8 are aligned, with a note in `notes` |
+| `height` | integer | by checkpoint (1024 / 512) | **only** `text2img` | Same as above |
+| `seed` | integer | random | generation modes | `0`–`4294967295`. Same seed + same prompt + same checkpoint = the same image |
+| `output_path` | string | current working directory | all | A directory → a name is generated inside it; a path with an image extension (e.g. `xxx.png`) → treated as a file path (if it exists, `-1`/`-2` is appended; **never overwritten**) |
+| `strength` | number | `img2img` 0.6 / `inpaint` 1.0 | `img2img` `inpaint` | `0`–`1`; lower stays closer to the original. For `remove_background` it is ignored |
+| `steps` | integer | `20` | generation modes | `1`–`500`; more is finer and slower |
+| `cfg_scale` | number | `7` | generation modes | `0`–`100`; higher follows the prompt more closely, lower is freer |
+| `model` | string | auto-pick | generation modes | Checkpoint file name. Picked automatically when omitted (preferring names containing `xl`); what was chosen goes into the result's `notes` |
+| `sampler_name` | string | `euler` | generation modes | An **explicit** value missing on this machine → error with the available values; only a stale config default → fall back with a note in `notes` |
+| `scheduler` | string | `normal` | generation modes | Same as above |
+| `style_reference` | string | — | **(reserved)** | V1 only verifies the file exists and writes it to metadata; **it does not affect generation** |
+| `character_reference` | string | — | **(reserved)** | Same as above |
+| `extra_options` | object | — | all | Only `workflow_path` currently has behaviour: the API-format workflow it points at **takes over** this generation |
 
-> 结果里返回的 `width` / `height` 一律是**产出图的实际像素尺寸**：`text2img` 就等于请求的尺寸，
-> 而 `img2img` / `inpaint` / `remove_background` 会等于输入图的尺寸——这几种模式的画布跟输入图走，
-> 请求里的 `width` / `height` 并不生效。尺寸与请求不一致时，`notes` 里会写明原因。
+> The `width` / `height` in the result are always the **actual pixel dimensions of the produced image**: for `text2img` that equals the requested size,
+> while for `img2img` / `inpaint` / `remove_background` it equals the input image's size — those modes take their canvas from the input image,
+> and the requested `width` / `height` do not apply. When the size differs from the request, `notes` explains why.
 
-### 取值范围与报错
+### Ranges and errors
 
-超出范围的值得的是**明确报错**，不是被夹到边界：
-
-```
-width 超出允许范围 64~8192，收到 99999。
-```
+Out-of-range values are **clear errors**, not clamped to the boundary:
 
 ```
-steps 必须是数字，收到的是 "abc"。
+width is outside the allowed range 64-8192, received 99999.
 ```
 
-### 「被忽略」而不是「报错」的情况
+```
+steps must be a number, received "abc".
+```
 
-这些不会失败，但会在结果的 `notes` 里明说，避免你以为它生效了：
+### Ignored rather than rejected
 
-| 情况 | `notes` 里的说法（大意） |
+These do not fail, but the result's `notes` says so explicitly, so you never assume they took effect:
+
+| Situation | What `notes` says (paraphrased) |
 |---|---|
-| 非 `text2img` 传了 `width` / `height` | 「输出尺寸由输入图决定，width/height 已忽略」 |
-| `remove_background` 传了 `prompt` | 「不使用 prompt，已忽略」 |
-| `remove_background` 传了 `strength` | 「不使用 strength，已忽略」 |
-| 尺寸不是 8 的倍数 | 「width 已从 1001 对齐到 8 的倍数：1000（ComfyUI 要求）」 |
-| 传了 `style_reference` / `character_reference` | 「V1 只做记录（写入元数据），暂不参与生成」 |
-| 没传 `model` | 「自动选用底模：xxx（本机共 N 个可选，可用 model 参数指定）。」 |
-| 配置里的默认采样器 / 调度器本机没有（**不是**调用时显式传的） | 「采样器 xxx 在本机不存在，已改用 yyy。」 |
-| 没指定 `width` / `height`，且底模判定出的默认尺寸与配置默认值不同 | 「未指定尺寸：按底模 xxx 自适应为 512x512（自适应前为 1024x1024，可用 width/height 覆盖）。」 |
-| `img2img` / `inpaint` 的产出尺寸与请求里的 `width` / `height` 不同 | 「输出尺寸是 512x512（img2img 的画布由输入图决定，请求里的 1024x1024 不生效）。」 |
+| `width` / `height` passed with a non-`text2img` mode | "takes its output size from the input image; width/height were ignored" |
+| `prompt` passed to `remove_background` | "does not use prompt; it was ignored" |
+| `strength` passed to `remove_background` | "does not use strength; it was ignored" |
+| A dimension not divisible by 8 | "width was aligned from 1001 to a multiple of 8: 1000 (ComfyUI requirement)" |
+| `style_reference` / `character_reference` passed | "only recorded in V1 (written to metadata); they do not affect generation yet" |
+| `model` not passed | "Checkpoint chosen automatically: xxx (N available on this machine; use the model argument to specify one)." |
+| The config's default sampler / scheduler does not exist locally (**not** passed explicitly at call time) | "Sampler xxx does not exist on this machine; switched to yyy." |
+| No `width` / `height` given, and the checkpoint-derived default differs from the config default | "No size specified: adapted to 512x512 for checkpoint xxx (was 1024x1024 before adaptation; override with width/height)." |
+| The `img2img` / `inpaint` output size differs from the requested `width` / `height` | "Output size is 512x512 (the canvas for img2img is determined by the input image; the requested 1024x1024 does not apply)." |
 
 ---
 
-## 二、模式推断与冲突规则
+## 2. Mode Inference and Conflict Rules
 
-不传 `mode` 时按三条规则推断：
+When `mode` is omitted, three rules infer it:
 
 ```
-有 input_image 且有 mask_image  →  inpaint
-只有 input_image               →  img2img
-都没有                         →  text2img
+input_image AND mask_image   →  inpaint
+only input_image             →  img2img
+neither                      →  text2img
 ```
 
-**推断只做这一步**。任何冲突都直接报错（宁可报错，也不猜你想干什么）：
+**Inference does only this one step.** Any conflict is an immediate error (better an error than guessing what you meant):
 
-| 输入 | 结果 |
+| Input | Result |
 |---|---|
-| `mode=text2img` + `input_image` | ✗ 报错：「想基于这张图改，请显式传 `mode="img2img"`」 |
-| `mode=text2img` + `mask_image` | ✗ 报错：「请显式传 `mode="inpaint"`」 |
-| `mode=img2img` + `mask_image` | ✗ 报错：「有遮罩属于局部重绘，请改传 `mode="inpaint"`」 |
-| `mask_image` 但没有 `input_image` | ✗ 报错：「局部重绘需要原图 + 遮罩两张图」 |
-| `mode=img2img` / `inpaint` / `remove_background` 缺 `input_image` | ✗ 报错 |
-| `mode=inpaint` 缺 `mask_image` | ✗ 报错（V1 不做自动抠图 / 自动生成遮罩） |
-| `mode=text2img` / `img2img` / `inpaint` 缺 `prompt` | ✗ 报错 |
-| `input_image` / `mask_image` 路径不存在 | ✗ 报错，**在上传之前**就拦下来 |
-| `input_image` 指向目录或 0 字节文件 | ✗ 报错，并说明「给具体的图片文件路径」/「文件里没有图像数据」 |
-| `mode` 是不认识的值 | ✗ 报错，并列出 V1 支持的四种 |
+| `mode=text2img` + `input_image` | ✗ Error: "To edit that image, pass `mode="img2img"` explicitly" |
+| `mode=text2img` + `mask_image` | ✗ Error: "Pass `mode="inpaint"` explicitly" |
+| `mode=img2img` + `mask_image` | ✗ Error: "a mask means inpainting; use `mode="inpaint"` instead" |
+| `mask_image` but no `input_image` | ✗ Error: "Inpainting needs two images, the source and the mask" |
+| `mode=img2img` / `inpaint` / `remove_background` without `input_image` | ✗ Error |
+| `mode=inpaint` without `mask_image` | ✗ Error (V1 does not do automatic matting / mask generation) |
+| `mode=text2img` / `img2img` / `inpaint` without `prompt` | ✗ Error |
+| `input_image` / `mask_image` path does not exist | ✗ Error, caught **before the upload** |
+| `input_image` points at a directory or a 0-byte file | ✗ Error, explaining "provide a specific image file path" / "the file contains no image data" |
+| `mode` is an unknown value | ✗ Error, listing the four modes V1 supports |
 
-**为什么这么设计**：Agent 调用出错时最怕「静默降级成另一个模式」——你以为在局部重绘，结果它整图重画了。
-所以本插件的原则是：**能一眼判定的就推断，有歧义的一律报错**，报错文本里带上「怎么办」。
+**Why this design**: the worst failure when an Agent calls a tool is "silently degrading into another mode" — you think you are inpainting, but it redraws the whole image.
+So this plugin's principle is: **infer what is unambiguous; error on anything ambiguous**, with "what to do" in the error text.
 
 ---
 
-## 三、输出结构
+## 3. Output Structure
 
-工具返回值（`output.schema`）字段：
+The tool's return value (`output.schema`) fields:
 
-| 字段 | 类型 | 说明 |
+| Field | Type | Description |
 |---|---|---|
-| `text` | string | 给模型看的完整结果说明（也是 UI 里显示的那段） |
-| `path` | string | **主产出文件的绝对路径**（放最前面，便于前端识别成可点开的文件） |
-| `files` | string[] | 本次产出的全部文件（当前固定 1 个） |
-| `mode` | string | 实际使用的模式 |
-| `seed` | integer | 本次种子（复现就靠它） |
-| `width` / `height` | integer | 实际尺寸（非 `text2img` 时是输入图的尺寸） |
-| `steps` / `cfg_scale` / `strength` | number | 本次参数 |
-| `model` | string | 实际使用的底模（可能是自动挑的） |
-| `sampler` / `scheduler` | string | 实际使用的采样器 / 调度器（可能是回退后的） |
-| `prompt_id` | string | ComfyUI 的 `prompt_id`，可以去它界面/队列里查这次任务 |
-| `comfy_url` | string | 使用的 ComfyUI 地址 |
-| `duration_ms` | integer | 从提交到取回图片的耗时 |
-| `success` | boolean | 是否成功（失败时工具抛错，不会返回 `success:false`） |
-| `mode_inferred` | boolean | 模式是否为自动推断 |
-| `metadata_path` | string? | `.json` 元数据 sidecar 路径（关掉 `writeMetadata` 时不存在） |
-| `notes` | string[] | 本次的提醒（见上表） |
+| `text` | string | Complete result description for the model (also the text shown in the UI) |
+| `path` | string | **Absolute path of the primary output file** (first, so the frontend recognises it as a clickable file) |
+| `files` | string[] | All files produced by this call (currently always 1) |
+| `mode` | string | The mode actually used |
+| `seed` | integer | The seed used (reproduction relies on it) |
+| `width` / `height` | integer | Actual dimensions (the input image's size for non-`text2img` modes) |
+| `steps` / `cfg_scale` / `strength` | number | Parameters used |
+| `model` | string | The checkpoint actually used (may have been auto-picked) |
+| `sampler` / `scheduler` | string | The sampler / scheduler actually used (may have been a fallback) |
+| `prompt_id` | string | ComfyUI's `prompt_id`, for looking up this job in its UI/queue |
+| `comfy_url` | string | The ComfyUI address used |
+| `duration_ms` | integer | Time from submission to fetching the image |
+| `success` | boolean | Whether it succeeded (on failure the tool throws; it never returns `success:false`) |
+| `mode_inferred` | boolean | Whether the mode was inferred automatically |
+| `metadata_path` | string? | The `.json` metadata sidecar path (absent when `writeMetadata` is off) |
+| `notes` | string[] | Notes for this call (see the table above) |
 
-`text` 的排版是刻意的：**绝对路径单独占一行、不加任何修饰**，这样 DSH 前端会把它渲染成可点开的文件链接。
-
-```text
-✅ 出图成功（局部重绘）
-
-图片：C:\Users\me\Desktop\comfyui-20261003-131501-7f2c.png
-元数据：C:\Users\me\Desktop\comfyui-20261003-131501-7f2c.png.json
-
-参数：seed=991203 尺寸=768x768 steps=25 cfg=7 strength=1
-底模：sd_xl_base_1.0.safetensors
-采样：euler / normal　耗时：18.7 秒
-ComfyUI：http://127.0.0.1:8188（prompt_id=1f0a…）
-
-备注：
-  - 自动选用底模：sd_xl_base_1.0.safetensors（本机共 3 个可选，可用 model 参数指定）。
-```
-
-## 四、失败时长什么样
-
-失败时工具**抛错**，报错文本 = 「发生了什么」+「下一步怎么办」：
+The `text` layout is deliberate: **the absolute path occupies its own line, undecorated**, so the DSH frontend renders it as a clickable file link.
 
 ```text
-❌ 出图失败（文生图）
+✅ Image generated (inpainting)
 
-连不上 ComfyUI：http://127.0.0.1:8188（fetch failed）
+Image: C:\Users\me\Desktop\comfyui-20261003-131501-7f2c.png
+Metadata: C:\Users\me\Desktop\comfyui-20261003-131501-7f2c.png.json
 
-请先启动本地 ComfyUI 服务（默认监听 127.0.0.1:8188），或把地址改对——改
-~/.dsh-comfyui-image/config.json 里的 baseUrl，或设环境变量 COMFYUI_URL=http://主机:端口。
+Params: seed=991203 size=768x768 steps=25 cfg=7 strength=1
+Checkpoint: sd_xl_base_1.0.safetensors
+Sampling: euler / normal  Elapsed: 18.7 s
+ComfyUI: http://127.0.0.1:8188 (prompt_id=1f0a…)
+
+Notes:
+  - Checkpoint chosen automatically: sd_xl_base_1.0.safetensors (3 available on this machine; use the model argument to specify one).
 ```
 
-常见的还有：没有任何可用的底模、缺少去背节点（会列出四套安装方案）、
-工作流执行失败（带 `prompt_id` 与排查建议）、等图超时（已尽力取消任务）、
-「任务结束但没有任何图片产出」（多半是自定义工作流末端没接 `SaveImage`）。
+## 4. What Failure Looks Like
 
-## 五、自定义工作流的占位符
+On failure the tool **throws**, and the error text = "what happened" + "what to do next":
 
-用 `extra_options.workflow_path` 接管生成时，插件会在提交前替换这些占位符：
+```text
+❌ Image generation failed (text-to-image)
 
-| 占位符 | 值 |
+Cannot reach ComfyUI at http://127.0.0.1:8188 (fetch failed)
+
+Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the address: change baseUrl in ~/.dsh-comfyui-image/config.json, or set the environment variable COMFYUI_URL=http://host:port.
+```
+
+Other common ones: no available checkpoint, a missing background-removal node (listing all four installation options),
+workflow execution failure (with `prompt_id` and troubleshooting advice), waiting timeout (after trying to cancel the job),
+and "the job finished but produced no images" (usually a custom workflow that does not end in `SaveImage`).
+
+## 5. Custom Workflow Placeholders
+
+When `extra_options.workflow_path` takes over generation, the plugin substitutes these placeholders before submitting:
+
+| Placeholder | Value |
 |---|---|
-| `{{prompt}}` | 正向提示词 |
-| `{{negative_prompt}}` | 负向提示词（含插件默认值） |
-| `{{width}}` / `{{height}}` | 尺寸 |
-| `{{seed}}` | 种子 |
-| `{{steps}}` | 采样步数 |
+| `{{prompt}}` | Positive prompt |
+| `{{negative_prompt}}` | Negative prompt (including the plugin default) |
+| `{{width}}` / `{{height}}` | Dimensions |
+| `{{seed}}` | Seed |
+| `{{steps}}` | Sampling steps |
 | `{{cfg_scale}}` | CFG |
-| `{{strength}}` | 强度 |
-| `{{checkpoint}}` | 实际使用的底模名 |
-| `{{input_image}}` | **已上传到 ComfyUI 后**的文件名（不是本地路径） |
-| `{{mask_image}}` | 同上 |
-| `{{mode}}` | 本次模式 |
+| `{{strength}}` | Strength |
+| `{{checkpoint}}` | The checkpoint name actually used |
+| `{{input_image}}` | The file name **after uploading to ComfyUI** (not the local path) |
+| `{{mask_image}}` | Same as above |
+| `{{mode}}` | The mode for this call |
 
-替换规则：
+Substitution rules:
 
-- **整个值就是一个占位符**（如 `"ckpt_name": "{{checkpoint}}"`）→ 原样替换，**类型保持不变**（数字仍是数字）；
-- 占位符嵌在句子中间 → 按字符串拼接；
-- **没提供的占位符原样保留**（如 `{{foo}}` 留成 `{{foo}}`）——便于你发现自己拼错了。
+- **The whole value is one placeholder** (e.g. `"ckpt_name": "{{checkpoint}}"`) → replaced as-is, **with the type preserved** (a number stays a number);
+- A placeholder embedded mid-sentence → concatenated as a string;
+- **A placeholder that was not supplied is left as-is** (e.g. `{{foo}}` stays `{{foo}}`) — making your own typo easy to spot.
 
-> 注意：`input_image` 的语义是「ComfyUI 输入目录里的文件名」——因为 `LoadImage` 节点的 `image`
-> 参数是**输入目录下的文件名枚举**，不是自由字符串。插件已经用 `/upload/image` 返回的文件名回填，
-> 所以你在模板里写 `{{input_image}}` 就对了，别写本地绝对路径。
+> Note: `input_image` means "the file name inside ComfyUI's input directory" — because the `image` parameter of the `LoadImage`
+> node is an **enum of file names in the input directory**, not a free-form string. The plugin back-fills it with the file name
+> returned by `/upload/image`, so `{{input_image}}` in your template is correct; do not write a local absolute path.

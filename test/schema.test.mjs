@@ -1,22 +1,23 @@
 /**
- * Schema 守卫测试。
+ * Schema guard tests.
  *
- * 依据：`@deepseek-ai/dsh-tools/lib/types/json-schema.d.ts` 明载 ——
+ * Basis: `@deepseek-ai/dsh-tools/lib/types/json-schema.d.ts` states —
  *   "The subset accepts ... one scalar `type`, object `properties`/`required`/boolean
  *    `additionalProperties`, array `items`, type-correct scalar `enum`/`const`,
  *    and exact-one `oneOf`. **Unsupported or misplaced keywords reject rather than
  *    being accepted without enforcement.**"
  *
- * 也就是说 minimum / maximum / format / pattern 这类看着无害的关键字会让整个
- * 工具注册失败。所以这里把允许的关键字固化成白名单，把参数与输出 schema
- * 整棵树走一遍——以后谁手滑写个 `format` 会立刻红。
+ * In other words, seemingly harmless keywords such as minimum / maximum / format / pattern make
+ * the whole tool registration fail. So the allowed keywords are frozen into a whitelist here and
+ * the entire parameter and output schema trees are walked — anyone who slips in a `format` turns
+ * this red immediately.
  */
 import './env-setup.mjs'
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import { OUTPUT_SCHEMA, PARAMETERS_SCHEMA, TOOL_DESCRIPTION } from '../lib/index.js'
 
-/** json-schema.d.ts 里逐字列出的允许字段。 */
+/** The allowed fields, listed verbatim in json-schema.d.ts. */
 const ALLOWED_KEYWORDS = new Set([
   'type',
   'oneOf',
@@ -53,20 +54,20 @@ function collect(node, where) {
   walk(node, where, (current, at) => {
     for (const key of Object.keys(current)) {
       if (!ALLOWED_KEYWORDS.has(key)) {
-        problems.push(`${at} 用了不被支持的 JSON Schema 关键字 "${key}"（DSH 会直接拒绝整个 schema）`)
+        problems.push(`${at} uses the unsupported JSON Schema keyword "${key}" (DSH rejects the whole schema)`)
       }
     }
     if (current.type !== undefined && !SCALAR_TYPES.has(current.type)) {
-      problems.push(`${at}.type 不是合法标量类型：${JSON.stringify(current.type)}`)
+      problems.push(`${at}.type is not a legal scalar type: ${JSON.stringify(current.type)}`)
     }
     if (current.enum !== undefined) {
       if (!Array.isArray(current.enum) || current.enum.length === 0) {
-        problems.push(`${at}.enum 必须是非空数组`)
+        problems.push(`${at}.enum must be a non-empty array`)
       } else {
         for (const value of current.enum) {
           const type = typeof value
           if (value !== null && type !== 'string' && type !== 'number' && type !== 'boolean') {
-            problems.push(`${at}.enum 只能是标量，收到 ${type}`)
+            problems.push(`${at}.enum may only contain scalars, received ${type}`)
           }
         }
       }
@@ -74,49 +75,49 @@ function collect(node, where) {
     if (current.const !== undefined) {
       const type = typeof current.const
       if (current.const !== null && type !== 'string' && type !== 'number' && type !== 'boolean') {
-        problems.push(`${at}.const 只能是标量，收到 ${type}`)
+        problems.push(`${at}.const may only be a scalar, received ${type}`)
       }
     }
     if (current.oneOf !== undefined && (!Array.isArray(current.oneOf) || current.oneOf.length < 2)) {
-      problems.push(`${at}.oneOf 至少要有两个分支`)
+      problems.push(`${at}.oneOf needs at least two branches`)
     }
     if (current.required !== undefined) {
       if (!Array.isArray(current.required)) {
-        problems.push(`${at}.required 必须是字符串数组（不是 required: true 这种写法）`)
+        problems.push(`${at}.required must be an array of strings (not a required: true style)`)
       } else {
         const declared = Object.keys(current.properties ?? {})
         for (const name of current.required) {
           if (!declared.includes(name)) {
-            problems.push(`${at}.required 里的 "${name}" 没有在 properties 里声明`)
+            problems.push(`${at}.required lists "${name}", which is not declared in properties`)
           }
         }
       }
     }
     if (current.additionalProperties !== undefined && typeof current.additionalProperties !== 'boolean') {
-      problems.push(`${at}.additionalProperties 只能是布尔值`)
+      problems.push(`${at}.additionalProperties may only be a boolean`)
     }
   })
   return problems
 }
 
-test('参数 schema：整棵树只用了 DSH 支持的 JSON Schema 子集', () => {
+test('parameter schema: the whole tree only uses the JSON Schema subset DSH supports', () => {
   const problems = collect(PARAMETERS_SCHEMA, 'parameters')
   assert.deepEqual(problems, [], problems.join('\n'))
 })
 
-test('输出 schema：整棵树只用了 DSH 支持的 JSON Schema 子集', () => {
+test('output schema: the whole tree only uses the JSON Schema subset DSH supports', () => {
   const problems = collect(OUTPUT_SCHEMA, 'output.schema')
   assert.deepEqual(problems, [], problems.join('\n'))
 })
 
-test('参数 schema：对象根 + 关闭多余字段（Agent 传错键会被明确拒绝）', () => {
+test('parameter schema: object root + extra fields disabled (wrong keys from the Agent are rejected clearly)', () => {
   assert.equal(PARAMETERS_SCHEMA.type, 'object')
   assert.equal(PARAMETERS_SCHEMA.additionalProperties, false)
   assert.ok(Array.isArray(PARAMETERS_SCHEMA.required))
-  assert.deepEqual(PARAMETERS_SCHEMA.required, [], 'V1 允许只传一个 prompt，所以不设必填项')
+  assert.deepEqual(PARAMETERS_SCHEMA.required, [], 'V1 allows a single prompt, so there are no required fields')
 })
 
-test('参数 schema：需求书第五节列的参数一个都不能少', () => {
+test('parameter schema: none of the parameters from the spec may be missing', () => {
   const expected = [
     'mode',
     'prompt',
@@ -136,44 +137,44 @@ test('参数 schema：需求书第五节列的参数一个都不能少', () => {
   ]
   const declared = Object.keys(PARAMETERS_SCHEMA.properties)
   for (const name of expected) {
-    assert.ok(declared.includes(name), `参数 schema 缺少需求书要求的 ${name}`)
+    assert.ok(declared.includes(name), `the parameter schema is missing ${name}, which the spec requires`)
   }
-  // V1 为了「对 Agent 友好」额外提供的两个可选项
-  assert.ok(declared.includes('model'), '应能指定底模')
-  assert.ok(declared.includes('sampler_name'), '应能指定采样器')
+  // Two extra optional fields V1 provides for "Agent friendliness"
+  assert.ok(declared.includes('model'), 'it should be possible to specify a checkpoint')
+  assert.ok(declared.includes('sampler_name'), 'it should be possible to specify a sampler')
 })
 
-test('参数 schema：mode 是枚举，且枚举值与运行时一致', () => {
+test('parameter schema: mode is an enum, and the enum values match the runtime', () => {
   const mode = PARAMETERS_SCHEMA.properties.mode
   assert.deepEqual([...mode.enum].sort(), ['img2img', 'inpaint', 'remove_background', 'text2img'])
 })
 
-test('参数 schema：每个参数都写了 description（模型靠它决定怎么传）', () => {
+test('parameter schema: every parameter has a description (the model relies on it)', () => {
   for (const [name, spec] of Object.entries(PARAMETERS_SCHEMA.properties)) {
-    assert.equal(typeof spec.description, 'string', `参数 ${name} 缺少 description`)
-    assert.ok(spec.description.length > 4, `参数 ${name} 的 description 太短，模型看不懂`)
+    assert.equal(typeof spec.description, 'string', `parameter ${name} is missing a description`)
+    assert.ok(spec.description.length > 4, `parameter ${name}'s description is too short for the model to understand`)
   }
 })
 
-test('输出 schema：声明了验收要求的四类字段（路径/是否成功/说明/元数据）', () => {
+test('output schema: declares the four categories the acceptance criteria require (path/success/description/metadata)', () => {
   const required = OUTPUT_SCHEMA.required
   for (const key of ['text', 'path', 'files', 'success', 'mode', 'seed', 'width', 'height', 'model']) {
-    assert.ok(required.includes(key), `输出 schema 应把 ${key} 列为必需`)
+    assert.ok(required.includes(key), `the output schema should list ${key} as required`)
   }
   assert.equal(OUTPUT_SCHEMA.additionalProperties, false)
 })
 
-test('输出 schema：notes 与 files 是字符串数组', () => {
+test('output schema: notes and files are string arrays', () => {
   assert.equal(OUTPUT_SCHEMA.properties.notes.type, 'array')
   assert.equal(OUTPUT_SCHEMA.properties.notes.items.type, 'string')
   assert.equal(OUTPUT_SCHEMA.properties.files.type, 'array')
   assert.equal(OUTPUT_SCHEMA.properties.files.items.type, 'string')
 })
 
-test('工具描述：说清后端是 ComfyUI、四种模式、以及「不传什么会自动补」', () => {
+test('tool description: says the backend is ComfyUI, names the four modes, and explains what is filled in automatically', () => {
   assert.match(TOOL_DESCRIPTION, /ComfyUI/)
   for (const mode of ['text2img', 'img2img', 'inpaint', 'remove_background']) {
-    assert.ok(TOOL_DESCRIPTION.includes(mode), `描述里应提到 ${mode}`)
+    assert.ok(TOOL_DESCRIPTION.includes(mode), `the description should mention ${mode}`)
   }
-  assert.match(TOOL_DESCRIPTION, /mode/, '描述要让模型知道有 mode 参数')
+  assert.match(TOOL_DESCRIPTION, /mode/, 'the description should tell the model there is a mode parameter')
 })

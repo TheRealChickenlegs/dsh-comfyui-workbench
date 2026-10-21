@@ -1,9 +1,9 @@
-# 统一行尾：仓库里一律存 LF，避免 Windows/Linux 之间来回改行尾。
-# 这一点对 CI 直接相关 —— 工作流里有一步是 `git diff --exit-code -- lib`，
-# 用来自证「提交进仓库的 lib/ 与当前 src/ 编译结果一致」；行尾漂移会让这一步假报警。
+# Unified line endings: always store LF in the repository, avoiding churn between Windows and Linux.
+# This is directly relevant to CI — one workflow step runs `git diff --exit-code -- lib`,
+# proving that "the committed lib/ matches the current compilation of src/"; line-ending drift would make it report a false alarm.
 * text=auto eol=lf
 
-# 以下按二进制处理，禁止任何文本转换
+# The following are treated as binary; no text conversion is allowed
 *.png binary
 *.jpg binary
 *.jpeg binary

@@ -1,281 +1,292 @@
-# 常见问题与故障排查
+# FAQ and Troubleshooting
 
-排查顺序建议：**先跑 `npm run doctor`**（它把「配置 → 连通性 → 底模 → 四种模式」一次问清楚），
-再对着下面的报错原文表定位。
+Suggested order: **run `npm run doctor` first** (it answers "config → connectivity → checkpoints → four modes" in one go),
+then use the raw error table below to narrow it down.
 
 ```bash
-cd <插件目录>
-npm run doctor            # 人看
-npm run doctor -- --json  # 贴 issue 用
+cd <plugin-directory>
+npm run doctor            # for humans
+npm run doctor -- --json  # for pasting into an issue
 ```
 
 ---
 
-## 一、先看自检怎么读
+## 1. Reading the Self-Check First
 
 ```
-【生效配置】来源优先级：插件配置 > ~/.dsh-comfyui-image/config.json > 环境变量 > 默认值
-  配置文件：C:\Users\me\.dsh-comfyui-image\config.json（存在：是）
-  ComfyUI 地址：http://127.0.0.1:8188
-  底模：自动选择
+[Configuration]
+  Config file: C:\Users\me\.dsh-comfyui-image\config.json
+  ComfyUI address: http://127.0.0.1:8188
+  Checkpoint: (not set, one will be picked automatically)
   ...
 
-【ComfyUI】可达：是
-  版本/设备：...
+[Connection]
+  ✓ ComfyUI is up: http://127.0.0.1:8188
+  ✓ Version: 0.3.40 (Python 3.11.9)
+  ✓ Device: cuda:0 NVIDIA GeForce RTX 4090 (cuda, 22.1 GB VRAM free)
 
-【底模】共 2 个可选：sd_xl_base_1.0.safetensors、v1-5-pruned-emaonly.safetensors
-【采样器】...
+[Capability probing]
+  ✓ 1234 nodes reported
+  ✓ All core nodes required by the built-in workflows are present
+  ✓ Checkpoints: 2 available, using "sd_xl_base_1.0.safetensors"
+  ✓ Sampling: euler / normal
 
-【模式可用性】
-  ✓ 文生图 text2img：可用
-  ✓ 图生图 img2img：可用
-  ✓ 局部重绘 inpaint：可用
-  ✗ 背景移除 remove_background：不可用
-    → 本机 ComfyUI 里没有任何可用的背景移除节点。
+[Mode availability]
+  ✓ text-to-image (text2img): available
+  ✓ image-to-image (img2img): available
+  ✓ inpainting (inpaint): available
+  ✗ background removal (remove_background): unavailable
+    → No usable background-removal node exists in the local ComfyUI.
 ```
 
-三个退出码的含义：
+What the three exit codes mean:
 
-| 退出码 | 含义 | 下一步 |
+| Exit code | Meaning | Next step |
 |---|---|---|
-| `0` | 四种模式全可用 | 没别的事了，直接出图 |
-| `1` | **连不上 ComfyUI** | 先解决连通性，见下文 §2 |
-| `2` | 连上了，但有模式跑不了 | 看 `✗` 那几行的原因（多半是缺底模或缺去背节点） |
+| `0` | All four modes available | Nothing else; just generate |
+| `1` | **Cannot reach ComfyUI** | Fix connectivity first, see §2 below |
+| `2` | Connected, but some mode cannot run | Read the reasons on the `✗` lines (usually a missing checkpoint or background-removal node) |
 
-> 别忘了 `npm run doctor` 是**在插件目录**里跑的，且它不经过 DSH —— 所以它能用来在装插件之前
-> 就验证 ComfyUI 那一侧。
+> Remember that `npm run doctor` runs **in the plugin directory** and does not go through DSH — so you can use it to verify
+> the ComfyUI side before installing the plugin.
 
 ---
 
-## 二、连不上 ComfyUI
+## 2. Cannot Reach ComfyUI
 
-报错原文：
+Raw error:
 
 ```text
-连不上 ComfyUI：http://127.0.0.1:8188（fetch failed）
+❌ Image generation failed (text-to-image)
 
-请先启动本地 ComfyUI 服务（默认监听 127.0.0.1:8188），或把地址改对——改
-~/.dsh-comfyui-image/config.json 里的 baseUrl，或设环境变量 COMFYUI_URL=http://主机:端口。
+Cannot reach ComfyUI at http://127.0.0.1:8188 (fetch failed)
+
+Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the address: change baseUrl in ~/.dsh-comfyui-image/config.json, or set the environment variable COMFYUI_URL=http://host:port.
 ```
 
-按顺序查：
+Check in order:
 
-1. **ComfyUI 到底起了吗**：浏览器打开 `http://127.0.0.1:8188/system_stats`，看有没有 JSON。
-   命令行：`curl -s -o NUL -w "%{http_code}" http://127.0.0.1:8188/system_stats`（Linux/macOS 用 `/dev/null`）。
-2. **端口对不对**：ComfyUI 换端口是启动参数（`--port 8189`），改完插件这边也要改 `baseUrl`。
-3. **是不是在容器 / WSL / 虚拟机里**：那边的 `127.0.0.1` 指的是它**自己**，不是宿主机。
-   要把 `baseUrl` 改成宿主机的实际 IP（例如 `http://192.168.1.10:8188`），并让 ComfyUI 监听 `--listen 0.0.0.0`。
-4. **`0.0.0.0` 别当请求地址填**：`0.0.0.0` 是「监听所有网卡」的意思，不是能连的目标。
-   插件看到这个值会警告并建议改成 `127.0.0.1`（或具体 IP）。
-5. **代理变量**：如果设了 `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY`，某些 Node 配置会把 `127.0.0.1`
-   也走代理，于是本地请求被代理拦掉。临时清掉这几个变量试试：
+1. **Is ComfyUI actually running**: open `http://127.0.0.1:8188/system_stats` in a browser and look for JSON.
+   From the command line: `curl -s -o NUL -w "%{http_code}" http://127.0.0.1:8188/system_stats` (use `/dev/null` on Linux/macOS).
+2. **Is the port right**: ComfyUI changes ports with a startup argument (`--port 8189`); after changing it, update `baseUrl` here too.
+3. **Are you inside a container / WSL / VM**: there `127.0.0.1` means **itself**, not the host machine.
+   Change `baseUrl` to the host's actual IP (for example `http://192.168.1.10:8188`) and start ComfyUI with `--listen 0.0.0.0`.
+4. **Do not use `0.0.0.0` as the request address**: `0.0.0.0` means "listen on all interfaces", not a connectable target.
+   Seeing that value, the plugin warns and suggests `127.0.0.1` (or a specific IP).
+5. **Proxy variables**: if `HTTP_PROXY` / `HTTPS_PROXY` / `ALL_PROXY` are set, some Node configurations route even `127.0.0.1`
+   through the proxy, blocking local requests. Temporarily clear them and try:
 
    ```powershell
    $env:HTTP_PROXY=''; $env:HTTPS_PROXY=''; $env:ALL_PROXY=''; npm run doctor
    ```
-6. **防火墙**：Windows 首次启动 ComfyUI 时会弹「允许访问网络」，如果当时点了“取消”，
-   本机回环一般仍可访问，但换成局域网 IP 就会被拦。
+
+6. **Firewall**: the first time ComfyUI starts, Windows asks "allow network access"; if "Cancel" was clicked,
+   loopback usually still works, but a LAN IP will be blocked.
 
 ---
 
-## 三、报错原文 → 原因 → 怎么办
+## 3. Raw Error → Cause → Fix
 
-### 「ComfyUI 里没有 CheckpointLoaderSimple 节点」/「ComfyUI 里没有 KSampler 节点」
-
-```text
-ComfyUI 里没有 CheckpointLoaderSimple 节点。
-下一步：这个节点是 ComfyUI 核心自带的。请确认 baseUrl 指向的是真的 ComfyUI，且版本不过旧。
-```
-
-**原因**：`baseUrl` 指向的不是 ComfyUI（比如指到了自己的反向代理、别的服务、或者一个假端口），
-或者 ComfyUI 版本太老。**先访问 `http://<baseUrl>/object_info/KSampler`** 看有没有 JSON。
-
-### 「ComfyUI 报告没有任何可用的底模（models/checkpoints 是空的）」
-
-**原因**：ComfyUI 的 `models/checkpoints/` 是空的。
-
-**解决**：往里放一个 `.safetensors` / `.ckpt`（SDXL 或 SD1.5 都行），然后在 ComfyUI 界面里**刷新**一下
-（或重启），再跑 `doctor`。注意别放错目录 —— 便携版是
-`ComfyUI_windows_portable/ComfyUI/models/checkpoints/`。
-
-### 「指定的底模不存在：xxx」
+### "ComfyUI has no CheckpointLoaderSimple node" / "ComfyUI has no KSampler node"
 
 ```text
-指定的底模不存在：my-model.safetensors
-下一步：本机可用的底模有：a.safetensors、b.safetensors。请把 model 改成其中之一，或清空该配置让插件自动挑。
+ComfyUI has no CheckpointLoaderSimple node.
+
+That node ships with core ComfyUI. Confirm that baseUrl points at real ComfyUI and that the version is not too old.
 ```
 
-**原因**：配置里的 `checkpoint`（或调用时传的 `model`）写的名字和 ComfyUI 认识的名字不完全一样
-（**带不带子目录前缀**、后缀 `.safetensors` 都可能不一样）。照报错里列出的名字抄。
+**Cause**: `baseUrl` points at something that is not ComfyUI (your own reverse proxy, another service, or a dead port),
+or the ComfyUI version is too old. **First visit `http://<baseUrl>/object_info/KSampler`** and check for JSON.
 
-### 「采样器不存在」/「调度器不存在」
+### "ComfyUI reports no available checkpoints (models/checkpoints is empty)"
+
+**Cause**: ComfyUI's `models/checkpoints/` is empty.
+
+**Fix**: put a `.safetensors` / `.ckpt` in there (SDXL or SD1.5 both work), then **refresh** in the ComfyUI UI
+(or restart it), and run `doctor` again. Make sure you use the right directory — for the portable build it is
+`ComfyUI_windows_portable/ComfyUI/models/checkpoints/`.
+
+### "The specified checkpoint does not exist: xxx"
 
 ```text
-采样器不存在：dpmpp_3m
-下一步：本机可用：euler、euler_ancestral、dpmpp_2m、…
+The specified checkpoint does not exist: my-model.safetensors
+
+Checkpoints available on this machine: a.safetensors, b.safetensors. Change model to one of them, or clear that config setting to let the plugin pick automatically.
 ```
 
-**原因**：你**显式**传了 `sampler_name` / `scheduler`，而本机没有这个值 —— 显式指定会被严格校验。
+**Cause**: the name in the config's `checkpoint` (or the `model` passed at call time) does not exactly match the name
+ComfyUI knows (a **subdirectory prefix** and the `.safetensors` suffix can differ). Copy the name from the error message.
 
-**注意区别**：如果只是**配置里的默认值**在本机没有，插件不会报错，而是**自动回退**并在结果 `notes` 里说明：
+### "Sampler does not exist" / "Scheduler does not exist"
 
 ```text
-备注：
-  - 采样器 dpmpp_3m 在本机不存在，已改用 euler。
+Sampler does not exist: dpmpp_3m
+
+Available on this machine: euler, euler_ancestral, dpmpp_2m, ...
 ```
 
-### 「本机 ComfyUI 里没有任何可用的背景移除节点」
+**Cause**: you **explicitly** passed `sampler_name` / `scheduler` and this machine does not have that value — explicit values are strictly validated.
 
-只影响 `remove_background`，其他三种模式不受影响。插件会列出四套方案的安装命令
-（`ComfyUI_essentials` / `ComfyUI-BRIA_AI-RMBG` / `ComfyUI-LayerStyle` / `WAS Node Suite`），
-装任意一套、重启 ComfyUI 即可。详见 [INSTALL.md §1.5](./INSTALL.md#15-可选装背景移除节点)。
-
-### 「节点 rb1: required_input_missing … rembg_session」
+**Note the difference**: if only the **config default** is missing on this machine, the plugin does not error; it **falls back** and explains in the result's `notes`:
 
 ```text
-工作流被 ComfyUI 拒绝（HTTP 400）：节点 rb1: required_input_missing（rembg_session）
+Notes:
+  - Sampler dpmpp_3m does not exist on this machine; switched to euler.
 ```
 
-`ImageRemoveBackground+` 有一个**必填**输入 `rembg_session`（类型 `REMBG_SESSION`），
-必须由 `RemBGSession+` 喂进来，插件从 0.1.0 起会**成对**构建这两个节点。
-看到这条报错说明跑的是「把该节点当单节点用」的旧副本——
-插件模块是启动时加载的，**改完文件不会热更新，要重启 DSH（或新开会话）**。
+### "No usable background-removal node exists in the local ComfyUI"
 
-### 「配置里的 rembgNode=xxx 不在已知方案里」
+This only affects `remove_background`; the other three modes are unaffected. The plugin lists the installation commands for all four options
+(`ComfyUI_essentials` / `ComfyUI-BRIA_AI-RMBG` / `ComfyUI-LayerStyle` / `WAS Node Suite`);
+install any one and restart ComfyUI. See [INSTALL.md §1.5](./INSTALL.md#15-optional-install-background-removal-nodes).
+
+### "Node rb1: required_input_missing … rembg_session"
 
 ```text
-配置里的 rembgNode=foo 不在已知方案里。
-下一步：已知：essentials（ComfyUI_essentials（RemBGSession+ → ImageRemoveBackground+））；bria（…）；layerstyle（…）；was（…）
+The workflow was rejected by ComfyUI (HTTP 400): Node rb1: [{"type":"required_input_missing","message":"Required input is missing: rembg_session"}]
 ```
 
-`rembgNode` 只认这四个 key，或者直接写节点类名（如 `RemBGSession+`、`ImageRemoveBackground+`）。
-把它清空就会恢复「自动择优」。
+`ImageRemoveBackground+` has a **required** input `rembg_session` (type `REMBG_SESSION`),
+which must be fed by `RemBGSession+`; since 0.1.0 the plugin builds these two nodes **as a pair**.
+Seeing this error means an old copy that "treated that node as a single node" is running —
+plugin modules are loaded at startup, **file changes are not hot-reloaded, so restart DSH (or start a new session)**.
 
-### 「ComfyUI 执行工作流失败（prompt_id=…）」
+### "rembgNode=xxx in the config is not a known plan"
 
 ```text
-ComfyUI 执行工作流失败（prompt_id=8f3c…）：…
+rembgNode=foo in the config is not a known plan.
 
-下一步：常见的两个原因：工作流里用到的节点/模型在本机不存在（去 ComfyUI 控制台看红色报错），
-或者显存不足。也可以用模型参数覆盖：generate_image 的 model / steps / width / height 调小一点重试。
+Known: essentials (ComfyUI_essentials (RemBGSession+ → ImageRemoveBackground+)); bria (...); layerstyle (...); was (...)
 ```
 
-**怎么办**：打开 ComfyUI 界面，在队列/历史里按 `prompt_id` 找到这次任务，看它标红的节点。
-最常见的三类：缺自定义节点、缺 VAE/模型的子文件、显存不足（OOM）。
-OOM 的典型解法：尺寸降到 768 或 512、`steps` 调小、换个更小的底模。
+`rembgNode` only accepts those four keys, or a node class name directly (such as `RemBGSession+`, `ImageRemoveBackground+`).
+Clear it to restore "auto-pick".
 
-### 「等待 ComfyUI 出图超时（等了 N 秒）」
-
-**原因**：ComfyUI 那边在排队/很慢。**怎么办**：
-
-- 把配置里 `timeoutMs` 调大（默认 300 秒，上限 1 小时）；
-- 看一眼 ComfyUI 是不是正在跑别的任务（它默认一次只跑一个）；
-- 缩小尺寸 / 减少 `steps`；CPU 模式出图本来就慢，1024×1024 可能要几分钟；
-- 插件在超时时**已经尽力调用了 `/interrupt`**（不让它白占显存），但 ComfyUI 可能还在收尾。
-
-### 「ComfyUI 报告任务已结束（状态 …），但没有任何图片产出」
+### "ComfyUI failed to execute the workflow (prompt_id=…)"
 
 ```text
-ComfyUI 报告任务已结束（状态 success），但没有任何图片产出（prompt_id=…）。
+ComfyUI failed to execute the workflow (prompt_id=8f3c…): Node type KSampler (id=5) Exception RuntimeError: ...
 
-下一步：最常见的原因是工作流末端没有接 SaveImage / PreviewImage 节点——用
-extra_options.workflow_path 传自定义工作流时特别容易这样。也可能是工作流只输出了 mask / latent 之类的非图片结果。
+The two most common causes: a node/model used by the workflow does not exist on this machine (check the ComfyUI console for red errors), or VRAM ran out. You can also retry with smaller model parameters: reduce model / steps / width / height in generate_image.
 ```
 
-**原因**：用逃生舱传自定义工作流时，末端没接保存节点。**解决**：在 ComfyUI 里给工作流加一个
-`SaveImage`（或 `PreviewImage`），重新导出 API 格式。
+**What to do**: open the ComfyUI UI, find this job by `prompt_id` in the queue/history, and look at the node marked red.
+The three most common causes: a missing custom node, a missing VAE/model sub-file, insufficient VRAM (OOM).
+Typical OOM fixes: drop the size to 768 or 512, lower `steps`, or use a smaller checkpoint.
 
-### 「input_image 指向的文件不存在」/「是一个空文件（0 字节）」
+### "Timed out waiting for ComfyUI to produce an image (waited N s)"
+
+**Cause**: ComfyUI is queued/very slow. **What to do**:
+
+- increase `timeoutMs` in the config (default 300 s, maximum 1 hour);
+- check whether ComfyUI is running another job (by default it runs one at a time);
+- reduce the size / lower `steps`; CPU mode is inherently slow, and 1024×1024 may take minutes;
+- on timeout the plugin **has already tried to call `/interrupt`** (so it does not keep occupying VRAM), but ComfyUI may still be finishing up.
+
+### "ComfyUI reports the job finished (status …) but produced no images"
 
 ```text
-input_image 指向的文件不存在：D:\pics\in.png
-下一步：请检查路径是否正确。
+ComfyUI reports the job finished (status success) but produced no images (prompt_id=…).
+
+The most common cause is a workflow that does not end in a SaveImage / PreviewImage node — this happens easily with a custom workflow passed via extra_options.workflow_path. The workflow might also only output non-image results such as mask / latent.
 ```
 
-- 相对路径是**相对 Agent 的当前工作目录**（就是工具返回里默认出图的那个目录），不是相对插件目录；
-- 支持 `~`，Windows 反斜杠/正斜杠都行；路径里有空格时**用引号包起来**（在 JSON 里就是普通的字符串）；
-- 0 字节文件会被提前拦下：常见原因是下载没下完、或者路径其实指向了一个占位文件。
+**Cause**: with the escape hatch, the custom workflow does not end in a save node. **Fix**: add a
+`SaveImage` (or `PreviewImage`) to the workflow in ComfyUI, and re-export it in API format.
 
-### 「width 超出允许范围 64~8192」/「steps 必须是数字」
-
-参数校验报错，改值就行。注意：
-- 尺寸只对 `text2img` 有意义，其他模式传了会被**忽略**（`notes` 里会说明）；
-- 尺寸会自动对齐到 **8 的倍数**，被改过也会在 `notes` 里如实说明。
-
-### 「已取消：调用方中止了本次生成。」
-
-你在 DSH 里按了停止 / 中断。ComfyUI 那边的任务**可能还会跑完**（插件的取消是尽力而为）。
-
-### 参数冲突类报错
+### "input_image points to a file that does not exist" / "is an empty file (0 bytes)"
 
 ```text
-mode=text2img 不接受 input_image（收到 D:\in.png）。
-下一步：想基于这张图改，请显式传 mode="img2img"（要局部改就再带上 mask_image 并传 mode="inpaint"）。
+input_image points to a file that does not exist: D:\pics\in.png
+
+Check that the path is correct.
 ```
 
-这类报错是**故意的**（宁可报错也不猜，避免「以为在局部重绘，结果整图重画」）。
-对照 [PARAMS.md 的冲突表](./PARAMS.md#二模式推断与冲突规则) 改参数即可。
+- Relative paths are **relative to the Agent's current working directory** (the directory where default output lands), not the plugin directory;
+- `~` is supported; Windows accepts both backslashes and forward slashes; **quote paths containing spaces** (inside JSON they are just normal strings);
+- 0-byte files are caught early: common causes are an interrupted download, or a path that actually points at a placeholder file.
+
+### "width is outside the allowed range 64-8192" / "steps must be a number"
+
+Parameter validation errors; just fix the value. Note:
+- Dimensions only matter for `text2img`; for other modes they are **ignored** (and `notes` says so);
+- Dimensions are automatically aligned to a **multiple of 8**, and a change is stated in `notes` too.
+
+### "Cancelled: the caller aborted this generation."
+
+You pressed stop/interrupt in DSH. The job on the ComfyUI side **may still finish** (the plugin's cancellation is best effort).
+
+### Parameter-conflict errors
+
+```text
+mode=text2img does not accept input_image (received D:\in.png).
+
+To edit that image, pass mode="img2img" explicitly (for a local edit, also pass mask_image and use mode="inpaint").
+```
+
+These errors are **intentional** (better an error than a guess, avoiding "thought I was inpainting, but it redrew the whole image").
+Adjust the parameters using [PARAMS.md's conflict table](./PARAMS.md#2-mode-inference-and-conflict-rules).
 
 ---
 
-## 四、其他常见疑问
+## 4. Other Common Questions
 
-### DSH 里看不到 `generate_image` 工具
+### The `generate_image` tool is not visible in DSH
 
-按顺序查：
+Check in order:
 
-1. **插件启用了吗**：设置 → 插件列表里 `dsh-comfyui-image` 是不是开着；
-2. **装进的是当前 profile 吗**：换过 profile（例如 web / desktop / headless）的话，
-   `dsh.profile.bundles` 是在**那一个** profile 的 `package.json` 里加的；
-3. **重启过 DSH 吗**：bundle 列表是启动时读的；
-4. **会话是在装插件之前开的吗**：工具表在会话/运行时装配时注入，装完插件**新开一个会话**最稳；
-5. **看宿主日志有没有这行警告**：`拿不到 tools 服务，generate_image 未注册（请在 profile 里确认插件依赖正常）。`
-   —— 出现它就说明插件加载了但工具注册表没拿到。
+1. **Is the plugin enabled**: is `dsh-comfyui-image` switched on in Settings → Plugins;
+2. **Was it installed into the current profile**: if you switched profiles (web / desktop / headless),
+   `dsh.profile.bundles` was added to the `package.json` of **that particular** profile;
+3. **Did you restart DSH**: the bundle list is read at startup;
+4. **Was the session opened before installing the plugin**: the tool table is injected when the session/runtime is assembled, so **start a new session** after installing;
+5. **Look for this warning in the host log**: `Cannot obtain the tools service; generate_image was not registered (check the plugin dependencies in the profile).`
+   — if it appears, the plugin loaded but could not obtain the tool registry.
 
-### 改了 `~/.dsh-comfyui-image/config.json` 没反应
+### Changing `~/.dsh-comfyui-image/config.json` has no effect
 
-配置**每次调用都会重新解析**，所以正常情况下立即生效。没生效多半是：
+Config is **re-resolved on every call**, so normally it takes effect immediately. If not, it is usually one of:
 
-1. 同一项**也**写在 profile 的插件 `config:` 里了 —— 插件配置优先级更高，会盖掉配置文件；
-2. 环境变量在盖（`COMFYUI_URL` 等）；
-3. **JSON 写坏了**：读不了时插件**不会崩**，而是静默退回默认值，只在日志里留一条警告。
-   跑 `npm run doctor` 看「生效配置」那段最直观。
+1. The same key is **also** in the profile's plugin `config:` — plugin config has higher priority and overrides the config file;
+2. An environment variable is overriding it (`COMFYUI_URL` etc.);
+3. **The JSON is broken**: when it cannot be read the plugin **does not crash**; it silently falls back to defaults and leaves only a warning in the log.
+   Running `npm run doctor` and reading the "Configuration" section is the quickest way to see this.
 
-### 图片在 DSH 里显示不出来 / 点不开
+### The image does not show up / cannot be opened in DSH
 
-- 返回的 `path` 是**绝对路径**，插件保证它单独占一行（这样前端才能识别成文件引用）；
-- 文件真的存在吗：去那个路径看一眼（同目录还会有个同名 `.json`）；
-- 路径太长 / 含特殊字符的极端情况，可以先传 `output_path` 到更短、更简单的目录试试。
+- The returned `path` is an **absolute path**, and the plugin guarantees it occupies its own line (so the frontend can recognise it as a file reference);
+- Does the file really exist: go and look at that path (there will be a same-named `.json` next to it);
+- In the extreme case of a very long path / special characters, try passing `output_path` to a shorter, simpler directory.
 
-### 出图很慢怎么办
+### Generation is very slow
 
-| 手段 | 效果 |
+| Measure | Effect |
 |---|---|
-| 降尺寸（1024 → 768 / 512） | 最有效，显存占用与耗时都按面积掉 |
-| `steps` 20 → 12~15 | 明显变快，质量损失通常可接受 |
-| 换更小的底模（SD1.5 系） | 快很多，插件识别到 SD1.5 会自动按 512 出图 |
-| 确认用的是 GPU 而不是 CPU | 看 ComfyUI 启动日志；CPU 出 1024 图要几分钟是正常的 |
-| 关掉 `saveToComfyUI` | 不影响速度，但不再往 ComfyUI 的 output 里堆文件 |
+| Lower the size (1024 → 768 / 512) | Most effective; VRAM use and time drop with area |
+| `steps` 20 → 12–15 | Noticeably faster, usually acceptable quality loss |
+| Use a smaller checkpoint (SD1.5 family) | Much faster; the plugin switches to 512 automatically for SD1.5 |
+| Confirm it uses the GPU, not the CPU | Check the ComfyUI startup log; a CPU 1024 image taking minutes is normal |
+| Turn off `saveToComfyUI` | Does not affect speed, but stops piling files into ComfyUI's output |
 
-### 出图占用多少磁盘 / 能清理什么
+### How much disk does it use / what can be cleaned up
 
-- 每张图 ≈ 1~3 MB（1024×1024 PNG），旁边 `.json` 几 KB；
-- ComfyUI 那边（`saveToComfyUI: true` 时）会在 `output/dsh-comfyui-image/` 里留一份，可以随时删；
-- 上传给 ComfyUI 的输入图会进 ComfyUI 的 `input/` 目录，ComfyUI 自己不清理时也会越攒越多。
+- Each image ≈ 1–3 MB (1024×1024 PNG), with a few KB of `.json` next to it;
+- On the ComfyUI side (when `saveToComfyUI: true`) a copy stays in `output/dsh-comfyui-image/`; delete it any time;
+- Input images uploaded to ComfyUI go into ComfyUI's `input/` directory; if ComfyUI does not clean it up, it keeps growing.
 
-### 会泄露隐私吗 / 联网吗
+### Does it leak privacy / does it use the network
 
-不会。插件只连你配置的 `baseUrl`，不访问任何第三方服务，也不把图片上传到云。
-唯一的网络行为就是和你自己的 ComfyUI 说话。详见 [CONFIG.md §6](./CONFIG.md#六安全与隐私)。
+No. The plugin only connects to the `baseUrl` you configure, never contacts any third-party service, and never uploads images to a cloud.
+The only network behaviour is talking to your own ComfyUI. See [CONFIG.md §6](./CONFIG.md#6-security-and-privacy).
 
-### 怎么上报问题
+### How to report a problem
 
-带上这几样，通常一次就能定位：
+Include these and it can usually be located in one pass:
 
-1. `npm run doctor --json` 的输出（已经隐去了业务数据，只有配置和节点清单）；
-2. 报错原文（工具返回的那段文本，包含 `prompt_id`）；
-3. 出图目录里对应的 `.json` 元数据（含完整参数与工作流，**注意里面可能有你的提示词和本地路径**，按需删减）；
-4. DSH 版本、操作系统、ComfyUI 版本（`/system_stats` 里能看到）。
+1. The output of `npm run doctor --json` (it contains only config and the node list, no business data);
+2. The raw error text (the block the tool returned, including `prompt_id`);
+3. The corresponding `.json` metadata in the output directory (full parameters and workflow — **note it may contain your prompts and local paths**, redact as needed);
+4. DSH version, operating system, ComfyUI version (visible in `/system_stats`).
 
-需要更细的过程日志（选中的去背方案、上传给 ComfyUI 的文件名、HTTP 细节）时，
-在启动 DSH 前设 `DSH_COMFYUI_IMAGE_DEBUG=1`，复现一次，然后把带 `[dsh-comfyui-image]` 前缀的行一起贴上来。
+For finer process logs (the chosen background-removal plan, file names uploaded to ComfyUI, HTTP details),
+set `DSH_COMFYUI_IMAGE_DEBUG=1` before starting DSH, reproduce once, then paste the lines prefixed with `[dsh-comfyui-image]`.

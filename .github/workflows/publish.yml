@@ -1,18 +1,19 @@
 name: Publish to npm
 
-# 触发点有三条，缺一不可（见 docs/RELEASING.md 的「为什么会不自动发」）：
+# There are three triggers, and all are needed (see docs/RELEASING.md, "why it would not publish automatically"):
 #
-#   push tag   —— 主路径。**必须**直接监听 tag，不能只依赖 release 事件：
-#                 release.yml 用仓库自带的 GITHUB_TOKEN 建 Release，
-#                 而 GITHUB_TOKEN 产生的 release 事件**不会**再触发别的 workflow
-#                 （GitHub 防止递归触发的规定），只挂 release 事件会导致「Release 建了、
-#                 npm 没发」，v0.1.1 就是这么漏掉的。
-#   release    —— 给人用：在 GitHub 界面上手动发布 Release 时会走这条。
-#   workflow_dispatch —— 补发/重试；可指定 tag，留空则用 package.json 的版本号。
+#   push tag   — the main path. It **must** listen for tags directly and cannot depend on the release event alone:
+#                release.yml uses the repository's built-in GITHUB_TOKEN to create the Release,
+#                and a release event produced by GITHUB_TOKEN does **not** trigger other workflows
+#                (GitHub's anti-recursion rule), so relying on the release event alone means "the Release was
+#                created, npm was not published" — exactly how v0.1.1 was missed.
+#   release    — for humans: manually publishing a Release in the GitHub UI goes through this.
+#   workflow_dispatch — backfill/retry; a tag can be specified, otherwise the package.json version is used.
 #
-# 首次使用需要在本仓库 Settings → Secrets and variables → Actions 里加一个名为
-# NPM_TOKEN 的 secret（npm 的 Granular Access Token，权限只需该包的 read+write）。
-# 没配也不会失败：guard 会跳过发布并打一条 notice，仓库保持绿。
+# First-time setup requires adding a secret named NPM_TOKEN under
+# Settings → Secrets and variables → Actions in this repository (an npm Granular Access Token with
+# read+write permission for this package).
+# If it is not configured, nothing fails: the guard skips publishing and prints a notice, keeping the repository green.
 on:
   push:
     tags:
@@ -22,16 +23,16 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: '要发布的 tag（例如 v0.1.1）；留空则按 package.json 的版本号发'
+        description: 'Tag to publish (e.g. v0.1.1); leave empty to use the package.json version'
         required: false
         default: ''
 
 permissions:
   contents: read
-  # 发布用 OIDC 带 provenance 签名，需要这个权限
+  # Publishing signs with OIDC for provenance, which requires this permission.
   id-token: write
 
-# 同一时刻只允许一个发布在跑；不取消进行中的那个（发到一半被砍最糟）
+# Only one publish may run at a time; do not cancel an in-progress one (being killed mid-publish is the worst case).
 concurrency:
   group: npm-publish
   cancel-in-progress: false
@@ -41,7 +42,7 @@ jobs:
     name: npm publish
     runs-on: ubuntu-latest
     steps:
-      # 手动指定了 tag 就检那个 tag，否则检触发这次运行的那个 ref
+      # Check out the specified tag if given, otherwise the ref that triggered this run.
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.inputs.tag || github.ref }}
@@ -49,25 +50,25 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
-          # 显式指向官方源：本机/镜像的 registry 配置不该影响发布目标
+          # Point explicitly at the official registry: local/mirror registry configuration must not affect the publish target.
           registry-url: 'https://registry.npmjs.org'
 
-      # secrets 在 step 级 if 里不可用，所以先落到 env 再判断
-      - name: 检查 NPM_TOKEN 是否已配置
+      # Secrets are not available in step-level `if`, so put it in env first and then decide.
+      - name: Check whether NPM_TOKEN is configured
         id: guard
         env:
           TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -z "$TOKEN" ]; then
             echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::没有配置 NPM_TOKEN secret，跳过 npm 发布（见 docs/RELEASING.md）。"
+            echo "::notice::No NPM_TOKEN secret configured; skipping the npm publish (see docs/RELEASING.md)."
           else
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # 防呆一：tag 是 v0.2.0 而 package.json 还写着 0.1.0 时，发出去的就是错的版本。
-      # 只在 ref 真的是个 v* tag 时才校验（手动从分支触发时 ref 是分支名，无从比较）。
-      - name: 校验版本号与 tag 一致
+      # Guard one: if the tag is v0.2.0 while package.json still says 0.1.0, the wrong version would be published.
+      # Only validate when the ref really is a v* tag (when dispatched manually from a branch, the ref is a branch name and cannot be compared).
+      - name: Verify the version matches the tag
         if: steps.guard.outputs.skip == 'false'
         run: |
           ver="$(node -p "require('./package.json').version")"
@@ -75,46 +76,46 @@ jobs:
           [ -n "$ref" ] || ref="${GITHUB_REF_NAME}"
           echo "version=$ver" >> "$GITHUB_OUTPUT"
           if [ "${ref#v}" != "$ref" ] && [ "${ref#v}" != "$ver" ]; then
-            echo "::error::tag 是 $ref，但 package.json 的 version 是 $ver，拒绝发布。"
+            echo "::error::tag is $ref, but package.json version is $ver; refusing to publish."
             exit 1
           fi
-          echo "版本号：$ver（ref：$ref）"
+          echo "Version: $ver (ref: $ref)"
         id: ver
 
-      # 防呆二：npm 的版本号不可覆盖重发。重复触发（比如 UI 上又发了一次 Release）
-      # 不该变成一次红色构建，检测到已存在就跳过。
-      - name: 该版本是否已发布过
+      # Guard two: npm versions cannot be republished. A repeat trigger (for example publishing the Release again in the UI)
+      # should not become a failed build; detect an existing version and skip.
+      - name: Has this version already been published?
         id: exists
         if: steps.guard.outputs.skip == 'false'
         run: |
           if npm view "dsh-comfyui-image@${{ steps.ver.outputs.version }}" version >/dev/null 2>&1; then
             echo "already=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::npm 上已存在 ${{ steps.ver.outputs.version }}，跳过发布（同版本号不可覆盖）。"
+            echo "::notice::${{ steps.ver.outputs.version }} already exists on npm; skipping publish (the same version cannot be republished)."
           else
             echo "already=false" >> "$GITHUB_OUTPUT"
           fi
 
-      # 发出去的包先自证：测试自带 mock ComfyUI，不需要真装 ComfyUI，几秒就能跑完
-      - name: 跑测试
+      # The package proves itself first: the tests ship with a mock ComfyUI, need no real ComfyUI, and finish in seconds.
+      - name: Run tests
         if: steps.guard.outputs.skip == 'false' && steps.exists.outputs.already == 'false'
         run: npm test
 
-      - name: 发布到 npm
+      - name: Publish to npm
         if: steps.guard.outputs.skip == 'false' && steps.exists.outputs.already == 'false'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --provenance --access public
 
-      - name: 结果摘要
+      - name: Result summary
         if: always()
         run: |
           {
-            echo "### npm 发布"
+            echo "### npm publish"
             echo ""
-            echo "| 项 | 值 |"
+            echo "| Item | Value |"
             echo "| --- | --- |"
-            echo "| 版本 | ${{ steps.ver.outputs.version }} |"
-            echo "| 跳过（没配 token） | ${{ steps.guard.outputs.skip }} |"
-            echo "| 跳过（版本已存在） | ${{ steps.exists.outputs.already }} |"
-            echo "| 结论 | ${{ job.status }} |"
+            echo "| Version | ${{ steps.ver.outputs.version }} |"
+            echo "| Skipped (no token) | ${{ steps.guard.outputs.skip }} |"
+            echo "| Skipped (version exists) | ${{ steps.exists.outputs.already }} |"
+            echo "| Result | ${{ job.status }} |"
           } >> "$GITHUB_STEP_SUMMARY"

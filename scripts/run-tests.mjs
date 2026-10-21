@@ -1,14 +1,15 @@
 /**
- * 跨平台、跨 Node 版本地跑测试。
+ * Run the tests locally across platforms and Node versions.
  *
- * 为什么不直接写 `node --test "test/*.test.mjs"`：
- *   - `node --test` 的 **glob 展开** 是 Node 21 才有的能力；Node 20 会把 `test/*.test.mjs`
- *     当成一个字面路径，报 `Could not find '.../test/*.test.mjs'`（CI 上 Node 20 就是这么红的）。
- *   - 去掉引号让 shell 展开也不行：npm scripts 在 Windows 走 cmd（不展开 glob）、
- *     在 POSIX 走 sh（展开），两边行为不一致。
+ * Why not just `node --test "test/*.test.mjs"`:
+ *   - `node --test` **glob expansion** only arrived in Node 21; Node 20 treats `test/*.test.mjs`
+ *     as a literal path and reports `Could not find '.../test/*.test.mjs'` (which is exactly why
+ *     CI failed on Node 20).
+ *   - Removing the quotes and letting the shell expand is not reliable either: npm scripts run
+ *     through cmd on Windows (no glob expansion) and sh on POSIX (expansion), so behaviour differs.
  *
- * 所以这里自己列出测试文件，把**显式路径**交给 `--test`——Node 18+ 都支持，
- * Windows / Linux 行为一致。
+ * So this lists the test files itself and hands **explicit paths** to `--test` — supported on
+ * Node 18+, with identical behaviour on Windows and Linux.
  */
 import { spawnSync } from 'node:child_process'
 import { readdirSync } from 'node:fs'
@@ -24,18 +25,18 @@ const files = readdirSync(testDir)
   .map((name) => join(testDir, name))
 
 if (files.length === 0) {
-  console.error(`没有在 ${testDir} 找到 *.test.mjs`)
+  console.error(`No *.test.mjs files found in ${testDir}`)
   process.exit(1)
 }
 
-// stdio: 'inherit' —— 让 node:test 的 reporter 直接写终端（管道捕获会丢颜色与进度）。
+// stdio: 'inherit' — let the node:test reporter write straight to the terminal (piping loses colour and progress).
 const result = spawnSync(process.execPath, ['--test', ...files], {
   stdio: 'inherit',
   cwd: root,
 })
 
 if (result.error) {
-  console.error(`启动测试进程失败：${result.error.message}`)
+  console.error(`Failed to start the test process: ${result.error.message}`)
   process.exit(1)
 }
 

@@ -1,8 +1,8 @@
-# 把本插件插进 DSH profile 的配置树（bundle 挂载声明）。
+# Mounts this plugin into the DSH profile's config tree (bundle declaration).
 #
-# 想改 ComfyUI 地址 / 默认模型等，不必改这里：直接改
+# To change the ComfyUI address / default model and so on, you do not need to edit this file: just edit
 #   ~/.dsh-comfyui-image/config.json
-# 或者在 profile 的 cordis.patch.yml 里给这条 entry 加 config：
+# or add a config: to this entry in the profile's cordis.patch.yml:
 #   - id: dsh-comfyui-image
 #     name: dsh-comfyui-image
 #     config:

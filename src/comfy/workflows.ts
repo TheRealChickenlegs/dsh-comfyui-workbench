@@ -1,24 +1,24 @@
 /**
- * 工作流构建：把 `NormalizedRequest`（+ 探测到的事实）变成 ComfyUI 的 **API 格式**工作流。
+ * Workflow building: turn a `NormalizedRequest` (+ probed facts) into a ComfyUI **API-format** workflow.
  *
- * 这一层是**纯函数**：不碰网络、不碰文件系统，所以能离线单测
- * （test/test-workflows.mjs 会逐一断言连线关系）。
+ * This layer is a **pure function**: no network, no filesystem, so it can be unit-tested offline
+ * (the workflow tests assert every link one by one).
  *
- * 节点 id 用固定字符串，连线写作 `[上游节点id, 输出索引]`——这就是 ComfyUI API 格式的约定。
- * 每个模式的最小图：
+ * Node ids are fixed strings, and links are written as `[upstream_node_id, output_index]` — the
+ * ComfyUI API-format convention. The minimal graph per mode:
  *
  *   text2img:  CheckpointLoaderSimple → CLIPTextEncode×2 ┐
  *                                     EmptyLatentImage ─┴→ KSampler → VAEDecode → SaveImage
  *   img2img:   LoadImage → VAEEncode ─┐
- *              上面那套 prompt/clip ──┴→ KSampler(denoise=strength) → VAEDecode → SaveImage
+ *              the prompt/clip setup ─┴→ KSampler(denoise=strength) → VAEDecode → SaveImage
  *   inpaint:   LoadImage ─┐
  *              LoadImageMask ─┴→ VAEEncodeForInpaint → KSampler → VAEDecode → SaveImage
- *   rm_bg:     LoadImage → 去背节点（第三方） → SaveImage
+ *   rm_bg:     LoadImage → background-removal node (third party) → SaveImage
  */
 import type { ComfyNode, ComfyWorkflow, GenerateMode, NormalizedRequest, ResolvedConfig } from '../types.js'
 import type { RembgPlan } from './nodes.js'
 
-/** 固定节点 id，方便调试时对照。 */
+/** Fixed node ids, for easier debugging. */
 export const NODE_IDS = {
   checkpoint: '1',
   positive: '2',
@@ -33,32 +33,32 @@ export const NODE_IDS = {
   inpaintEncode: '10'
 } as const
 
-/** 构建工作流所需要的全部输入（都已在别的层解析完毕）。 */
+/** Everything needed to build a workflow (already resolved by other layers). */
 export interface WorkflowFacts {
   request: NormalizedRequest
   config: ResolvedConfig
-  /** 已确定的底模文件名。 */
+  /** The checkpoint file name already decided. */
   checkpoint: string
-  /** 已校验过的采样器 / 调度器。 */
+  /** The validated sampler / scheduler. */
   samplerName: string
   scheduler: string
-  /** 已上传到 ComfyUI 的输入图文件名（img2img / inpaint / remove_background 用）。 */
+  /** The input image file name already uploaded to ComfyUI (used by img2img / inpaint / remove_background). */
   uploadedInput?: string
-  /** 已上传的遮罩文件名（inpaint 用）。 */
+  /** The uploaded mask file name (used by inpaint). */
   uploadedMask?: string
-  /** ComfyUI 侧的输出文件名前缀，例如 `dsh-comfyui-image/20260928-153012-1234`。 */
+  /** Output file name prefix on the ComfyUI side, e.g. `dsh-comfyui-image/20260928-153012-1234`. */
   filenamePrefix: string
-  /** 去背方案（mode=remove_background 时必须给）。 */
+  /** Background-removal plan (required when mode=remove_background). */
   rembg?: RembgPlan
-  /** LoadImageMask 的通道，默认 red。 */
+  /** The LoadImageMask channel, default red. */
   maskChannel?: string
 }
 
 export interface BuiltWorkflow {
   workflow: ComfyWorkflow
-  /** 模式，便于调用方记录/校验。 */
+  /** The mode, for callers to record/validate. */
   mode: GenerateMode
-  /** 产出图片的节点 id。 */
+  /** The node id that produces the output image. */
   outputNodeId: string
 }
 
@@ -66,7 +66,7 @@ function checkpointLoader(checkpoint: string): ComfyNode {
   return {
     class_type: 'CheckpointLoaderSimple',
     inputs: { ckpt_name: checkpoint },
-    _meta: { title: '底模' }
+    _meta: { title: 'Checkpoint' }
   }
 }
 
@@ -89,7 +89,7 @@ function ksampler(facts: WorkflowFacts, latentImage: [string, number], denoise: 
       negative: [NODE_IDS.negative, 0],
       latent_image: latentImage
     },
-    _meta: { title: '采样器' }
+    _meta: { title: 'Sampler' }
   }
 }
 
@@ -98,91 +98,91 @@ function saveNode(facts: WorkflowFacts): ComfyNode {
     return {
       class_type: 'SaveImage',
       inputs: { filename_prefix: facts.filenamePrefix, images: [NODE_IDS.decode, 0] },
-      _meta: { title: '保存图片' }
+      _meta: { title: 'Save image' }
     }
   }
-  // PreviewImage 落在 ComfyUI 的 temp 目录，不会污染它的 output 目录
+  // PreviewImage lands in ComfyUI's temp directory, so it does not pollute its output directory.
   return {
     class_type: 'PreviewImage',
     inputs: { images: [NODE_IDS.decode, 0] },
-    _meta: { title: '预览图片' }
+    _meta: { title: 'Preview image' }
   }
 }
 
 function assertUploaded(value: string | undefined, what: string, mode: GenerateMode): string {
   if (!value) {
-    throw new Error(`内部错误：mode=${mode} 需要已上传的${what}，但构建工作流时没有拿到。`)
+    throw new Error(`Internal error: mode=${mode} needs the uploaded ${what}, but it was not available while building the workflow.`)
   }
   return value
 }
 
-/** 构建 text2img 工作流。 */
+/** Build the text2img workflow. */
 export function buildText2Img(facts: WorkflowFacts): BuiltWorkflow {
   const workflow: ComfyWorkflow = {
     [NODE_IDS.checkpoint]: checkpointLoader(facts.checkpoint),
-    [NODE_IDS.positive]: clipEncode(facts.request.prompt, [NODE_IDS.checkpoint, 1], '正向提示词'),
-    [NODE_IDS.negative]: clipEncode(facts.request.negativePrompt, [NODE_IDS.checkpoint, 1], '负向提示词'),
+    [NODE_IDS.positive]: clipEncode(facts.request.prompt, [NODE_IDS.checkpoint, 1], 'Positive prompt'),
+    [NODE_IDS.negative]: clipEncode(facts.request.negativePrompt, [NODE_IDS.checkpoint, 1], 'Negative prompt'),
     [NODE_IDS.emptyLatent]: {
       class_type: 'EmptyLatentImage',
       inputs: { width: facts.request.width, height: facts.request.height, batch_size: 1 },
-      _meta: { title: '空潜空间' }
+      _meta: { title: 'Empty latent' }
     },
     [NODE_IDS.sampler]: ksampler(facts, [NODE_IDS.emptyLatent, 0], 1.0),
     [NODE_IDS.decode]: {
       class_type: 'VAEDecode',
       inputs: { samples: [NODE_IDS.sampler, 0], vae: [NODE_IDS.checkpoint, 2] },
-      _meta: { title: 'VAE 解码' }
+      _meta: { title: 'VAE decode' }
     },
     [NODE_IDS.save]: saveNode(facts)
   }
   return { workflow, mode: 'text2img', outputNodeId: NODE_IDS.save }
 }
 
-/** 构建 img2img 工作流（denoise = strength）。 */
+/** Build the img2img workflow (denoise = strength). */
 export function buildImg2Img(facts: WorkflowFacts): BuiltWorkflow {
-  const imageName = assertUploaded(facts.uploadedInput, '输入图', 'img2img')
+  const imageName = assertUploaded(facts.uploadedInput, 'input image', 'img2img')
   const workflow: ComfyWorkflow = {
     [NODE_IDS.checkpoint]: checkpointLoader(facts.checkpoint),
-    [NODE_IDS.positive]: clipEncode(facts.request.prompt, [NODE_IDS.checkpoint, 1], '正向提示词'),
-    [NODE_IDS.negative]: clipEncode(facts.request.negativePrompt, [NODE_IDS.checkpoint, 1], '负向提示词'),
+    [NODE_IDS.positive]: clipEncode(facts.request.prompt, [NODE_IDS.checkpoint, 1], 'Positive prompt'),
+    [NODE_IDS.negative]: clipEncode(facts.request.negativePrompt, [NODE_IDS.checkpoint, 1], 'Negative prompt'),
     [NODE_IDS.loadImage]: {
       class_type: 'LoadImage',
       inputs: { image: imageName },
-      _meta: { title: '输入图' }
+      _meta: { title: 'Input image' }
     },
     [NODE_IDS.vaeEncode]: {
       class_type: 'VAEEncode',
       inputs: { pixels: [NODE_IDS.loadImage, 0], vae: [NODE_IDS.checkpoint, 2] },
-      _meta: { title: 'VAE 编码' }
+      _meta: { title: 'VAE encode' }
     },
     [NODE_IDS.sampler]: ksampler(facts, [NODE_IDS.vaeEncode, 0], facts.request.strength),
     [NODE_IDS.decode]: {
       class_type: 'VAEDecode',
       inputs: { samples: [NODE_IDS.sampler, 0], vae: [NODE_IDS.checkpoint, 2] },
-      _meta: { title: 'VAE 解码' }
+      _meta: { title: 'VAE decode' }
     },
     [NODE_IDS.save]: saveNode(facts)
   }
   return { workflow, mode: 'img2img', outputNodeId: NODE_IDS.save }
 }
 
-/** 构建 inpaint 工作流（LoadImage + LoadImageMask → VAEEncodeForInpaint）。 */
+/** Build the inpaint workflow (LoadImage + LoadImageMask → VAEEncodeForInpaint). */
 export function buildInpaint(facts: WorkflowFacts): BuiltWorkflow {
-  const imageName = assertUploaded(facts.uploadedInput, '输入图', 'inpaint')
-  const maskName = assertUploaded(facts.uploadedMask, '遮罩图', 'inpaint')
+  const imageName = assertUploaded(facts.uploadedInput, 'input image', 'inpaint')
+  const maskName = assertUploaded(facts.uploadedMask, 'mask image', 'inpaint')
   const workflow: ComfyWorkflow = {
     [NODE_IDS.checkpoint]: checkpointLoader(facts.checkpoint),
-    [NODE_IDS.positive]: clipEncode(facts.request.prompt, [NODE_IDS.checkpoint, 1], '正向提示词'),
-    [NODE_IDS.negative]: clipEncode(facts.request.negativePrompt, [NODE_IDS.checkpoint, 1], '负向提示词'),
+    [NODE_IDS.positive]: clipEncode(facts.request.prompt, [NODE_IDS.checkpoint, 1], 'Positive prompt'),
+    [NODE_IDS.negative]: clipEncode(facts.request.negativePrompt, [NODE_IDS.checkpoint, 1], 'Negative prompt'),
     [NODE_IDS.loadImage]: {
       class_type: 'LoadImage',
       inputs: { image: imageName },
-      _meta: { title: '原图' }
+      _meta: { title: 'Original image' }
     },
     [NODE_IDS.loadMask]: {
       class_type: 'LoadImageMask',
       inputs: { image: maskName, channel: facts.maskChannel ?? 'red' },
-      _meta: { title: '遮罩（白=重绘区）' }
+      _meta: { title: 'Mask (white = repaint area)' }
     },
     [NODE_IDS.inpaintEncode]: {
       class_type: 'VAEEncodeForInpaint',
@@ -192,43 +192,43 @@ export function buildInpaint(facts: WorkflowFacts): BuiltWorkflow {
         mask: [NODE_IDS.loadMask, 0],
         grow_mask_by: facts.config.inpaintGrowMask
       },
-      _meta: { title: '内补编码' }
+      _meta: { title: 'Inpaint encode' }
     },
     [NODE_IDS.sampler]: ksampler(facts, [NODE_IDS.inpaintEncode, 0], facts.request.strength),
     [NODE_IDS.decode]: {
       class_type: 'VAEDecode',
       inputs: { samples: [NODE_IDS.sampler, 0], vae: [NODE_IDS.checkpoint, 2] },
-      _meta: { title: 'VAE 解码' }
+      _meta: { title: 'VAE decode' }
     },
     [NODE_IDS.save]: saveNode(facts)
   }
   return { workflow, mode: 'inpaint', outputNodeId: NODE_IDS.save }
 }
 
-/** 构建背景移除工作流（LoadImage → 第三方去背节点 → SaveImage）。 */
+/** Build the background-removal workflow (LoadImage → third-party removal node → SaveImage). */
 export function buildRemoveBackground(facts: WorkflowFacts): BuiltWorkflow {
-  const imageName = assertUploaded(facts.uploadedInput, '输入图', 'remove_background')
+  const imageName = assertUploaded(facts.uploadedInput, 'input image', 'remove_background')
   if (!facts.rembg) {
-    throw new Error('内部错误：mode=remove_background 需要 rembg 方案，但构建工作流时没有拿到。')
+    throw new Error('Internal error: mode=remove_background needs a rembg plan, but none was available while building the workflow.')
   }
   const loadImage: ComfyNode = {
     class_type: 'LoadImage',
     inputs: { image: imageName },
-    _meta: { title: '输入图' }
+    _meta: { title: 'Input image' }
   }
   const built = facts.rembg.build([NODE_IDS.loadImage, 0])
 
-  // 去背结果直接进保存节点
+  // The background-removed result goes straight into the save node.
   const saver: ComfyNode = facts.config.saveToComfyUI
     ? {
         class_type: 'SaveImage',
         inputs: { filename_prefix: facts.filenamePrefix, images: built.output },
-        _meta: { title: '保存图片（已去背）' }
+        _meta: { title: 'Save image (background removed)' }
       }
     : {
         class_type: 'PreviewImage',
         inputs: { images: built.output },
-        _meta: { title: '预览图片（已去背）' }
+        _meta: { title: 'Preview image (background removed)' }
       }
 
   const workflow: ComfyWorkflow = {
@@ -239,7 +239,7 @@ export function buildRemoveBackground(facts: WorkflowFacts): BuiltWorkflow {
   return { workflow, mode: 'remove_background', outputNodeId: NODE_IDS.save }
 }
 
-/** 按模式分派。 */
+/** Dispatch by mode. */
 export function buildWorkflow(facts: WorkflowFacts): BuiltWorkflow {
   switch (facts.request.mode) {
     case 'text2img':
@@ -252,12 +252,12 @@ export function buildWorkflow(facts: WorkflowFacts): BuiltWorkflow {
       return buildRemoveBackground(facts)
     default: {
       const exhaustive: never = facts.request.mode
-      throw new Error(`内部错误：未知模式 ${String(exhaustive)}`)
+      throw new Error(`Internal error: unknown mode ${String(exhaustive)}`)
     }
   }
 }
 
-/** ComfyUI 侧的输出文件名前缀（放在一个子目录里，保持 ComfyUI output 整洁）。 */
+/** The output file name prefix on the ComfyUI side (inside a subdirectory, keeping its output tidy). */
 export function filenamePrefixFor(request: NormalizedRequest, now: Date = new Date()): string {
   const pad = (n: number, w = 2): string => String(n).padStart(w, '0')
   const stamp =
@@ -267,41 +267,43 @@ export function filenamePrefixFor(request: NormalizedRequest, now: Date = new Da
 }
 
 /**
- * 用户自定义工作流的 **token 替换**逃生舱（需求书：为 outpaint / upscale 等预留空间）。
+ * The **token substitution** escape hatch for user-provided custom workflows (room for
+ * outpaint / upscale and friends).
  *
- * 用法：`extra_options.workflow_path` 指向一个 API 格式工作流 JSON，里面用
- * `{{prompt}}`、`{{negative_prompt}}`、`{{width}}`、`{{height}}`、`{{seed}}`、
- * `{{steps}}`、`{{cfg_scale}}`、`{{strength}}`、`{{checkpoint}}`、`{{input_image}}`、
- * `{{mask_image}}` 这些占位符，插件在提交前替换成真实值。
+ * Usage: `extra_options.workflow_path` points at an API-format workflow JSON containing
+ * placeholders such as `{{prompt}}`, `{{negative_prompt}}`, `{{width}}`, `{{height}}`, `{{seed}}`,
+ * `{{steps}}`, `{{cfg_scale}}`, `{{strength}}`, `{{checkpoint}}`, `{{input_image}}`,
+ * `{{mask_image}}`; the plugin substitutes real values before submitting.
  *
- * 这样任何本插件 V1 没覆盖的能力（扩图、超分、批量、特殊节点），
- * 用户都能自己接进来，不用等我发新版。
+ * This lets users wire in anything V1 does not cover (outpainting, upscaling, batching, special
+ * nodes) without waiting for a new release.
  */
 export function applyCustomWorkflow(
   template: unknown,
   values: Record<string, string | number>
 ): ComfyWorkflow {
   if (!template || typeof template !== 'object' || Array.isArray(template)) {
-    throw new Error('自定义工作流必须是一个 JSON 对象（API 格式）。')
+    throw new Error('The custom workflow must be a JSON object (API format).')
   }
 
   /**
-   * 递归替换。
+   * Recursive substitution.
    *
-   * ⚠️ 这里**不能**用「先 `JSON.stringify` 再字符串替换」的写法（我第一版就是那么写的，
-   * 被测试抓出来了）：那样模板里的 `"{{width}}"` 会整体变成带引号的 `"256"`，
-   * 数字就悄悄退化成了字符串，ComfyUI 会因为类型不对直接拒掉整个工作流。
-   * 按值替换才能保住类型：整个字符串就是一个占位符时，原样返回该值（数字仍是数字）。
+   * ⚠️ This must **not** be done by "JSON.stringify first, then string-replace" (my first version
+   * did exactly that and the tests caught it): that turns `"{{width}}"` in the template into a
+   * quoted `"256"`, silently degrading a number into a string, and ComfyUI rejects the whole
+   * workflow because of the wrong type. Substituting by value preserves types: when the whole
+   * string is one placeholder, return the value as-is (a number stays a number).
    */
   const substitute = (value: unknown): unknown => {
     if (typeof value === 'string') {
       const exact = /^\{\{(\w+)\}\}$/.exec(value)
       if (exact) {
         const replacement = values[exact[1] as string]
-        // 没提供的占位符原样留着，便于用户发现自己拼错了
+        // Leave placeholders that were not provided as-is, so a typo is easy to spot.
         return replacement === undefined ? value : replacement
       }
-      // 占位符嵌在句子中间 → 只能当字符串拼进去
+      // A placeholder embedded mid-sentence → can only be concatenated as a string.
       return value.replace(/\{\{(\w+)\}\}/g, (match, key: string) => {
         const replacement = values[key]
         return replacement === undefined ? match : String(replacement)

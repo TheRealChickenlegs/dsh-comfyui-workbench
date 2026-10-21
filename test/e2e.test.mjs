@@ -1,10 +1,10 @@
-﻿/**
- * 端到端测试：真的起一个假 ComfyUI，把四种模式整条链路跑一遍。
+/**
+ * End-to-end tests: really start a fake ComfyUI and run the whole pipeline for all four modes.
  *
- * 这是这个插件最重要的证据：验证的不是「函数返回了对象」，而是
- *   「参数 → 工作流 → HTTP → 轮询 → 取回图片 → 落盘 → 元数据」
- * 全部真的走通了，并且**产出的 PNG 尺寸确实是请求的尺寸**
- * （假 ComfyUI 是按工作流里 EmptyLatentImage 的尺寸真造图的）。
+ * This is the plugin's most important evidence: it verifies not "a function returned an object" but
+ *   "arguments → workflow → HTTP → polling → fetching the image → writing to disk → metadata"
+ * flowing end to end, and that **the produced PNG really has the requested dimensions**
+ * (the fake ComfyUI really renders using the EmptyLatentImage size from the workflow).
  */
 import './env-setup.mjs'
 import assert from 'node:assert/strict'
@@ -28,9 +28,9 @@ after(async () => {
   for (const mock of running) await mock.close()
 })
 
-/* ─────────────────────────────── 文生图 ─────────────────────────────── */
+/* ─────────────────────────────── text2img ─────────────────────────────── */
 
-test('text2img 端到端：出图、尺寸正确、落盘到项目根目录、写好元数据', async () => {
+test('text2img end to end: generates, correct size, written to the project root, metadata written', async () => {
   const { mock, baseUrl } = await startMock()
   const cwd = tempDir('e2e-t2i')
   const config = testConfig({ baseUrl, width: 512, height: 512 })
@@ -41,48 +41,48 @@ test('text2img 端到端：出图、尺寸正确、落盘到项目根目录、�
     config
   })
 
-  // 真的写出了一张图
+  // A real image was written
   assert.equal(run.outputPaths.length, 1)
   const output = run.outputPaths[0]
-  assert.ok(fs.existsSync(output), `输出文件应存在：${output}`)
-  assert.equal(path.dirname(output), cwd, '默认输出目录必须是「项目根目录」')
+  assert.ok(fs.existsSync(output), `the output file should exist: ${output}`)
+  assert.equal(path.dirname(output), cwd, 'the default output directory must be the "project root"')
   assert.match(path.basename(output), /^comfyui-.*\.png$/)
 
-  // 图是真的、且尺寸是我们要的 512×512（而不是随便一张
+  // The image is real, and its size is our 512×512 (not just any image)
   const png = readPngSize(fs.readFileSync(output))
-  assert.deepEqual(png, { width: 512, height: 512 }, '假 ComfyUI 应按工作流里的尺寸造图')
+  assert.deepEqual(png, { width: 512, height: 512 }, 'the fake ComfyUI should render at the workflow size')
 
   assert.equal(run.mode, 'text2img')
   assert.equal(run.modeInferred, true)
-  assert.equal(run.checkpoint, 'sd_xl_base_1.0.safetensors', '没指定底模时应自动挑带 xl 的那个')
+  assert.equal(run.checkpoint, 'sd_xl_base_1.0.safetensors', 'when no checkpoint is specified it should auto-pick the one containing xl')
   assert.ok(run.promptId.length > 0)
   assert.equal(run.comfyUrl, baseUrl)
   assert.ok(run.durationMs >= 0)
   assert.ok(
-    run.notes.some((note) => note.includes('自动选用底模')),
-    '自动换底模必须如实告知调用者'
+    run.notes.some((note) => note.includes('Checkpoint chosen automatically')),
+    'auto-switching the checkpoint must be reported to the caller'
   )
 
-  // 元数据 sidecar
-  assert.ok(run.metadataPath && fs.existsSync(run.metadataPath), '应写出元数据 sidecar')
+  // Metadata sidecar
+  assert.ok(run.metadataPath && fs.existsSync(run.metadataPath), 'a metadata sidecar should be written')
   const meta = JSON.parse(fs.readFileSync(run.metadataPath, 'utf8'))
   assert.equal(meta.mode, 'text2img')
   assert.equal(meta.seed, run.request.seed)
   assert.equal(meta.width, 512)
   assert.equal(meta.height, 512)
   assert.equal(meta.checkpoint, 'sd_xl_base_1.0.safetensors')
-  assert.ok(meta.workflow && Object.keys(meta.workflow).length >= 7, '元数据里应存完整工作流，便于复现')
+  assert.ok(meta.workflow && Object.keys(meta.workflow).length >= 7, 'metadata should store the complete workflow for reproduction')
   assert.equal(meta.outputFile, output)
   assert.ok(meta.pluginVersion.length > 0)
 
-  // 过程事实：做过健康检查、没上传任何图、没轮询到超时
-  assert.ok(mock.state.stats.system_stats >= 1, '应先做健康检查')
+  // Process facts: health check happened, nothing was uploaded, polling did not time out
+  assert.ok(mock.state.stats.system_stats >= 1, 'a health check should happen first')
   assert.equal(mock.state.stats.upload, 0)
-  assert.ok(mock.state.stats.history >= 2, '应轮询了不止一次（模拟排队）')
-  assert.ok(mock.state.stats.view >= 1, '应取回图片字节')
+  assert.ok(mock.state.stats.history >= 2, 'it should poll more than once (simulating a queue)')
+  assert.ok(mock.state.stats.view >= 1, 'it should fetch the image bytes')
 })
 
-test('text2img：指定 SD1.5 底模时自动用 512 尺寸', async () => {
+test('text2img: an SD1.5 checkpoint automatically uses 512', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('e2e-legacy')
   const config = testConfig({ baseUrl, width: 1024, height: 1024 })
@@ -93,42 +93,43 @@ test('text2img：指定 SD1.5 底模时自动用 512 尺寸', async () => {
     config
   })
 
-  assert.equal(run.request.width, 512, 'SD1.5 系应用 512 而不是配置里的 1024')
+  assert.equal(run.request.width, 512, 'SD1.5-family should use 512 instead of the configured 1024')
   assert.equal(run.request.height, 512)
   assert.deepEqual(readPngSize(fs.readFileSync(run.outputPaths[0])), { width: 512, height: 512 })
 })
 
-test('text2img：没传 model 时，自动挑到的 SD1.5 底模同样决定默认尺寸', async () => {
-  // 回归点：真机上只有 SD1.5 一个底模时曾出 1024×1024，而工具说明承诺「尺寸按底模自适应」。
-  // 根因是自适应发生在参数层、早于底模自动挑选，所以这里必须覆盖「自动挑」这条路径。
+test('text2img: with no model passed, an auto-picked SD1.5 checkpoint also decides the default size', async () => {
+  // Regression: on a real machine with only an SD1.5 checkpoint it produced 1024×1024, while the tool
+  // description promised "size adapts to the checkpoint". The root cause was that adaptation happened
+  // in the parameter layer, before the checkpoint was auto-picked, so this must cover the auto-pick path.
   const { baseUrl } = await startMock({ checkpoints: ['v1-5-pruned-emaonly.safetensors'] })
   const cwd = tempDir('e2e-legacy-auto')
   const config = testConfig({ baseUrl, width: 1024, height: 1024 })
 
   const run = await runGeneration({ args: { prompt: 'x' }, cwd, config })
 
-  assert.equal(run.checkpoint, 'v1-5-pruned-emaonly.safetensors', '应自动挑到唯一的 SD1.5 底模')
-  assert.equal(run.request.width, 512, '自动挑到的 SD1.5 也要把默认尺寸压到 512')
+  assert.equal(run.checkpoint, 'v1-5-pruned-emaonly.safetensors', 'it should auto-pick the only SD1.5 checkpoint')
+  assert.equal(run.request.width, 512, 'an auto-picked SD1.5 checkpoint must also lower the default size to 512')
   assert.equal(run.request.height, 512)
   assert.deepEqual(readPngSize(fs.readFileSync(run.outputPaths[0])), { width: 512, height: 512 })
   assert.ok(
-    run.notes.some((note) => note.includes('按底模') && note.includes('512x512')),
-    '改了默认尺寸就得在 notes 里说清依据'
+    run.notes.some((note) => note.includes('adapted to') && note.includes('512x512')),
+    'a changed default size must state its basis in notes'
   )
 })
 
-test('text2img：显式传的 width 优先，只有没给的维度才走底模自适应', async () => {
+test('text2img: an explicit width wins; only dimensions not given adapt to the checkpoint', async () => {
   const { baseUrl } = await startMock({ checkpoints: ['v1-5-pruned-emaonly.safetensors'] })
   const cwd = tempDir('e2e-legacy-explicit')
   const config = testConfig({ baseUrl, width: 1024, height: 1024 })
 
   const run = await runGeneration({ args: { prompt: 'x', width: 768 }, cwd, config })
 
-  assert.equal(run.request.width, 768, '显式 width 不能被底模自适应覆盖')
-  assert.equal(run.request.height, 512, '没给的 height 才走底模自适应')
+  assert.equal(run.request.width, 768, 'an explicit width must not be overridden by checkpoint adaptation')
+  assert.equal(run.request.height, 512, 'only the height that was not given adapts to the checkpoint')
 })
 
-test('seed 会被真正用在图里，且同一个 seed 可复现', async () => {
+test('seed is really used in the image, and the same seed reproduces it', async () => {
   const { mock, baseUrl } = await startMock()
   const cwd = tempDir('e2e-seed')
   const config = testConfig({ baseUrl, width: 256, height: 256 })
@@ -140,9 +141,9 @@ test('seed 会被真正用在图里，且同一个 seed 可复现', async () => 
   assert.ok(mock.state.stats.prompt >= 1)
 })
 
-/* ─────────────────────────────── 图生图 ─────────────────────────────── */
+/* ─────────────────────────────── img2img ─────────────────────────────── */
 
-test('img2img 端到端：上传输入图 → VAEEncode → 采样，denoise 跟随 strength', async () => {
+test('img2img end to end: upload input image → VAEEncode → sample, denoise follows strength', async () => {
   const { mock, baseUrl } = await startMock()
   const cwd = tempDir('e2e-i2i')
   const config = testConfig({ baseUrl })
@@ -155,7 +156,7 @@ test('img2img 端到端：上传输入图 → VAEEncode → 采样，denoise 跟
   })
 
   assert.equal(run.mode, 'img2img')
-  assert.equal(mock.state.stats.upload, 1, '输入图应被上传到 ComfyUI')
+  assert.equal(mock.state.stats.upload, 1, 'the input image should be uploaded to ComfyUI')
   assert.equal(mock.state.lastUploadFilename, 'input-300x200.png')
 
   assert.equal(run.workflow['8'].class_type, 'LoadImage')
@@ -165,12 +166,12 @@ test('img2img 端到端：上传输入图 → VAEEncode → 采样，denoise 跟
   assert.equal(run.workflow['5'].inputs.denoise, 0.4)
 
   assert.ok(fs.existsSync(run.outputPaths[0]))
-  assert.ok(readPngSize(fs.readFileSync(run.outputPaths[0])), '产出的也是合法 PNG')
+  assert.ok(readPngSize(fs.readFileSync(run.outputPaths[0])), 'the output is a valid PNG too')
 })
 
-/* ─────────────────────────────── 局部重绘 ─────────────────────────────── */
+/* ─────────────────────────────── inpaint ─────────────────────────────── */
 
-test('inpaint 端到端：上传原图 + 遮罩 → VAEEncodeForInpaint', async () => {
+test('inpaint end to end: upload source + mask → VAEEncodeForInpaint', async () => {
   const { mock, baseUrl } = await startMock()
   const cwd = tempDir('e2e-inpaint')
   const config = testConfig({ baseUrl })
@@ -183,9 +184,9 @@ test('inpaint 端到端：上传原图 + 遮罩 → VAEEncodeForInpaint', async 
     config
   })
 
-  assert.equal(run.mode, 'inpaint', '有 input + mask 应推断为 inpaint')
+  assert.equal(run.mode, 'inpaint', 'input + mask should be inferred as inpaint')
   assert.equal(run.modeInferred, true)
-  assert.equal(mock.state.stats.upload, 2, '原图和遮罩都要上传')
+  assert.equal(mock.state.stats.upload, 2, 'both the source and the mask must be uploaded')
 
   assert.equal(run.workflow['9'].class_type, 'LoadImageMask')
   assert.equal(run.workflow['9'].inputs.channel, 'red')
@@ -198,9 +199,9 @@ test('inpaint 端到端：上传原图 + 遮罩 → VAEEncodeForInpaint', async 
   assert.ok(fs.existsSync(run.outputPaths[0]))
 })
 
-/* ─────────────────────────────── 背景移除 ─────────────────────────────── */
+/* ─────────────────────────────── background removal ─────────────────────────────── */
 
-test('remove_background 端到端：走 essentials 双节点（RemBGSession → ImageRemoveBackground+），不经过采样器', async () => {
+test('remove_background end to end: uses the essentials node pair (RemBGSession → ImageRemoveBackground+), no sampler', async () => {
   const { mock, baseUrl } = await startMock()
   const cwd = tempDir('e2e-rembg')
   const config = testConfig({ baseUrl })
@@ -215,32 +216,32 @@ test('remove_background 端到端：走 essentials 双节点（RemBGSession → 
   assert.equal(run.mode, 'remove_background')
   assert.ok(
     run.rembgLabel && run.rembgLabel.includes('essentials'),
-    `应报告用了哪套去背方案，实际：${run.rembgLabel}`
+    `it should report which removal plan was used; actual: ${run.rembgLabel}`
   )
   assert.ok(
-    run.notes.some((note) => note.includes('去背方案')),
-    '用了哪套去背方案必须写进 notes'
+    run.notes.some((note) => note.includes('Background removal plan')),
+    'the plan used must be written into notes'
   )
 
   const classes = Object.values(run.workflow).map((node) => node.class_type)
-  assert.ok(classes.includes('ImageRemoveBackground+'), '应包含 essentials 的消费节点')
+  assert.ok(classes.includes('ImageRemoveBackground+'), 'it should include the essentials consumer node')
   assert.ok(
     classes.includes('RemBGSession+'),
-    'session 节点必须一起构建：真机上 rembg_session 是必填输入，单节点形态跑不通'
+    'the session node must be built too: on a real machine rembg_session is a required input, and the single-node shape does not work'
   )
-  assert.ok(!classes.includes('KSampler'), '去背不该跑采样器')
+  assert.ok(!classes.includes('KSampler'), 'background removal should not run a sampler')
   assert.equal(run.workflow['7'].class_type, 'SaveImage')
 
   const [sourceId] = run.workflow['7'].inputs.images
   assert.equal(run.workflow[sourceId].class_type, 'ImageRemoveBackground+')
-  // session 的输出必须真的接进消费节点的 rembg_session，而不是被 autoFill 瞎填
+  // The session output must really be wired into the consumer's rembg_session, not filled arbitrarily by autoFill.
   const [sessionId] = run.workflow[sourceId].inputs.rembg_session
   assert.equal(run.workflow[sessionId].class_type, 'RemBGSession+')
   assert.ok(fs.existsSync(run.outputPaths[0]))
   assert.equal(mock.state.stats.upload, 1)
 })
 
-test('去背方案择优：没有 essentials 时改用 BRIA', async () => {
+test('removal plan precedence: falls back to BRIA when essentials is absent', async () => {
   const { baseUrl } = await startMock({ nodes: briaNodes() })
   const cwd = tempDir('e2e-bria')
   const config = testConfig({ baseUrl })
@@ -248,13 +249,13 @@ test('去背方案择优：没有 essentials 时改用 BRIA', async () => {
 
   const run = await runGeneration({ args: { mode: 'remove_background', input_image: input }, cwd, config })
 
-  assert.ok(run.rembgLabel.includes('BRIA'), `应识别出 BRIA 方案，实际：${run.rembgLabel}`)
+  assert.ok(run.rembgLabel.includes('BRIA'), `it should identify the BRIA plan; actual: ${run.rembgLabel}`)
   const classes = Object.values(run.workflow).map((node) => node.class_type)
   assert.ok(classes.includes('BRIA_RMBG_Zho'))
   assert.ok(classes.includes('BRIA_RMBG_ModelLoader_Zho'))
 })
 
-test('去背方案择优：只有单节点方案（WAS Node Suite）时走 buildSingle，不凭空拼 session 节点', async () => {
+test('removal plan precedence: with only a single-node plan (WAS Node Suite) it uses buildSingle, without inventing a session node', async () => {
   const { baseUrl } = await startMock({ nodes: wasNodes() })
   const cwd = tempDir('e2e-was')
   const config = testConfig({ baseUrl })
@@ -262,18 +263,18 @@ test('去背方案择优：只有单节点方案（WAS Node Suite）时走 build
 
   const run = await runGeneration({ args: { mode: 'remove_background', input_image: input }, cwd, config })
 
-  assert.ok(run.rembgLabel.includes('WAS'), `应识别出 WAS 方案，实际：${run.rembgLabel}`)
+  assert.ok(run.rembgLabel.includes('WAS'), `it should identify the WAS plan; actual: ${run.rembgLabel}`)
   const classes = Object.values(run.workflow).map((node) => node.class_type)
   assert.ok(classes.includes('Image Rembg (Remove Background)'))
-  assert.ok(!classes.includes('RemBGSession+'), '单节点方案不该凭空拼出 session 节点')
+  assert.ok(!classes.includes('RemBGSession+'), 'a single-node plan should not invent a session node')
   assert.equal(
     classes.filter((c) => c.includes('Rembg') || c.includes('RemoveBackground')).length,
     1,
-    '单节点方案应该只有一个去背节点'
+    'a single-node plan should have exactly one removal node'
   )
 })
 
-test('一个去背节点都没装 → 明确报错，并说清装什么、怎么装', async () => {
+test('no removal node installed → a clear error saying what to install and how', async () => {
   const nodes = defaultNodes()
   delete nodes['RemBGSession+']
   delete nodes['ImageRemoveBackground+']
@@ -285,17 +286,17 @@ test('一个去背节点都没装 → 明确报错，并说清装什么、怎么
   await assert.rejects(
     () => runGeneration({ args: { mode: 'remove_background', input_image: input }, cwd, config }),
     (error) => {
-      assert.ok(error instanceof ImagePluginError, `应是 ImagePluginError，实际 ${error?.constructor?.name}`)
-      assert.match(error.message, /背景移除|去背/)
-      assert.match(error.hint, /custom_nodes/, '必须告诉用户去哪装节点')
+      assert.ok(error instanceof ImagePluginError, `should be an ImagePluginError, actual ${error?.constructor?.name}`)
+      assert.match(error.message, /background-removal/)
+      assert.match(error.hint, /custom_nodes/, 'it must tell the user where to install the node')
       return true
     }
   )
 })
 
-/* ─────────────────────────── 其它行为 ─────────────────────────── */
+/* ─────────────────────────── other behaviour ─────────────────────────── */
 
-test('saveToComfyUI=false 时用 PreviewImage，并且照样落盘到本地', async () => {
+test('saveToComfyUI=false uses PreviewImage and still writes to disk locally', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('e2e-preview')
   const config = testConfig({ baseUrl, width: 128, height: 128, saveToComfyUI: false })
@@ -304,10 +305,10 @@ test('saveToComfyUI=false 时用 PreviewImage，并且照样落盘到本地', as
   const classes = Object.values(run.workflow).map((node) => node.class_type)
   assert.ok(classes.includes('PreviewImage'))
   assert.ok(!classes.includes('SaveImage'))
-  assert.ok(fs.existsSync(run.outputPaths[0]), '不往 ComfyUI 存，也必须落到本地')
+  assert.ok(fs.existsSync(run.outputPaths[0]), 'even without saving to ComfyUI it must land locally')
 })
 
-test('自定义工作流逃生舱：token 被替换成真实值，数字保持数字', async () => {
+test('custom workflow escape hatch: tokens are replaced with real values, numbers stay numbers', async () => {
   const { mock, baseUrl } = await startMock()
   const cwd = tempDir('e2e-custom')
   const config = testConfig({ baseUrl })
@@ -335,17 +336,17 @@ test('自定义工作流逃生舱：token 被替换成真实值，数字保持�
     config
   })
 
-  assert.equal(run.workflow['2'].inputs.text, 'a "quoted" prompt', '带引号的提示词必须正确还原')
-  assert.strictEqual(run.workflow['3'].inputs.width, 256, '数字占位符必须是数字')
+  assert.equal(run.workflow['2'].inputs.text, 'a "quoted" prompt', 'a prompt with quotes must be restored correctly')
+  assert.strictEqual(run.workflow['3'].inputs.width, 256, 'a numeric placeholder must be a number')
   assert.strictEqual(run.workflow['3'].inputs.height, 192)
-  assert.equal(run.workflow['1'].inputs.ckpt_name, 'sd_xl_base_1.0.safetensors', 'checkpoint 占位符应填自动挑的底模')
-  assert.ok(run.notes.some((note) => note.includes('自定义工作流')))
+  assert.equal(run.workflow['1'].inputs.ckpt_name, 'sd_xl_base_1.0.safetensors', 'the checkpoint placeholder should get the auto-picked checkpoint')
+  assert.ok(run.notes.some((note) => note.includes('custom workflow')))
   assert.ok(fs.existsSync(run.outputPaths[0]))
   assert.deepEqual(readPngSize(fs.readFileSync(run.outputPaths[0])), { width: 256, height: 192 })
   assert.ok(mock.state.stats.prompt >= 1)
 })
 
-test('自定义工作流文件不存在 → 明确报错（不是裸 ENOENT）', async () => {
+test('a missing custom workflow file → a clear error (not a bare ENOENT)', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('e2e-custom-missing')
   const config = testConfig({ baseUrl })
@@ -353,19 +354,19 @@ test('自定义工作流文件不存在 → 明确报错（不是裸 ENOENT）',
   await assert.rejects(
     () =>
       runGeneration({
-        args: { prompt: 'x', extra_options: { workflow_path: path.join(cwd, '不存在.json') } },
+        args: { prompt: 'x', extra_options: { workflow_path: path.join(cwd, 'missing.json') } },
         cwd,
         config
       }),
     (error) => {
       assert.ok(error instanceof ImagePluginError)
-      assert.match(error.message, /不存在/)
+      assert.match(error.message, /does not exist/)
       return true
     }
   )
 })
 
-test('两次生成不覆盖彼此', async () => {
+test('two generations do not overwrite each other', async () => {
   const { baseUrl } = await startMock()
   const cwd = tempDir('e2e-unique')
   const config = testConfig({ baseUrl, width: 64, height: 64 })
@@ -378,9 +379,9 @@ test('两次生成不覆盖彼此', async () => {
   assert.ok(fs.existsSync(second.outputPaths[0]))
 })
 
-test('img2img / inpaint：报的尺寸是**产出图**的尺寸，不是请求里的 width/height', async () => {
-  // 真机实测踩到过：512×512 的输入图产出 512 的图，报告与 sidecar 却写着 1024（请求值），
-  // 与 OUTPUT_SCHEMA 里「width = 输出宽度」的承诺矛盾。
+test('img2img / inpaint: the reported size is the **produced image** size, not the requested width/height', async () => {
+  // Seen on a real machine: a 512×512 input produced a 512 image, yet the report and sidecar said 1024
+  // (the requested value), contradicting OUTPUT_SCHEMA's promise that "width = output width".
   const { baseUrl } = await startMock()
   const cwd = tempDir('e2e-actual-size')
   const config = testConfig({ baseUrl, width: 1024, height: 1024 })
@@ -392,11 +393,11 @@ test('img2img / inpaint：报的尺寸是**产出图**的尺寸，不是请求�
     config
   })
   assert.deepEqual(readPngSize(fs.readFileSync(img2img.outputPaths[0])), { width: 320, height: 240 })
-  assert.equal(img2img.request.width, 320, '报的宽必须是产出图的宽')
+  assert.equal(img2img.request.width, 320, 'the reported width must be the produced image width')
   assert.equal(img2img.request.height, 240)
   assert.ok(
-    img2img.notes.some((note) => note.includes('画布由输入图决定')),
-    '尺寸跟输入图走时要说清原因，而不是让请求值静静留在报告里'
+    img2img.notes.some((note) => note.includes('canvas for')),
+    'when the size follows the input image, say why instead of silently keeping the requested value in the report'
   )
 
   const mask = writePng(path.join(cwd, 'mask-320x240.png'), 320, 240)
@@ -406,6 +407,6 @@ test('img2img / inpaint：报的尺寸是**产出图**的尺寸，不是请求�
     config
   })
   assert.deepEqual(readPngSize(fs.readFileSync(inpaint.outputPaths[0])), { width: 320, height: 240 })
-  assert.equal(inpaint.request.width, 320, '局部重绘同理：报产出尺寸')
+  assert.equal(inpaint.request.width, 320, 'same for inpainting: report the produced size')
   assert.equal(inpaint.request.height, 240)
 })

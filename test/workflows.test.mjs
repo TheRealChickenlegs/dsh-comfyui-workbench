@@ -1,9 +1,10 @@
 /**
- * 工作流构建的离线测试（纯函数，不联网）。
+ * Offline tests for workflow building (pure functions, no network).
  *
- * 除了逐模式断言关键接线，还有一个**通用结构校验** `assertNoDanglingRefs`：
- * 把图里所有 [节点id, 槽位] 形态的连线都走一遍，确认指向的节点真的存在。
- * 这样即使以后改了节点编号，也不会悄悄产出「连到空气」的废工作流。
+ * Besides asserting the key wiring per mode, there is a **generic structural check**,
+ * `assertNoDanglingRefs`: it walks every `[node_id, slot]` link in the graph and confirms the
+ * referenced node really exists. That way, even if node ids change later, it cannot silently
+ * produce a broken workflow that "links to thin air".
  */
 import './env-setup.mjs'
 import assert from 'node:assert/strict'
@@ -23,7 +24,8 @@ import { tempDir, testConfig, writePng } from './helpers.mjs'
 const cwd = tempDir('wf')
 const config = testConfig()
 
-// 必须是真的存在的文件：参数层会校验输入图存在，拿假路径会被它拦下（这是对的）
+// These must be real files: the parameter layer validates that input images exist, so fake paths
+// would be rejected by it (correctly).
 const inputFile = writePng(path.join(cwd, 'x.png'), 64, 64)
 const maskFile = writePng(path.join(cwd, 'm.png'), 64, 64)
 
@@ -40,18 +42,18 @@ function factsFor(args, extra = {}) {
   }
 }
 
-/** 假去背方案：单元测试不依赖真节点表。 */
+/** A fake background-removal plan: unit tests do not depend on a real node table. */
 function fakeRembgPlan() {
   return {
     key: 'fake',
-    label: '假去背节点',
+    label: 'Fake background-removal node',
     requiredNodes: ['FakeRembg'],
     installHint: '',
     build: (input) => ({ nodes: { rb1: { class_type: 'FakeRembg', inputs: { image: input, model: 'u2net' } } }, output: ['rb1', 0] })
   }
 }
 
-/** 图内所有连线都必须指向真实存在的节点。 */
+/** Every link in the graph must point at a node that really exists. */
 function assertNoDanglingRefs(workflow) {
   const ids = new Set(Object.keys(workflow))
   for (const [nodeId, node] of Object.entries(workflow)) {
@@ -61,13 +63,13 @@ function assertNoDanglingRefs(workflow) {
       if (typeof target !== 'string' || typeof slot !== 'number') continue
       assert.ok(
         ids.has(target),
-        `节点 ${nodeId} 的输入 ${inputName} 连到了不存在的节点 ${target}（可用：${[...ids].join(',')}）`
+        `node ${nodeId}'s input ${inputName} links to a non-existent node ${target} (available: ${[...ids].join(',')})`
       )
     }
   }
 }
 
-test('text2img：完整接线 + 尺寸进 EmptyLatentImage', () => {
+test('text2img: complete wiring + dimensions go into EmptyLatentImage', () => {
   const built = buildText2Img(factsFor({ prompt: 'a corgi astronaut', width: 768, height: 512 }))
   const wf = built.workflow
 
@@ -89,7 +91,7 @@ test('text2img：完整接线 + 尺寸进 EmptyLatentImage', () => {
 
   const sampler = wf['5']
   assert.equal(sampler.class_type, 'KSampler')
-  assert.equal(sampler.inputs.denoise, 1, 'text2img 应该是整图生成')
+  assert.equal(sampler.inputs.denoise, 1, 'text2img should generate the whole image')
   assert.deepEqual(sampler.inputs.latent_image, ['4', 0])
   assert.deepEqual(sampler.inputs.model, ['1', 0])
   assert.deepEqual(sampler.inputs.positive, ['2', 0])
@@ -98,7 +100,7 @@ test('text2img：完整接线 + 尺寸进 EmptyLatentImage', () => {
   assert.deepEqual(wf['6'].inputs.samples, ['5', 0])
 })
 
-test('img2img：LoadImage → VAEEncode → KSampler，denoise=strength', () => {
+test('img2img: LoadImage → VAEEncode → KSampler, denoise=strength', () => {
   const built = buildImg2Img(
     factsFor(
       { mode: 'img2img', prompt: 'make it snowy', input_image: inputFile, strength: 0.35 },
@@ -116,7 +118,7 @@ test('img2img：LoadImage → VAEEncode → KSampler，denoise=strength', () => 
   assert.equal(wf['5'].inputs.denoise, 0.35)
 })
 
-test('inpaint：LoadImageMask（red 通道）→ VAEEncodeForInpaint，denoise=1', () => {
+test('inpaint: LoadImageMask (red channel) → VAEEncodeForInpaint, denoise=1', () => {
   const built = buildInpaint(
     factsFor(
       {
@@ -141,7 +143,7 @@ test('inpaint：LoadImageMask（red 通道）→ VAEEncodeForInpaint，denoise=1
   assert.equal(wf['5'].inputs.denoise, 1)
 })
 
-test('remove_background：去背节点输出接到 SaveImage', () => {
+test('remove_background: the removal node output goes into SaveImage', () => {
   const built = buildRemoveBackground(
     factsFor({ mode: 'remove_background', input_image: inputFile }, {
       uploadedInput: 'x.png',
@@ -152,24 +154,24 @@ test('remove_background：去背节点输出接到 SaveImage', () => {
   assertNoDanglingRefs(wf)
 
   const rembgNode = Object.values(wf).find((node) => node.class_type === 'FakeRembg')
-  assert.ok(rembgNode, '应该包含去背节点')
+  assert.ok(rembgNode, 'it should contain the removal node')
   assert.equal(wf['7'].class_type, 'SaveImage')
   const [sourceId] = wf['7'].inputs.images
-  assert.ok(wf[sourceId], 'SaveImage 的输入必须是图里真实存在的节点')
-  assert.equal(wf[sourceId].class_type, 'FakeRembg', '去背结果应直接进 SaveImage，不经过采样器')
-  assert.ok(!Object.values(wf).some((node) => node.class_type === 'KSampler'), '去背不该有采样器')
+  assert.ok(wf[sourceId], "SaveImage's input must be a node that really exists in the graph")
+  assert.equal(wf[sourceId].class_type, 'FakeRembg', 'the removal result should go straight into SaveImage, without a sampler')
+  assert.ok(!Object.values(wf).some((node) => node.class_type === 'KSampler'), 'background removal should have no sampler')
 })
 
-test('remove_background 没给方案 → 立刻报错，而不是产出坏工作流', () => {
+test('remove_background without a plan → errors immediately instead of producing a broken workflow', () => {
   assert.throws(() =>
     buildRemoveBackground(factsFor({ mode: 'remove_background', input_image: path.join(cwd, 'x.png') }, { uploadedInput: 'x.png' }))
   )
 })
 
-test('img2img / inpaint 缺已上传文件 → 报内部错误，不静默降级', () => {
+test('img2img / inpaint missing uploaded files → internal error, no silent degradation', () => {
   assert.throws(
     () => buildImg2Img(factsFor({ mode: 'img2img', prompt: 'x', input_image: inputFile })),
-    /内部错误/
+    /Internal error/
   )
   assert.throws(
     () =>
@@ -179,11 +181,11 @@ test('img2img / inpaint 缺已上传文件 → 报内部错误，不静默降级
           { uploadedInput: 'x.png' }
         )
       ),
-    /内部错误/
+    /Internal error/
   )
 })
 
-test('saveToComfyUI=false → 用 PreviewImage（不污染 ComfyUI 的 output 目录）', () => {
+test('saveToComfyUI=false → uses PreviewImage (does not pollute ComfyUI output)', () => {
   const noSave = { ...config, saveToComfyUI: false }
   const { request } = normalizeRequest({ prompt: 'x' }, { cwd, config: noSave })
   const built = buildText2Img({
@@ -199,27 +201,35 @@ test('saveToComfyUI=false → 用 PreviewImage（不污染 ComfyUI 的 output �
   assert.ok(!classes.includes('SaveImage'))
 })
 
-test('filenamePrefixFor：带日期时间与 seed，且落在子目录里', () => {
+test('filenamePrefixFor: includes date/time and seed, and lives in a subdirectory', () => {
   const { request } = normalizeRequest({ prompt: 'x', seed: 12345 }, { cwd, config })
   const prefix = filenamePrefixFor(request, new Date(2026, 8, 28, 15, 30, 12))
   assert.equal(prefix, 'dsh-comfyui-image/20260928-153012-12345')
 })
 
-test('token 替换：数字变数字、字符串正确转义、未提供的占位符原样保留', () => {
+test('token substitution: numbers become numbers, strings are restored verbatim, unknown placeholders stay as-is', () => {
   const template = {
     '1': { class_type: 'EmptyLatentImage', inputs: { width: '{{width}}', height: '{{height}}' } },
     '2': { class_type: 'CLIPTextEncode', inputs: { text: '{{prompt}}' } },
-    '3': { class_type: 'X', inputs: { keep: '{{不认识的占位符}}' } }
+    '3': { class_type: 'X', inputs: { keep: '{{unknown_placeholder}}' } }
   }
-  const result = applyCustomWorkflow(template, { width: 512, height: 768, prompt: '带"引号"和\\反斜杠' })
+  const result = applyCustomWorkflow(template, {
+    width: 512,
+    height: 768,
+    prompt: 'quotes "inside" and \\ backslash'
+  })
 
-  assert.strictEqual(result['1'].inputs.width, 512, '数字占位符必须变成数字类型')
+  assert.strictEqual(result['1'].inputs.width, 512, 'a numeric placeholder must become a number')
   assert.strictEqual(result['1'].inputs.height, 768)
-  assert.strictEqual(result['2'].inputs.text, '带"引号"和\\反斜杠', '字符串必须原样还原')
-  assert.equal(result['3'].inputs.keep, '{{不认识的占位符}}', '拼错的占位符应留在原地便于发现')
+  assert.strictEqual(
+    result['2'].inputs.text,
+    'quotes "inside" and \\ backslash',
+    'strings must be restored verbatim'
+  )
+  assert.equal(result['3'].inputs.keep, '{{unknown_placeholder}}', 'a misspelled placeholder should stay put so it is noticeable')
 })
 
-test('token 替换：模板不是对象 → 报错', () => {
-  assert.throws(() => applyCustomWorkflow([1, 2, 3], {}), /必须是一个 JSON 对象/)
-  assert.throws(() => applyCustomWorkflow(null, {}), /必须是一个 JSON 对象/)
+test('token substitution: a template that is not an object → error', () => {
+  assert.throws(() => applyCustomWorkflow([1, 2, 3], {}), /must be a JSON object/)
+  assert.throws(() => applyCustomWorkflow(null, {}), /must be a JSON object/)
 })
