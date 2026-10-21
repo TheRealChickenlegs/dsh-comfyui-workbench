@@ -50,12 +50,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wbb316/dsh-comfyui-image.git"
+    "url": "git+https://github.com/TheRealChickenlegs/dsh-comfyui-image.git"
   },
   "bugs": {
-    "url": "https://github.com/wbb316/dsh-comfyui-image/issues"
+    "url": "https://github.com/TheRealChickenlegs/dsh-comfyui-image/issues"
   },
-  "homepage": "https://github.com/wbb316/dsh-comfyui-image#readme",
+  "homepage": "https://github.com/TheRealChickenlegs/dsh-comfyui-image#readme",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

@@ -1,10 +1,9 @@
 # dsh-comfyui-image
 
-[![CI](https://github.com/wbb316/dsh-comfyui-image/actions/workflows/ci.yml/badge.svg)](https://github.com/wbb316/dsh-comfyui-image/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/wbb316/dsh-comfyui-image?label=release)](https://github.com/wbb316/dsh-comfyui-image/releases)
-[![License](https://img.shields.io/github/license/wbb316/dsh-comfyui-image)](./LICENSE)
+[![CI](https://github.com/TheRealChickenlegs/dsh-comfyui-image/actions/workflows/ci.yml/badge.svg)](https://github.com/TheRealChickenlegs/dsh-comfyui-image/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/TheRealChickenlegs/dsh-comfyui-image?label=release)](https://github.com/TheRealChickenlegs/dsh-comfyui-image/releases)
+[![License](https://img.shields.io/github/license/TheRealChickenlegs/dsh-comfyui-image)](./LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](https://nodejs.org/)
-[![npm](https://img.shields.io/npm/v/dsh-comfyui-image?label=npm)](https://www.npmjs.com/package/dsh-comfyui-image)
 
 A plugin that gives **DeepSeek Harness** (DSH) an **image generation capability**: the backend talks to a **local ComfyUI**. The high-level `generate_image` tool covers text-to-image, image-to-image, inpainting and background removal, while three advanced tools expose every installed model, every node schema, and arbitrary workflow execution. It depends on no external commercial API and has **zero third-party runtime dependencies** (it only uses Node's built-in `fetch` / `FormData`).
 
@@ -104,32 +103,23 @@ Then drop at least one checkpoint (an SDXL or SD1.5 `.safetensors`) into `ComfyU
 
 ### 2. Install the plugin into DSH
 
-> Five ways to install it, easiest first: **Option A installs from npm** (published, least work);
-> **Option B installs straight from GitHub** (no npm account needed, verified); use **Option C** to
-> link a local clone through the plugin manager; **Option D** is the manual profile edit; **Option E**
-> is for local development.
+> This fork is **self-contained**: install it from this GitHub repository or link a local checkout. No npm publication or external package is involved.
+>
+> Four ways to install it, easiest first: **Option A installs straight from GitHub** (recommended);
+> **Option B** links a local clone through the plugin manager; **Option C** is the manual profile edit;
+> **Option D** is for local development.
 
-**Option A: install from npm (recommended)**
+**Option A: one command, straight from GitHub (recommended)**
 
 ```bash
-dsh plugin --profile <your profile> add dsh-comfyui-image
+dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-image
 ```
 
-Equivalent: `npm i dsh-comfyui-image`, or entering `dsh-comfyui-image` as the target in DSH's
-**Settings → Plugins**. The published `lib/` (16 files) is already compiled — **no TypeScript, no build step**.
+Entering `github:TheRealChickenlegs/dsh-comfyui-image` as the target in DSH's **Settings → Plugins** does the same thing.
+`dsh plugin` is backed by pnpm; the repository's `lib/` (16 files) is already compiled — **no TypeScript, no build step**.
 Restart DSH afterwards.
 
-**Option B: one command, straight from GitHub (no npm account needed, verified)**
-
-```bash
-dsh plugin --profile <your profile> add github:wbb316/dsh-comfyui-image
-```
-
-`dsh plugin` is backed by pnpm (measured: 21.6 s to install). Entering
-`github:wbb316/dsh-comfyui-image` as the target in DSH's **Settings → Plugins** does the same thing.
-**Use this when npm is unavailable or you want to track the `main` branch.** Restart DSH afterwards.
-
-**Option C: the DSH plugin manager (local path)**
+**Option B: the DSH plugin manager (local path)**
 
 Install it from DSH's **Settings → Plugins**, entering the local path of the plugin's directory as the target, for example:
 
@@ -139,7 +129,7 @@ link:D:/dsh/plugins/dsh-comfyui-image
 
 The manager updates the profile's `package.json` itself (adding a `link:` dependency + an entry in `dsh.profile.bundles`) and rolls back if it fails.
 
-**Option D: edit the profile manually**
+**Option C: edit the profile manually**
 
 Open the current profile's `package.json` (`~/.dsh/profiles/<profile>/package.json`) and do two things:
 
@@ -161,7 +151,7 @@ Open the current profile's `package.json` (`~/.dsh/profiles/<profile>/package.js
 
 Then install dependencies once inside the profile directory (`pnpm install`, or "Install / update plugins" in the DSH UI), and restart DSH.
 
-**Option E: local development**
+**Option D: local development**
 
 ```bash
 git clone <this repository> dsh-comfyui-image
@@ -171,7 +161,7 @@ npm run build        # only needed if you changed src/; lib/ is already committe
 npm test             # 124 tests, ships with a mock ComfyUI, no real ComfyUI needed
 ```
 
-After that, link it into the profile following Option C.
+After that, link it into the profile following Option B.
 
 ## Enabling and Verifying
 
@@ -464,5 +454,5 @@ Plans beyond V1 (upscaling / outpainting / batching / multiple backends / consis
 | [docs/PARAMS.md](./docs/PARAMS.md) | Item-by-item documentation of the tool parameters and the output structure |
 | [docs/FAQ.md](./docs/FAQ.md) | FAQ and troubleshooting |
 | [docs/ROADMAP.md](./docs/ROADMAP.md) | Future expansion plans |
-| [docs/RELEASING.md](./docs/RELEASING.md) | Release process: pushing a tag creates the GitHub Release and publishes to npm; how to configure `NPM_TOKEN` |
+| [docs/RELEASING.md](./docs/RELEASING.md) | Release process: pushing a tag creates the GitHub Release and optionally publishes to npm; how to configure `NPM_TOKEN` |
 | [CHANGELOG.md](./CHANGELOG.md) | Version history |

@@ -37,7 +37,7 @@ the plaintext.
    | Allowed IP ranges | **leave empty** | GitHub Actions egress IPs change every time; filling this in guarantees failure |
 
 2. **Copy the token immediately** after saving (it starts with `npm_` and is shown only once; close the page and it is gone forever).
-3. Open <https://github.com/wbb316/dsh-comfyui-image/settings/secrets/actions> and click **New repository secret**:
+3. Open <https://github.com/TheRealChickenlegs/dsh-comfyui-image/settings/secrets/actions> and click **New repository secret**:
    - Name: `NPM_TOKEN` (exactly, character for character — that is the name the workflow reads);
    - Secret: paste the token you just copied, then save.
 
@@ -68,8 +68,10 @@ git push origin v0.2.0
 
 After pushing the tag:
 
-- the **Release** workflow creates https://github.com/wbb316/dsh-comfyui-image/releases ;
-- the **Publish to npm** workflow runs next, and on success the new version appears at https://www.npmjs.com/package/dsh-comfyui-image.
+- the **Release** workflow creates https://github.com/TheRealChickenlegs/dsh-comfyui-image/releases ;
+- the **Publish to npm** workflow runs next, and on success the new version appears on npm under the name in `package.json`.
+
+`publish.yml` reads the package name from `package.json`, so renaming the package does not require workflow changes.
 
 `publish.yml` first verifies that **the tag name matches `package.json`'s version** —
 a mismatch fails immediately with an explanation (`tag is v0.2.0, but package.json version is 0.1.0; refusing to publish.`),
@@ -117,5 +119,5 @@ npm pack --dry-run
 
 ## Related Documentation
 
-- [INSTALL.md](./INSTALL.md) — installation from npm / a local directory
+- [INSTALL.md](./INSTALL.md) — installation from this GitHub repository or a local directory
 - [README development section](../README.md#development) — local build and test

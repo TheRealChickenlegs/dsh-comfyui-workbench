@@ -71,15 +71,17 @@ jobs:
       - name: Verify the version matches the tag
         if: steps.guard.outputs.skip == 'false'
         run: |
+          name="$(node -p "require('./package.json').name")"
           ver="$(node -p "require('./package.json').version")"
           ref="${{ github.event.inputs.tag }}"
           [ -n "$ref" ] || ref="${GITHUB_REF_NAME}"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
           echo "version=$ver" >> "$GITHUB_OUTPUT"
           if [ "${ref#v}" != "$ref" ] && [ "${ref#v}" != "$ver" ]; then
             echo "::error::tag is $ref, but package.json version is $ver; refusing to publish."
             exit 1
           fi
-          echo "Version: $ver (ref: $ref)"
+          echo "Package: $name@$ver (ref: $ref)"
         id: ver
 
       # Guard two: npm versions cannot be republished. A repeat trigger (for example publishing the Release again in the UI)
@@ -88,9 +90,9 @@ jobs:
         id: exists
         if: steps.guard.outputs.skip == 'false'
         run: |
-          if npm view "dsh-comfyui-image@${{ steps.ver.outputs.version }}" version >/dev/null 2>&1; then
+          if npm view "${{ steps.ver.outputs.name }}@${{ steps.ver.outputs.version }}" version >/dev/null 2>&1; then
             echo "already=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::${{ steps.ver.outputs.version }} already exists on npm; skipping publish (the same version cannot be republished)."
+            echo "::notice::${{ steps.ver.outputs.name }}@${{ steps.ver.outputs.version }} already exists on npm; skipping publish (the same version cannot be republished)."
           else
             echo "already=false" >> "$GITHUB_OUTPUT"
           fi
@@ -114,6 +116,7 @@ jobs:
             echo ""
             echo "| Item | Value |"
             echo "| --- | --- |"
+            echo "| Package | ${{ steps.ver.outputs.name }} |"
             echo "| Version | ${{ steps.ver.outputs.version }} |"
             echo "| Skipped (no token) | ${{ steps.guard.outputs.skip }} |"
             echo "| Skipped (version exists) | ${{ steps.exists.outputs.already }} |"

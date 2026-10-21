@@ -27,7 +27,10 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
   parameter/output schema descriptions, result text, notes, error messages, the `doctor` self-check output, debug logs,
   and the plugin title/description shown in the DSH plugin list. Source comments, tests, CI messages, and all documentation
   were translated as well. The English `README.en.md` / `docs/INSTALL.en.md` duplicates were merged into `README.md` /
-  `docs/INSTALL.md`, so the GitHub default page and the npm package page both render English.
+  `docs/INSTALL.md`, so the GitHub default page and the packaged README both render English.
+- **Repository metadata and install instructions are now self-contained**: badges, `package.json` repository/bugs/homepage,
+  install commands and release links point at `TheRealChickenlegs/dsh-comfyui-image`; no external npm package is
+  referenced. `publish.yml` reads the package name from `package.json`, so renaming the fork or package does not break publishing.
 
 ### Fixed
 
@@ -53,23 +56,13 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - Package metadata completed with `repository` / `bugs` / `homepage` / `publishConfig` (`publishConfig` explicitly pins the official
   registry so a local or CI mirror cannot change the publish target; `repository` is also a prerequisite for npm provenance signing).
 - Documentation: added [docs/RELEASING.md](docs/RELEASING.md) (release steps, how to generate and configure `NPM_TOKEN`,
-  manual re-release, provenance, checking the `npm pack` list), and linked it from the documentation table in both READMEs.
+  manual re-release, provenance, checking the `npm pack` list), and linked it from the documentation table.
 - Added an **example output image** [docs/preview.png](docs/preview.png) to the top of the README: produced by this plugin against
   a local ComfyUI, with its reproduction parameters (`seed 42` / 512×512 / SD1.5 checkpoint) recorded in the documentation, so
   new visitors can see at a glance that it really generates images.
-- Installation now prefers **npm**: `dsh plugin --profile <your profile> add dsh-comfyui-image`
-  (equivalent to `npm i dsh-comfyui-image`, or entering the package name as the target in DSH's **Settings → Plugins**).
-  The **GitHub install** path is kept: `dsh plugin --profile <your profile> add github:wbb316/dsh-comfyui-image`
-  (`dsh plugin` is backed by pnpm; measured at 21.6 s, and the 13 installed `lib/` files run directly —
-  **no npm account, no local clone, no build**); use it when npm is unavailable or when tracking the `main` branch.
-- **Published to npm**: `dsh-comfyui-image@0.1.0` (2026-10-04). Two things to remember:
-  ① this **first publish was done manually** (`npm publish`), so that version has **no provenance signature** and npm does not show
-  "Built and signed on GitHub Actions" — that starts from the next version published through `publish.yml`;
-  ② npm **cannot republish** the same version, and `0.1.0` is taken, so any change requires a version bump (0.1.1) before publishing.
-- Added an **npm badge** to the top of the README (shows the version automatically as `publish.yml` publishes).
-- **The README inside the `0.1.0` npm package is the old version**: that tarball was packed at commit `aecc4b6`, while the
-  "prefer npm install" documentation change (`21064fd`) came after it, so readers of `0.1.0` on npm still saw "prefer installing from GitHub".
-  From **0.1.1** the packaged documentation matches the repository (`npm view dsh-comfyui-image@0.1.0 gitHead` lets you verify this yourself).
+- Installation is **from this repository**: `dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-image`
+  (`dsh plugin` is backed by pnpm, and the installed `lib/` files run directly — **no local clone, no build**), or by linking a local checkout.
+- Added a **release badge** to the top of the README.
 
 ### Fixed
 
