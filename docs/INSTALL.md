@@ -3,10 +3,10 @@
 Installing this plugin takes two steps: **① get ComfyUI running** → **② install the plugin into DSH**. The second step takes a minute; the first one is the real work.
 
 > Don't feel like reading a long document? Shortest path: install the ComfyUI portable build → double-click to start it → drop a checkpoint into `models/checkpoints/` →
-> install this fork in the DSH plugin manager (enter `github:TheRealChickenlegs/dsh-comfyui-image`, or `link:<plugin directory>` if you already cloned it) →
+> install this fork in the DSH plugin manager (enter `github:TheRealChickenlegs/dsh-comfyui-workbench`, or `link:<plugin directory>` if you already cloned it) →
 > run `npm run doctor` and see four ✓ — done.
 >
-> This fork is **self-contained**: it is installed from this repository or a local checkout, not from an external npm package.
+> This repository is **self-contained**: it is installed from this repository or a local checkout, not from an external npm package.
 
 ---
 
@@ -124,23 +124,23 @@ With `npm run doctor` you can see which set was finally selected:
 ### 2.1 Option A: Install from GitHub (Recommended)
 
 ```bash
-dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-image
+dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-workbench
 ```
 
-Equivalent: entering `github:TheRealChickenlegs/dsh-comfyui-image` as the install target in
+Equivalent: entering `github:TheRealChickenlegs/dsh-comfyui-workbench` as the install target in
 DSH → **Settings → Plugins**. The repository's `lib/` is already compiled — **no build step, no npm account**.
 Restart DSH afterwards.
 
 ### 2.2 Option B: the DSH Plugin Manager (GitHub Target or Local Link)
 
-> The target can be `github:TheRealChickenlegs/dsh-comfyui-image`: the manager fetches it from GitHub, so you do **not**
+> The target can be `github:TheRealChickenlegs/dsh-comfyui-workbench`: the manager fetches it from GitHub, so you do **not**
 > need to clone it locally. The equivalent command line is
-> `dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-image`.
+> `dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-workbench`.
 
 To link a local checkout instead, get the plugin code first:
 
-- Clone from the repository: `git clone https://github.com/TheRealChickenlegs/dsh-comfyui-image.git D:/dsh/plugins/dsh-comfyui-image`
-- Or just use the local directory you already have (for example `D:/dsh/plugins/dsh-comfyui-image` on this machine)
+- Clone from the repository: `git clone https://github.com/TheRealChickenlegs/dsh-comfyui-workbench.git D:/dsh/plugins/dsh-comfyui-workbench`
+- Or just use the local directory you already have (for example `D:/dsh/plugins/dsh-comfyui-workbench` on this machine)
 
 You do **not** need to run `npm install` / `npm run build` — the repository already ships a compiled `lib/`.
 You only need to do that when you're changing the source (see the [Development section of the README](../README.md#development)).
@@ -149,12 +149,12 @@ You only need to do that when you're changing the source (see the [Development s
 2. Choose **Install** and enter either the GitHub target, or a local path prefixed with `link:`:
 
    ```
-   github:TheRealChickenlegs/dsh-comfyui-image
-   link:D:/dsh/plugins/dsh-comfyui-image
+   github:TheRealChickenlegs/dsh-comfyui-workbench
+   link:D:/dsh/plugins/dsh-comfyui-workbench
    ```
 
-3. The manager edits the current profile's `package.json` itself: it adds a `dsh-comfyui-image` dependency,
-   and appends `dsh-comfyui-image` to `dsh.profile.bundles`; on failure it rolls back automatically.
+3. The manager edits the current profile's `package.json` itself: it adds a `dsh-comfyui-workbench` dependency,
+   and appends `dsh-comfyui-workbench` to `dsh.profile.bundles`; on failure it rolls back automatically.
 4. After installing, restart DSH (or reload when the interface prompts you to).
 
 ### 2.3 Option C: Edit the Profile Manually
@@ -165,13 +165,13 @@ Edit `~/.dsh/profiles/<your profile>/package.json`:
 {
   "dependencies": {
     // ...
-    "dsh-comfyui-image": "link:D:/dsh/plugins/dsh-comfyui-image"
+    "dsh-comfyui-workbench": "link:D:/dsh/plugins/dsh-comfyui-workbench"
   },
   "dsh": {
     "profile": {
       "bundles": [
         // ... (keep the existing entries)
-        "dsh-comfyui-image"
+        "dsh-comfyui-workbench"
       ]
     }
   }
@@ -213,22 +213,28 @@ This package ships its own `cordis.patch.yml`; installing the bundle automatical
 
 ```yaml
 - insert:
-    - id: dsh-comfyui-image
-      name: dsh-comfyui-image
+    - id: dsh-comfyui-workbench
+      name: dsh-comfyui-workbench
 ```
 
 If you want to write config for the plugin right there (it has the highest priority; see [CONFIG.md](./CONFIG.md)), override it by id in **the profile's**
 `cordis.patch.yml`:
 
 ```yaml
-- id: dsh-comfyui-image
-  name: dsh-comfyui-image
+- id: dsh-comfyui-workbench
+  name: dsh-comfyui-workbench
   config:
     baseUrl: 'http://127.0.0.1:8188'
     checkpoint: 'sd_xl_base_1.0.safetensors'
 ```
 
 To disable the plugin temporarily: add `disabled: true`, or use the toggle in the plugin manager.
+
+### 2.6 Upgrading from `dsh-comfyui-image`
+
+The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available in 0.2.x and removed in 0.3.0.
+
+See [MIGRATION.md](./MIGRATION.md) for the full steps and environment-variable mapping.
 
 ---
 
@@ -239,7 +245,7 @@ Do these four things in order; each one can be judged on its own:
 | # | Check | What you expect to see |
 |---|---|---|
 | 1 | `npm run doctor` (in the plugin directory) | prints the effective config + the ComfyUI version + the availability of the four modes; exit code `0` |
-| 2 | DSH Settings → plugin list | `dsh-comfyui-image` is visible (display name "ComfyUI Image Generation & Workflows"), and the toggle works |
+| 2 | DSH Settings → plugin list | `dsh-comfyui-workbench` is visible (display name "ComfyUI Workbench"), and the toggle works |
 | 3 | Tell the Agent "use generate_image to generate a test image" | the model can see and call `generate_image` (plus `comfyui_inspect` / `comfyui_workflow` / `comfyui_api`), returning `✅ Image generated` + a line with an absolute path |
 | 4 | Click/open the returned path | the image exists, and next to it there is a same-named `.json` metadata file |
 
@@ -250,6 +256,6 @@ If any step goes wrong, check [FAQ.md](./FAQ.md) first; if that doesn't help, fi
 ## 4. Uninstalling
 
 1. **Remove** the bundle in the plugin manager (or manually delete the dependency and the `bundles` entry from the profile's `package.json`), then restart DSH;
-2. Optional cleanup: delete the config file directory `~/.dsh-comfyui-image/`;
+2. Optional cleanup: delete the config file directory `~/.dsh-comfyui-workbench/`;
 3. The plugin **does not** install anything into ComfyUI, and does not touch the ComfyUI config either;
-   the intermediate files it produces all live in ComfyUI's `output/dsh-comfyui-image/` subdirectory — delete that directory if you want to clean them up.
+   the intermediate files it produces all live in ComfyUI's `output/dsh-comfyui-workbench/` subdirectory — delete that directory if you want to clean them up.

@@ -162,7 +162,7 @@ Without `output_path` → the image lands in the **current project root**, named
 You can also set a default directory in the config once, instead of passing it every time:
 
 ```json
-// ~/.dsh-comfyui-image/config.json
+// ~/.dsh-comfyui-workbench/config.json
 { "outputDir": "D:/images" }
 ```
 

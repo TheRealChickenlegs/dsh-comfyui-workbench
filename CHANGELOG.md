@@ -1,9 +1,9 @@
 # Changelog
 
-This file records version changes of **dsh-comfyui-image**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.2.0] — 2026-10-21
 
 ### Added
 
@@ -18,7 +18,8 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
     handling and binary saving.
 - [docs/ADVANCED.md](docs/ADVANCED.md): model/node discovery, workflow validation and execution, uploads, job control,
   raw API examples, safety limits and troubleshooting. The README now has a "Full ComfyUI Access" section.
-- The test suite grew from 88 to **124 tests**, covering model fallbacks, node schemas, validation failures, workflow
+- [docs/MIGRATION.md](docs/MIGRATION.md): upgrading from `dsh-comfyui-image`, config/env migration and the legacy support timeline.
+- The test suite grew from 88 to **128 tests**, covering model fallbacks, node schemas, validation failures, workflow
   execution with exact-file and multi-output saving, uploads, job control and raw API guardrails.
 
 ### Changed
@@ -28,14 +29,17 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
   and the plugin title/description shown in the DSH plugin list. Source comments, tests, CI messages, and all documentation
   were translated as well. The English `README.en.md` / `docs/INSTALL.en.md` duplicates were merged into `README.md` /
   `docs/INSTALL.md`, so the GitHub default page and the packaged README both render English.
+- **Renamed the plugin from `dsh-comfyui-image` to `dsh-comfyui-workbench`** and widened its identity from an image tool to a
+  ComfyUI workbench. Package id, DSH entry id, config directory, config/env variable names, output folder, metadata and log
+  prefixes all use the new name. Tool names and call signatures are unchanged. See [docs/MIGRATION.md](docs/MIGRATION.md).
 - **Repository metadata and install instructions are now self-contained**: badges, `package.json` repository/bugs/homepage,
-  install commands and release links point at `TheRealChickenlegs/dsh-comfyui-image`; no external npm package is
-  referenced. `publish.yml` reads the package name from `package.json`, so renaming the fork or package does not break publishing.
+  install commands and release links point at `TheRealChickenlegs/dsh-comfyui-workbench`; no external npm package is
+  referenced. `publish.yml` reads the package name from `package.json`, so renaming the package does not break publishing.
 
 ### Fixed
 
 - **`PLUGIN_VERSION` disagreed with `package.json`**: `src/runner.ts` still reported `0.1.0` while the package was `0.1.1`,
-  so the startup log and every metadata sidecar carried the wrong version. It is now `0.1.1`.
+  so the startup log and every metadata sidecar carried the wrong version. Package and runtime are now both `0.2.0`.
 - **The lockfile pointed at a third-party mirror and had a stale version**: `package-lock.json` resolved tarballs from
   `mirrors.huaweicloud.com` and still recorded `0.1.0`, so `npm ci` outside China could fail. It now pins
   `https://registry.npmjs.org` with integrity hashes and the `0.1.1` version, and CI uses `npm ci`.
@@ -60,7 +64,7 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - Added an **example output image** [docs/preview.png](docs/preview.png) to the top of the README: produced by this plugin against
   a local ComfyUI, with its reproduction parameters (`seed 42` / 512×512 / SD1.5 checkpoint) recorded in the documentation, so
   new visitors can see at a glance that it really generates images.
-- Installation is **from this repository**: `dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-image`
+- Installation is **from this repository**: `dsh plugin --profile <your profile> add github:TheRealChickenlegs/dsh-comfyui-workbench`
   (`dsh plugin` is backed by pnpm, and the installed `lib/` files run directly — **no local clone, no build**), or by linking a local checkout.
 - Added a **release badge** to the top of the README.
 
@@ -104,7 +108,7 @@ The first usable version (the "practical V1").
   every error carries "what to do next" instead of a bare `fetch failed`.
 - **Results and metadata**: returns the local absolute path (on its own line, clickable in DSH), mode / seed / size / duration / prompt_id, and more;
   a `.json` metadata sidecar next to every image (full parameters and submitted workflow, reproducible and debuggable).
-- **Four configuration sources**: plugin config > `~/.dsh-comfyui-image/config.json` > environment variables > built-in defaults;
+- **Four configuration sources**: plugin config > `~/.dsh-comfyui-workbench/config.json` > environment variables > built-in defaults;
   editing the config file **takes effect immediately**, with no DSH restart.
 - **Extension escape hatch**: `extra_options.workflow_path` can point at any API-format workflow JSON,
   using placeholders such as `{{prompt}}` / `{{seed}}` / `{{input_image}}` to take over this generation (outpainting, upscaling, batching, special nodes can all be wired in).
@@ -113,7 +117,7 @@ The first usable version (the "practical V1").
 - **Tests**: 88 tests, including end-to-end verification against a "fake ComfyUI" (real PNG encode/decode, real uploads, real polling, real error paths) —
   runnable on machines without ComfyUI.
 - **Documentation**: bilingual README (`README.md` / `README.en.md`) and installation guide (`docs/INSTALL.md` / `docs/INSTALL.en.md`) at the time,
-  plus `docs/` (configuration, usage, parameters, FAQ, roadmap). From the Unreleased version onward the documentation is English-only.
+  plus `docs/` (configuration, usage, parameters, FAQ, roadmap). From 0.2.0 onward the documentation is English-only.
 
 ### Fixed
 

@@ -3,14 +3,14 @@
  *
  * Two principles:
  *   1. **Never touch real user data**: the plugin config file location is pointed at a temp
- *      directory via `DSH_COMFYUI_IMAGE_CONFIG`, and the output directory is a temp directory too.
+ *      directory via `DSH_COMFYUI_WORKBENCH_CONFIG`, and the output directory is a temp directory too.
  *   2. **Config values must stay in their legal ranges**: `pickNumber(100, 10000, ...)` in
  *      `resolveConfig` drops out-of-range values and falls back to the defaults, so tests must not
  *      pass `pollIntervalMs` below 100 or `timeoutMs` below 1000 — otherwise the measured wait times
  *      would be fictitious.
  */
 // Must come first: it points the plugin config file at a temp directory, and lib fixes that path at load time.
-import { CONFIG_PATH } from './env-setup.mjs'
+import { CONFIG_PATH, LEGACY_CONFIG_PATH } from './env-setup.mjs'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -34,6 +34,11 @@ export function tempDir(tag = 'dsh-cii') {
  */
 export function isolatePluginConfig() {
   return CONFIG_PATH
+}
+
+/** Return the legacy config path used by migration tests. */
+export function isolateLegacyPluginConfig() {
+  return LEGACY_CONFIG_PATH
 }
 
 /**

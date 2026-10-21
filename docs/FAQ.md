@@ -15,7 +15,7 @@ npm run doctor -- --json  # for pasting into an issue
 
 ```
 [Configuration]
-  Config file: C:\Users\me\.dsh-comfyui-image\config.json
+  Config file: C:\Users\me\.dsh-comfyui-workbench\config.json
   ComfyUI address: http://127.0.0.1:8188
   Checkpoint: (not set, one will be picked automatically)
   ...
@@ -61,7 +61,7 @@ Raw error:
 
 Cannot reach ComfyUI at http://127.0.0.1:8188 (fetch failed)
 
-Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the address: change baseUrl in ~/.dsh-comfyui-image/config.json, or set the environment variable COMFYUI_URL=http://host:port.
+Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the address: change baseUrl in ~/.dsh-comfyui-workbench/config.json, or set the environment variable COMFYUI_URL=http://host:port.
 ```
 
 Check in order:
@@ -235,7 +235,7 @@ Adjust the parameters using [PARAMS.md's conflict table](./PARAMS.md#2-mode-infe
 
 Check in order:
 
-1. **Is the plugin enabled**: is `dsh-comfyui-image` switched on in Settings → Plugins;
+1. **Is the plugin enabled**: is `dsh-comfyui-workbench` switched on in Settings → Plugins;
 2. **Was it installed into the current profile**: if you switched profiles (web / desktop / headless),
    `dsh.profile.bundles` was added to the `package.json` of **that particular** profile;
 3. **Did you restart DSH**: the bundle list is read at startup;
@@ -243,7 +243,11 @@ Check in order:
 5. **Look for this warning in the host log**: `Cannot obtain the tools service; generate_image was not registered (check the plugin dependencies in the profile).`
    — if it appears, the plugin loaded but could not obtain the tool registry.
 
-### Changing `~/.dsh-comfyui-image/config.json` has no effect
+### Upgrading from `dsh-comfyui-image`
+
+The package/plugin id changed in 0.2.0. Remove the old bundle, install `dsh-comfyui-workbench`, and move the config from `~/.dsh-comfyui-image/` to `~/.dsh-comfyui-workbench/`. The old config/env names are accepted as fallbacks in 0.2.x and removed in 0.3.0. See [MIGRATION.md](./MIGRATION.md).
+
+### Changing `~/.dsh-comfyui-workbench/config.json` has no effect
 
 Config is **re-resolved on every call**, so normally it takes effect immediately. If not, it is usually one of:
 
@@ -271,7 +275,7 @@ Config is **re-resolved on every call**, so normally it takes effect immediately
 ### How much disk does it use / what can be cleaned up
 
 - Each image ≈ 1–3 MB (1024×1024 PNG), with a few KB of `.json` next to it;
-- On the ComfyUI side (when `saveToComfyUI: true`) a copy stays in `output/dsh-comfyui-image/`; delete it any time;
+- On the ComfyUI side (when `saveToComfyUI: true`) a copy stays in `output/dsh-comfyui-workbench/`; delete it any time;
 - Input images uploaded to ComfyUI go into ComfyUI's `input/` directory; if ComfyUI does not clean it up, it keeps growing.
 
 ### Does it leak privacy / does it use the network
@@ -306,4 +310,4 @@ Include these and it can usually be located in one pass:
 4. DSH version, operating system, ComfyUI version (visible in `/system_stats`).
 
 For finer process logs (the chosen background-removal plan, file names uploaded to ComfyUI, HTTP details),
-set `DSH_COMFYUI_IMAGE_DEBUG=1` before starting DSH, reproduce once, then paste the lines prefixed with `[dsh-comfyui-image]`.
+set `DSH_COMFYUI_WORKBENCH_DEBUG=1` before starting DSH, reproduce once, then paste the lines prefixed with `[dsh-comfyui-workbench]`.

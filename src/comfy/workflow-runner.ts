@@ -15,6 +15,7 @@ import { logDebug } from '../log.js'
 import { declaredInputs, enumChoices, requiredInputs, specDefault } from './nodes.js'
 import { ensureDir, isFile, resolveUserPath, timestampSlug, uniqueFilePath } from '../files.js'
 import { PLUGIN_VERSION } from '../runner.js'
+import { PLUGIN_ID } from '../identity.js'
 
 /* ────────────────────────────── validation ────────────────────────────── */
 
@@ -592,7 +593,7 @@ export async function collectOutputs(
   let metadataPath: string | undefined
   if (options.writeMetadata !== false) {
     const metadata = {
-      plugin: 'dsh-comfyui-image',
+      plugin: PLUGIN_ID,
       pluginVersion: PLUGIN_VERSION,
       kind: 'workflow-run',
       createdAt: new Date().toISOString(),
@@ -679,7 +680,7 @@ export async function submitWorkflow(
   workflow: ComfyWorkflow,
   signal?: AbortSignal
 ): Promise<string> {
-  const clientId = `dsh-comfyui-workflow-${Date.now().toString(36)}`
+  const clientId = `${PLUGIN_ID}-workflow-${Date.now().toString(36)}`
   logDebug('Submitting arbitrary workflow', { nodes: Object.keys(workflow).length })
   const { promptId } = await client.queuePrompt(workflow, clientId, signal)
   return promptId

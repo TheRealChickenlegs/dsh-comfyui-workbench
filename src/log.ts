@@ -1,14 +1,17 @@
 /**
- * Minimal logging: only prints lines prefixed with `[dsh-comfyui-image]`, and only when needed.
+ * Minimal logging: only prints lines prefixed with `[dsh-comfyui-workbench]`, and only when needed.
  *
  * Quiet by default: a normal generation only logs under debug, to avoid polluting DSH session
- * output. Enable with the environment variable `DSH_COMFYUI_IMAGE_DEBUG=1`.
+ * output. Enable with the environment variable `DSH_COMFYUI_WORKBENCH_DEBUG=1`
+ * (or the legacy `DSH_COMFYUI_IMAGE_DEBUG=1` during the 0.2.x migration window).
  */
 
-const PREFIX = '[dsh-comfyui-image]'
+import { ENV_DEBUG, LEGACY_ENV_DEBUG, PLUGIN_ID } from './identity.js'
+
+const PREFIX = `[${PLUGIN_ID}]`
 
 const debugEnabled = (): boolean => {
-  const raw = process.env.DSH_COMFYUI_IMAGE_DEBUG
+  const raw = process.env[ENV_DEBUG] ?? process.env[LEGACY_ENV_DEBUG]
   return raw === '1' || raw === 'true' || raw === 'yes'
 }
 
@@ -22,7 +25,7 @@ export function logWarn(message: string): void {
   console.warn(`${PREFIX} ${message}`)
 }
 
-/** Debug details (HTTP requests, node probing, workflows) — requires DSH_COMFYUI_IMAGE_DEBUG=1. */
+/** Debug details (HTTP requests, node probing, workflows) — requires DSH_COMFYUI_WORKBENCH_DEBUG=1. */
 export function logDebug(message: string, detail?: unknown): void {
   if (!debugEnabled()) return
   if (detail === undefined) {

@@ -8,16 +8,19 @@ import './env-setup.mjs'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import test from 'node:test'
-import { DEFAULTS, resolveConfig } from '../lib/index.js'
+import { DEFAULTS, LEGACY_CONFIG_FILE, PLUGIN_ID, PLUGIN_VERSION, resolveConfig } from '../lib/index.js'
 import { isolatePluginConfig, tempDir } from './helpers.mjs'
 
 const configFile = isolatePluginConfig()
+const legacyConfigFile = LEGACY_CONFIG_FILE
 
 function clean() {
-  try {
-    fs.rmSync(configFile, { force: true })
-  } catch {
-    /* ignore */
+  for (const file of [configFile, legacyConfigFile]) {
+    try {
+      fs.rmSync(file, { force: true })
+    } catch {
+      /* ignore */
+    }
   }
 }
 
@@ -43,7 +46,7 @@ test('environment variables take effect', () => {
     COMFYUI_URL: 'http://10.0.0.5:8188/',
     COMFYUI_CHECKPOINT: 'env-model.safetensors',
     COMFYUI_STEPS: '30',
-    DSH_COMFYUI_IMAGE_OUTPUT: 'D:\\env-out'
+    DSH_COMFYUI_WORKBENCH_OUTPUT: 'D:\\env-out'
   })
   assert.equal(config.baseUrl, 'http://10.0.0.5:8188', 'the trailing slash should be removed')
   assert.equal(config.checkpoint, 'env-model.safetensors')
@@ -97,4 +100,46 @@ test('broken config file (invalid JSON) → treated as absent, does not take the
   } finally {
     clean()
   }
+})
+
+test('migration: the legacy config file is used when the new one is absent', () => {
+  clean()
+  fs.writeFileSync(legacyConfigFile, JSON.stringify({ baseUrl: 'http://from-legacy-file:8188' }), 'utf8')
+  try {
+    assert.equal(resolveConfig(undefined, {}).baseUrl, 'http://from-legacy-file:8188')
+  } finally {
+    clean()
+  }
+})
+
+test('migration: the new config file wins when both exist', () => {
+  clean()
+  fs.writeFileSync(legacyConfigFile, JSON.stringify({ baseUrl: 'http://from-legacy-file:8188' }), 'utf8')
+  fs.writeFileSync(configFile, JSON.stringify({ baseUrl: 'http://from-new-file:8188' }), 'utf8')
+  try {
+    assert.equal(resolveConfig(undefined, {}).baseUrl, 'http://from-new-file:8188')
+  } finally {
+    clean()
+  }
+})
+
+test('migration: the legacy output env var is accepted, and the new one wins', () => {
+  clean()
+  assert.equal(
+    resolveConfig(undefined, { DSH_COMFYUI_IMAGE_OUTPUT: 'D:\\legacy-out' }).outputDir,
+    'D:\\legacy-out'
+  )
+  assert.equal(
+    resolveConfig(undefined, {
+      DSH_COMFYUI_IMAGE_OUTPUT: 'D:\\legacy-out',
+      DSH_COMFYUI_WORKBENCH_OUTPUT: 'D:\\new-out'
+    }).outputDir,
+    'D:\\new-out'
+  )
+})
+
+test('identity: package name and version match the runtime constants', () => {
+  const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
+  assert.equal(PLUGIN_ID, pkg.name)
+  assert.equal(PLUGIN_VERSION, pkg.version)
 })

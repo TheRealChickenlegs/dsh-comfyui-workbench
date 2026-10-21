@@ -250,7 +250,7 @@ function guessMode(args: unknown): string {
  *
  * @param pluginConfig Plugin config injected by the host (the config of the entry in cordis.patch.yml).
  *        Note: config is resolved **on every call**, so a changed
- *        `~/.dsh-comfyui-image/config.json` takes effect immediately without restarting DSH.
+ *        `~/.dsh-comfyui-workbench/config.json` takes effect immediately without restarting DSH.
  */
 export function createGenerateImageTool(pluginConfig?: unknown): Record<string, unknown> {
   return {

@@ -6,6 +6,8 @@
  * instead of dumping a bare `fetch failed`. `hint` holds the "what to do" part.
  */
 
+import { PLUGIN_ID } from './identity.js'
+
 /** Base class for every error this plugin throws on purpose. */
 export class ImagePluginError extends Error {
   /** A next-step suggestion for the user/model. */
@@ -33,7 +35,7 @@ export function comfyUnreachable(baseUrl: string, cause?: unknown): ImagePluginE
   return new ImagePluginError(
     `Cannot reach ComfyUI at ${baseUrl}${detail}`,
     'Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the ' +
-      'address: change baseUrl in ~/.dsh-comfyui-image/config.json, or set the environment variable ' +
+      `address: change baseUrl in ~/.${PLUGIN_ID}/config.json, or set the environment variable ` +
       'COMFYUI_URL=http://host:port.'
   )
 }

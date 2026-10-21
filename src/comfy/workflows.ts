@@ -17,6 +17,7 @@
  */
 import type { ComfyNode, ComfyWorkflow, GenerateMode, NormalizedRequest, ResolvedConfig } from '../types.js'
 import type { RembgPlan } from './nodes.js'
+import { PLUGIN_ID } from '../identity.js'
 
 /** Fixed node ids, for easier debugging. */
 export const NODE_IDS = {
@@ -46,7 +47,7 @@ export interface WorkflowFacts {
   uploadedInput?: string
   /** The uploaded mask file name (used by inpaint). */
   uploadedMask?: string
-  /** Output file name prefix on the ComfyUI side, e.g. `dsh-comfyui-image/20260928-153012-1234`. */
+  /** Output file name prefix on the ComfyUI side, e.g. `dsh-comfyui-workbench/20260928-153012-1234`. */
   filenamePrefix: string
   /** Background-removal plan (required when mode=remove_background). */
   rembg?: RembgPlan
@@ -263,7 +264,7 @@ export function filenamePrefixFor(request: NormalizedRequest, now: Date = new Da
   const stamp =
     `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
     `-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`
-  return `dsh-comfyui-image/${stamp}-${request.seed}`
+  return `${PLUGIN_ID}/${stamp}-${request.seed}`
 }
 
 /**

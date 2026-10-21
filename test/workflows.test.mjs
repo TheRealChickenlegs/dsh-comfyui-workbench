@@ -37,7 +37,7 @@ function factsFor(args, extra = {}) {
     checkpoint: 'sd_xl_base_1.0.safetensors',
     samplerName: 'euler',
     scheduler: 'normal',
-    filenamePrefix: 'dsh-comfyui-image/test-prefix',
+    filenamePrefix: 'dsh-comfyui-workbench/test-prefix',
     ...extra
   }
 }
@@ -87,7 +87,7 @@ test('text2img: complete wiring + dimensions go into EmptyLatentImage', () => {
   assert.equal(wf['4'].inputs.height, 512)
   assert.equal(wf['6'].class_type, 'VAEDecode')
   assert.equal(wf['7'].class_type, 'SaveImage')
-  assert.equal(wf['7'].inputs.filename_prefix, 'dsh-comfyui-image/test-prefix')
+  assert.equal(wf['7'].inputs.filename_prefix, 'dsh-comfyui-workbench/test-prefix')
 
   const sampler = wf['5']
   assert.equal(sampler.class_type, 'KSampler')
@@ -204,7 +204,7 @@ test('saveToComfyUI=false → uses PreviewImage (does not pollute ComfyUI output
 test('filenamePrefixFor: includes date/time and seed, and lives in a subdirectory', () => {
   const { request } = normalizeRequest({ prompt: 'x', seed: 12345 }, { cwd, config })
   const prefix = filenamePrefixFor(request, new Date(2026, 8, 28, 15, 30, 12))
-  assert.equal(prefix, 'dsh-comfyui-image/20260928-153012-12345')
+  assert.equal(prefix, 'dsh-comfyui-workbench/20260928-153012-12345')
 })
 
 test('token substitution: numbers become numbers, strings are restored verbatim, unknown placeholders stay as-is', () => {

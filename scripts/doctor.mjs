@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * dsh-comfyui-image self-check (doctor) — a health report answering "can this machine generate images?".
+ * dsh-comfyui-workbench self-check (doctor) — a health report answering "can this machine generate images?".
  *
  * Usage:
  *   npm run doctor                      # check with the current configuration
@@ -16,11 +16,13 @@
  * Exit codes: 0 = all four modes available; 1 = cannot reach ComfyUI; 2 = connected but some mode cannot run.
  * It deliberately does not throw stack traces: this is a human-readable health report, not a test.
  */
+import { existsSync } from 'node:fs'
 import process from 'node:process'
 import { ComfyUIClient } from '../lib/comfy/client.js'
 import { checkModeSupport, chooseCheckpoint, chooseRembgPlan, chooseSampler } from '../lib/comfy/nodes.js'
-import { CONFIG_FILE, resolveConfig } from '../lib/config.js'
+import { CONFIG_FILE, LEGACY_CONFIG_FILE, resolveConfig } from '../lib/config.js'
 import { PLUGIN_VERSION } from '../lib/runner.js'
+import { PLUGIN_ID } from '../lib/identity.js'
 import { GENERATE_MODES } from '../lib/types.js'
 
 /** The **core** nodes used by the built-in workflows (they ship with ComfyUI; missing ones mean a wrong address or an old version). */
@@ -84,12 +86,17 @@ async function main() {
   const config = resolveConfig()
   report.config = config
 
-  say(`dsh-comfyui-image v${PLUGIN_VERSION} self-check (doctor)`)
+  const usingLegacyConfig =
+    LEGACY_CONFIG_FILE !== CONFIG_FILE && !existsSync(CONFIG_FILE) && existsSync(LEGACY_CONFIG_FILE)
+  const activeConfigFile = usingLegacyConfig ? LEGACY_CONFIG_FILE : CONFIG_FILE
+  report.configFile = activeConfigFile
+
+  say(`${PLUGIN_ID} v${PLUGIN_VERSION} self-check (doctor)`)
   say('')
 
   /* ── 1. Effective configuration ─────────────────────────── */
   say('[Configuration]')
-  say(`  Config file: ${CONFIG_FILE}`)
+  say(`  Config file: ${activeConfigFile}${usingLegacyConfig ? ' (legacy; move it to ' + CONFIG_FILE + ')' : ''}`)
   say(`  ComfyUI address: ${config.baseUrl}`)
   say(`  Checkpoint: ${config.checkpoint ?? '(not set, one will be picked automatically)'}`)
   say(`  Default sampling: ${config.samplerName} / ${config.scheduler}, steps=${config.steps}, cfg=${config.cfgScale}`)
@@ -112,7 +119,7 @@ async function main() {
     )
     say('')
     say('  Start the local ComfyUI service first (default 127.0.0.1:8188), or fix the address:')
-    say(`    change baseUrl in ${CONFIG_FILE}, or set the environment variable COMFYUI_URL`)
+    say(`    change baseUrl in ${activeConfigFile}, or set the environment variable COMFYUI_URL`)
     report.exitCode = 1
     return
   }

@@ -29,7 +29,7 @@ the plaintext.
 
    | Field | Value | Why |
    |---|---|---|
-   | Token name | anything, e.g. `dsh-comfyui-image-ci` | Easier to recognise when rotating |
+   | Token name | anything, e.g. `dsh-comfyui-workbench-ci` | Easier to recognise when rotating |
    | Expiration | **90 days** (the longest the UI offers; there is no "never expires") | After expiry, CI publishing fails; see "Rotation" below |
    | **Bypass two-factor authentication (2FA)** | **check it** | Otherwise publishing asks for a phone code and the unattended pipeline hangs |
    | Packages and scopes → Permissions | **Read and write (publish and stage)** | `stage only` **cannot publish** (upload to staging only); this is the easiest field to get wrong |
@@ -37,7 +37,7 @@ the plaintext.
    | Allowed IP ranges | **leave empty** | GitHub Actions egress IPs change every time; filling this in guarantees failure |
 
 2. **Copy the token immediately** after saving (it starts with `npm_` and is shown only once; close the page and it is gone forever).
-3. Open <https://github.com/TheRealChickenlegs/dsh-comfyui-image/settings/secrets/actions> and click **New repository secret**:
+3. Open <https://github.com/TheRealChickenlegs/dsh-comfyui-workbench/settings/secrets/actions> and click **New repository secret**:
    - Name: `NPM_TOKEN` (exactly, character for character — that is the name the workflow reads);
    - Secret: paste the token you just copied, then save.
 
@@ -68,7 +68,7 @@ git push origin v0.2.0
 
 After pushing the tag:
 
-- the **Release** workflow creates https://github.com/TheRealChickenlegs/dsh-comfyui-image/releases ;
+- the **Release** workflow creates https://github.com/TheRealChickenlegs/dsh-comfyui-workbench/releases ;
 - the **Publish to npm** workflow runs next, and on success the new version appears on npm under the name in `package.json`.
 
 `publish.yml` reads the package name from `package.json`, so renaming the package does not require workflow changes.

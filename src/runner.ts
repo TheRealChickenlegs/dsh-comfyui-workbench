@@ -15,6 +15,7 @@ import type { ResolvedConfig } from './types.js'
 import { extensionOf, guessImageMime, humanBytes, imageSizeOf, isFile, planOutputFile, readImageBytes } from './files.js'
 import { ImagePluginError } from './errors.js'
 import { logDebug } from './log.js'
+import { PLUGIN_ID } from './identity.js'
 import { applyModelAwareSize, normalizeRequest } from './params.js'
 import type { ComfyImageRef, ComfyWorkflow, GenerateImageArgs, GenerateMode, NormalizedRequest } from './types.js'
 import {
@@ -27,7 +28,7 @@ import { chooseCheckpoint, chooseRembgPlan, chooseSampler, type RembgPlan } from
 import { applyCustomWorkflow, buildWorkflow, filenamePrefixFor, type BuiltWorkflow } from './comfy/workflows.js'
 
 /** Plugin version (written into metadata, to make later troubleshooting easier). */
-export const PLUGIN_VERSION = '0.1.1'
+export const PLUGIN_VERSION = '0.2.0'
 
 /** Everything needed to run one generation. */
 export interface RunOptions {
@@ -272,7 +273,7 @@ export async function runGeneration(options: RunOptions): Promise<RunResult> {
   }
 
   // ── 5. Submit ──
-  const clientId = `dsh-comfyui-image-${Date.now().toString(36)}`
+  const clientId = `${PLUGIN_ID}-${Date.now().toString(36)}`
   const { promptId } = await client.queuePrompt(built.workflow, clientId, signal)
 
   // ── 6. Poll until there is a result (or timeout / error / cancellation) ──
@@ -287,7 +288,7 @@ export async function runGeneration(options: RunOptions): Promise<RunResult> {
       await client.interrupt(signal)
       throw new ImagePluginError(
         `Timed out waiting for ComfyUI to produce an image (waited ${Math.round(config.timeoutMs / 1000)} s, prompt_id=${promptId}).`,
-        `Tried to cancel the job. Check whether ComfyUI is stuck or busy running other queued jobs; you can also increase timeoutMs in ~/.dsh-comfyui-image/config.json.`
+        `Tried to cancel the job. Check whether ComfyUI is stuck or busy running other queued jobs; you can also increase timeoutMs in ~/.${PLUGIN_ID}/config.json.`
       )
     }
     entry = await client.historyEntry(promptId, signal)
@@ -340,7 +341,7 @@ export async function runGeneration(options: RunOptions): Promise<RunResult> {
   if (config.writeMetadata) {
     metadataPath = `${finalFile.filePath}.json`
     const metadata = {
-      plugin: 'dsh-comfyui-image',
+      plugin: PLUGIN_ID,
       pluginVersion: PLUGIN_VERSION,
       createdAt: new Date().toISOString(),
       mode: request.mode,

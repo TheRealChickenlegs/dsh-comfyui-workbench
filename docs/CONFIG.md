@@ -4,7 +4,7 @@ The plugin's configuration has **four sources, highest priority first**:
 
 ```
 1. Plugin config    the config: of that entry in the profile's cordis.patch.yml   ← highest
-2. Config file      ~/.dsh-comfyui-image/config.json
+2. Config file      ~/.dsh-comfyui-workbench/config.json
 3. Environment      COMFYUI_URL etc.
 4. Built-in defaults   DEFAULTS in src/config.ts                                  ← lowest
 ```
@@ -16,12 +16,14 @@ Why ① is highest: DSH's config tree is the authoritative source for the host/o
 ② and ③ are convenience layers for people who "just want to change an address without touching YAML".
 
 > ✨ **Config is resolved on every call** — an edited `config.json` takes effect **immediately, with no DSH restart**.
+>
+> **Upgrading from `dsh-comfyui-image`?** 0.2.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.3.0. See [MIGRATION.md](./MIGRATION.md).
 
 ---
 
 ## 1. The Most Common Way: Edit the Config File
 
-Path: `~/.dsh-comfyui-image/config.json` (on Windows: `C:\Users\<you>\.dsh-comfyui-image\config.json`)
+Path: `~/.dsh-comfyui-workbench/config.json` (on Windows: `C:\Users\<you>\.dsh-comfyui-workbench\config.json`)
 
 Create it if it does not exist (create the directory too). A typical config:
 
@@ -48,7 +50,7 @@ Create it if it does not exist (create the directory too). A typical config:
 | Key | Type | Default | Environment variable | Description |
 |---|---|---|---|---|
 | `baseUrl` | string | `http://127.0.0.1:8188` | `COMFYUI_URL` / `COMFYUI_BASE_URL` | ComfyUI address; a trailing `/` is removed automatically. **Do not use `0.0.0.0`** (that is a listen address, not a request address); the plugin warns and suggests `127.0.0.1` |
-| `outputDir` | string | none (the current project root) | `DSH_COMFYUI_IMAGE_OUTPUT` | Default output directory. The tool argument `output_path` takes precedence; `~` is expanded |
+| `outputDir` | string | none (the current project root) | `DSH_COMFYUI_WORKBENCH_OUTPUT` | Default output directory. The tool argument `output_path` takes precedence; `~` is expanded |
 | `requestTimeoutMs` | number | `30000` | — | Timeout for a single HTTP request (ms), valid range `1000`–`600000` |
 | `timeoutMs` | number | `300000` | `COMFYUI_TIMEOUT_MS` | Total timeout **waiting for an image** (ms), valid range `1000`–`3600000`. Raise it on slow machines / big models |
 | `pollIntervalMs` | number | `700` | — | Interval for polling `/history` (ms), valid range `100`–`10000` |
@@ -77,7 +79,7 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
 
 | Key | Type | Default | Environment variable | Description |
 |---|---|---|---|---|
-| `saveToComfyUI` | boolean | `true` | — | `true` = the workflow uses `SaveImage`, so the output also stays in ComfyUI's `output/dsh-comfyui-image/`; `false` = uses `PreviewImage`, **not polluting** ComfyUI's output directory |
+| `saveToComfyUI` | boolean | `true` | — | `true` = the workflow uses `SaveImage`, so the output also stays in ComfyUI's `output/dsh-comfyui-workbench/`; `false` = uses `PreviewImage`, **not polluting** ComfyUI's output directory |
 | `writeMetadata` | boolean | `true` | — | Whether to write a `<image>.json` metadata sidecar next to the image (full parameters and workflow; future consistency work will rely on it) |
 
 ### Background removal
@@ -90,8 +92,8 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
 
 | Environment variable | Description |
 |---|---|
-| `DSH_COMFYUI_IMAGE_CONFIG` | Overrides the **config file path itself** (default `~/.dsh-comfyui-image/config.json`). For tests and multi-environment switching |
-| `DSH_COMFYUI_IMAGE_DEBUG` | Set to `1` / `true` / `yes` to enable debug logging (prefixed `[dsh-comfyui-image]`): resolved config, the chosen background-removal plan, file names uploaded to ComfyUI, HTTP details, and so on. **Off by default** to avoid polluting DSH session output |
+| `DSH_COMFYUI_WORKBENCH_CONFIG` | Overrides the **config file path itself** (default `~/.dsh-comfyui-workbench/config.json`). For tests and multi-environment switching |
+| `DSH_COMFYUI_WORKBENCH_DEBUG` | Set to `1` / `true` / `yes` to enable debug logging (prefixed `[dsh-comfyui-workbench]`): resolved config, the chosen background-removal plan, file names uploaded to ComfyUI, HTTP details, and so on. **Off by default** to avoid polluting DSH session output |
 
 ---
 
@@ -109,9 +111,9 @@ COMFYUI_SAMPLER=euler
 COMFYUI_SCHEDULER=normal
 COMFYUI_TIMEOUT_MS=600000
 COMFYUI_REMBG_NODE=essentials
-DSH_COMFYUI_IMAGE_OUTPUT=D:/images         # = outputDir
-DSH_COMFYUI_IMAGE_CONFIG=/etc/dsh-cii.json # the config file path itself
-DSH_COMFYUI_IMAGE_DEBUG=1                  # enable debug logging
+DSH_COMFYUI_WORKBENCH_OUTPUT=D:/images         # = outputDir
+DSH_COMFYUI_WORKBENCH_CONFIG=/etc/dsh-workbench.json # the config file path itself
+DSH_COMFYUI_WORKBENCH_DEBUG=1                  # enable debug logging
 ```
 
 Boolean options (`saveToComfyUI` / `writeMetadata`) have no environment variable: set them as JSON `true` / `false` in the config file or the profile config.
@@ -127,8 +129,8 @@ Boolean options (`saveToComfyUI` / `writeMetadata`) have no environment variable
 Edit `~/.dsh/profiles/<profile>/cordis.patch.yml`:
 
 ```yaml
-- id: dsh-comfyui-image
-  name: dsh-comfyui-image
+- id: dsh-comfyui-workbench
+  name: dsh-comfyui-workbench
   config:
     baseUrl: 'http://127.0.0.1:8188'
     checkpoint: 'sd_xl_base_1.0.safetensors'
@@ -154,7 +156,7 @@ The first section of the output is the **effective configuration**:
 
 ```
 [Configuration]
-  Config file: C:\Users\me\.dsh-comfyui-image\config.json
+  Config file: C:\Users\me\.dsh-comfyui-workbench\config.json
   ComfyUI address: http://127.0.0.1:8188
   Checkpoint: (not set, one will be picked automatically)
   Default sampling: euler / normal, steps=20, cfg=7
@@ -172,7 +174,7 @@ The first section of the output is the **effective configuration**:
    warning in the log, so "the file was clearly edited but nothing changed" is most often a misplaced comma. Just validate the syntax:
 
    ```bash
-   node -e "const fs=require('fs'),os=require('os'),p=require('path');JSON.parse(fs.readFileSync(p.join(os.homedir(),'.dsh-comfyui-image','config.json'),'utf8'));console.log('JSON syntax OK')"
+   node -e "const fs=require('fs'),os=require('os'),p=require('path');JSON.parse(fs.readFileSync(p.join(os.homedir(),'.dsh-comfyui-workbench','config.json'),'utf8'));console.log('JSON syntax OK')"
    ```
 
    Or just look at the "Configuration" section `doctor` prints — it shows the **merged values that will really be used**.
@@ -184,5 +186,5 @@ The first section of the output is the **effective configuration**:
 - The plugin talks **only** to the `baseUrl` you configure; it never contacts any third-party service;
 - It does not upload your images to any cloud (only to your local ComfyUI's `/upload/image`);
 - It neither reads nor writes ComfyUI's config/model directories (except through its HTTP API);
-- The only places it writes: the output directory you specify, `~/.dsh-comfyui-image/`, and the `.json` sidecar next to each image.
+- The only places it writes: the output directory you specify, `~/.dsh-comfyui-workbench/`, and the `.json` sidecar next to each image.
 - The advanced tools are equally local, but `comfyui_workflow` executes arbitrary workflows and `comfyui_api` can call any endpoint (including `/free`, `/queue` and `/settings`). Treat them as privileged local operations.

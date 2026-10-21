@@ -1,13 +1,13 @@
 # Mounts this plugin into the DSH profile's config tree (bundle declaration).
 #
 # To change the ComfyUI address / default model and so on, you do not need to edit this file: just edit
-#   ~/.dsh-comfyui-image/config.json
+#   ~/.dsh-comfyui-workbench/config.json
 # or add a config: to this entry in the profile's cordis.patch.yml:
-#   - id: dsh-comfyui-image
-#     name: dsh-comfyui-image
+#   - id: dsh-comfyui-workbench
+#     name: dsh-comfyui-workbench
 #     config:
 #       baseUrl: 'http://127.0.0.1:8188'
 #       checkpoint: 'sd_xl_base_1.0.safetensors'
 - insert:
-    - id: dsh-comfyui-image
-      name: dsh-comfyui-image
+    - id: dsh-comfyui-workbench
+      name: dsh-comfyui-workbench

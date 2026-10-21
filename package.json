@@ -1,7 +1,7 @@
 {
-  "name": "dsh-comfyui-image",
-  "version": "0.1.1",
-  "description": "A DSH plugin backed by a local ComfyUI server: generate_image for text-to-image, image-to-image, inpainting and background removal, plus full model/node inspection and arbitrary workflow execution.",
+  "name": "dsh-comfyui-workbench",
+  "version": "0.2.0",
+  "description": "A ComfyUI workbench for DeepSeek Harness (DSH): generate images, inspect every installed model and node schema, build and run arbitrary workflows, and reach any ComfyUI endpoint. Zero runtime dependencies.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -44,25 +44,26 @@
     "stable-diffusion",
     "workflow",
     "comfyui-api",
-    "model-inspection"
+    "model-inspection",
+    "workbench"
   ],
-  "author": "dsh-comfyui-image contributors",
+  "author": "dsh-comfyui-workbench contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheRealChickenlegs/dsh-comfyui-image.git"
+    "url": "git+https://github.com/TheRealChickenlegs/dsh-comfyui-workbench.git"
   },
   "bugs": {
-    "url": "https://github.com/TheRealChickenlegs/dsh-comfyui-image/issues"
+    "url": "https://github.com/TheRealChickenlegs/dsh-comfyui-workbench/issues"
   },
-  "homepage": "https://github.com/TheRealChickenlegs/dsh-comfyui-image#readme",
+  "homepage": "https://github.com/TheRealChickenlegs/dsh-comfyui-workbench#readme",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "meta": {
-    "title": "ComfyUI Image Generation & Workflows",
-    "description": "Adds image generation and full ComfyUI access to DSH: generate_image for common modes, comfyui_inspect for every model and node schema, comfyui_workflow for arbitrary workflows, and comfyui_api for raw endpoints."
+    "title": "ComfyUI Workbench",
+    "description": "Adds image generation and full ComfyUI access to DSH: generate images, inspect every model and node schema, build and run arbitrary workflows, and call any endpoint."
   },
   "icon": "./icon.svg",
   "dsh": {

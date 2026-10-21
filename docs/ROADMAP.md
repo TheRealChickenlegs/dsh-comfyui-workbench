@@ -99,7 +99,7 @@ Prerequisite: abstract "workflow building" into an interface (`Backend`); today 
 
 The metadata sidecar is already a complete record of "parameters + workflow + output path". Next:
 
-- an optional **generation history index** (`~/.dsh-comfyui-image/history.jsonl`) for searching by prompt / seed;
+- an optional **generation history index** (`~/.dsh-comfyui-workbench/history.jsonl`) for searching by prompt / seed;
 - seed and prompt reuse experiments for "multiple images of the same character" based on history;
 - one-click import of the `.json` back into the ComfyUI UI (dragging it in works today; there is just no tutorial).
 

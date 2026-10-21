@@ -10,6 +10,7 @@
  * needed at all.
  */
 import { resolveConfig } from './config.js'
+import { PLUGIN_ID, PLUGIN_DISPLAY_NAME } from './identity.js'
 import { logInfo, logWarn } from './log.js'
 import { PLUGIN_VERSION } from './runner.js'
 import { createGenerateImageTool, TOOL_NAME } from './tool.js'
@@ -21,7 +22,7 @@ import {
 } from './comfy-tools.js'
 
 /** Plugin name (also the default id of the loader entry). */
-export const name = 'dsh-comfyui-image'
+export const name = PLUGIN_ID
 
 /** The tool registry service this plugin depends on. */
 export const inject = ['tools']
@@ -74,7 +75,7 @@ export function apply(ctx: HostContextLike, config?: unknown): void {
   const resolved = resolveConfig(config)
   const registered = [TOOL_NAME, ...ADVANCED_TOOL_NAMES].join(', ')
   logInfo(
-    `v${PLUGIN_VERSION} ready, registered tools: ${registered}. ComfyUI address: ${resolved.baseUrl}` +
+    `${PLUGIN_DISPLAY_NAME} v${PLUGIN_VERSION} ready, registered tools: ${registered}. ComfyUI address: ${resolved.baseUrl}` +
       (resolved.checkpoint ? `, checkpoint: ${resolved.checkpoint}` : ', checkpoint: automatic')
   )
   if (resolved.baseUrl.includes('0.0.0.0')) {
@@ -86,7 +87,8 @@ export function apply(ctx: HostContextLike, config?: unknown): void {
 export { ComfyUIClient } from './comfy/client.js'
 export { chooseCheckpoint, chooseRembgPlan, chooseSampler, declaredInputs, enumChoices, pickDeclaredKey } from './comfy/nodes.js'
 export { buildWorkflow, buildText2Img, buildImg2Img, buildInpaint, buildRemoveBackground, filenamePrefixFor, applyCustomWorkflow } from './comfy/workflows.js'
-export { DEFAULTS, CONFIG_FILE, readConfigFile, resolveConfig, suggestSizeForCheckpoint, writeConfigFile } from './config.js'
+export { DEFAULTS, CONFIG_FILE, LEGACY_CONFIG_FILE, readConfigFile, resolveConfig, suggestSizeForCheckpoint, writeConfigFile } from './config.js'
+export { LEGACY_PLUGIN_ID, PLUGIN_DISPLAY_NAME, PLUGIN_ID } from './identity.js'
 export { formatError, ImagePluginError } from './errors.js'
 export { guessImageMime, planOutputFile, randomSeed, timestampSlug } from './files.js'
 export { inferMode, normalizeRequest } from './params.js'

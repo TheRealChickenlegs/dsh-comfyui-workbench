@@ -144,7 +144,7 @@ On failure the tool **throws**, and the error text = "what happened" + "what to 
 
 Cannot reach ComfyUI at http://127.0.0.1:8188 (fetch failed)
 
-Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the address: change baseUrl in ~/.dsh-comfyui-image/config.json, or set the environment variable COMFYUI_URL=http://host:port.
+Start the local ComfyUI service first (it listens on 127.0.0.1:8188 by default), or fix the address: change baseUrl in ~/.dsh-comfyui-workbench/config.json, or set the environment variable COMFYUI_URL=http://host:port.
 ```
 
 Other common ones: no available checkpoint, a missing background-removal node (listing all four installation options),

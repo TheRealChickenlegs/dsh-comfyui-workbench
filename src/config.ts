@@ -3,7 +3,7 @@
  *
  * Priority (**higher wins**):
  *   1. Plugin config   — the `config:` of the entry in the profile's cordis.patch.yml (injected into `apply(ctx, config)`)
- *   2. Config file     — `~/.dsh-comfyui-image/config.json` (no DSH restart, no profile edit; the most convenient)
+ *   2. Config file     — `~/.dsh-comfyui-workbench/config.json` (no DSH restart, no profile edit; the most convenient)
  *   3. Environment     — `COMFYUI_URL` etc. (handy in containers or for temporary overrides)
  *   4. Built-in defaults — DEFAULTS in this file
  *
@@ -20,16 +20,21 @@ import os from 'node:os'
 import path from 'node:path'
 import type { PluginConfigInput, ResolvedConfig } from './types.js'
 import { logDebug, logWarn } from './log.js'
+import { ENV_CONFIG, ENV_OUTPUT, LEGACY_ENV_CONFIG, LEGACY_ENV_OUTPUT, LEGACY_PLUGIN_ID, PLUGIN_ID } from './identity.js'
 
-/** Plugin id, also used as the config directory name. */
-export const PLUGIN_ID = 'dsh-comfyui-image'
+/** Plugin id re-exported for callers that need the identity without importing identity.ts. */
+export { PLUGIN_ID }
 
 /** Default ComfyUI address. */
 export const DEFAULT_BASE_URL = 'http://127.0.0.1:8188'
 
-/** Config file location; tests can point `DSH_COMFYUI_IMAGE_CONFIG` at a temp directory. */
+/** Config file location; tests can point `DSH_COMFYUI_WORKBENCH_CONFIG` at a temp directory. */
 export const CONFIG_FILE =
-  process.env.DSH_COMFYUI_IMAGE_CONFIG || path.join(os.homedir(), `.${PLUGIN_ID}`, 'config.json')
+  process.env[ENV_CONFIG] || process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${PLUGIN_ID}`, 'config.json')
+
+/** Previous config location, read only when the new config file is absent (0.2.x migration). */
+export const LEGACY_CONFIG_FILE =
+  process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${LEGACY_PLUGIN_ID}`, 'config.json')
 
 /** Built-in defaults. */
 export const DEFAULTS = {
@@ -62,7 +67,12 @@ const ENV_KEYS: Record<string, keyof PluginConfigInput> = {
   COMFYUI_SCHEDULER: 'scheduler',
   COMFYUI_TIMEOUT_MS: 'timeoutMs',
   COMFYUI_REMBG_NODE: 'rembgNode',
-  DSH_COMFYUI_IMAGE_OUTPUT: 'outputDir'
+  [ENV_OUTPUT]: 'outputDir'
+}
+
+/** Legacy environment variables, applied only when the new equivalent is unset. */
+const LEGACY_ENV_KEYS: Record<string, keyof PluginConfigInput> = {
+  [LEGACY_ENV_OUTPUT]: 'outputDir'
 }
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -70,15 +80,25 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
 }
 
 /** Read the config file; a broken file counts as absent and never takes the plugin down. */
+let legacyConfigWarningShown = false
+
 export function readConfigFile(): PluginConfigInput {
+  const useLegacy = !fs.existsSync(CONFIG_FILE) && LEGACY_CONFIG_FILE !== CONFIG_FILE && fs.existsSync(LEGACY_CONFIG_FILE)
+  const target = useLegacy ? LEGACY_CONFIG_FILE : CONFIG_FILE
+  if (useLegacy && !legacyConfigWarningShown) {
+    logWarn(
+      `Using the legacy config file ${LEGACY_CONFIG_FILE}. Move it to ${CONFIG_FILE}; legacy support ends in 0.3.0.`
+    )
+    legacyConfigWarningShown = true
+  }
   try {
-    if (!fs.existsSync(CONFIG_FILE)) return {}
-    const raw = fs.readFileSync(CONFIG_FILE, 'utf8').replace(/^\uFEFF/, '')
+    if (!fs.existsSync(target)) return {}
+    const raw = fs.readFileSync(target, 'utf8').replace(/^\uFEFF/, '')
     const parsed: unknown = JSON.parse(raw)
     return isPlainObject(parsed) ? (parsed as PluginConfigInput) : {}
   } catch (error) {
     logWarn(
-      `Cannot read the config file, ignoring it: ${CONFIG_FILE} (${error instanceof Error ? error.message : String(error)})`
+      `Cannot read the config file, ignoring it: ${target} (${error instanceof Error ? error.message : String(error)})`
     )
     return {}
   }
@@ -97,6 +117,12 @@ export function configFromEnv(env: NodeJS.ProcessEnv = process.env): PluginConfi
   for (const [envKey, configKey] of Object.entries(ENV_KEYS)) {
     const value = env[envKey]
     if (value !== undefined && value !== '') out[configKey] = value as never
+  }
+  for (const [envKey, configKey] of Object.entries(LEGACY_ENV_KEYS)) {
+    const value = env[envKey]
+    if (value !== undefined && value !== '' && out[configKey] === undefined) {
+      out[configKey] = value as never
+    }
   }
   return out
 }
@@ -180,7 +206,7 @@ export function resolveConfig(pluginConfig?: unknown, env: NodeJS.ProcessEnv = p
   logDebug('Config resolved', {
     baseUrl: resolved.baseUrl,
     configFile: CONFIG_FILE,
-    fileExists: fs.existsSync(CONFIG_FILE),
+    fileExists: fs.existsSync(CONFIG_FILE) || fs.existsSync(LEGACY_CONFIG_FILE),
     sources: { plugin: Object.keys(fromPlugin), file: Object.keys(fromFile), env: Object.keys(fromEnv) }
   })
   return resolved
