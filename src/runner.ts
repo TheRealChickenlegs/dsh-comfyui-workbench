@@ -28,7 +28,7 @@ import { chooseCheckpoint, chooseRembgPlan, chooseSampler, type RembgPlan } from
 import { applyCustomWorkflow, buildWorkflow, filenamePrefixFor, type BuiltWorkflow } from './comfy/workflows.js'
 
 /** Plugin version (written into metadata, to make later troubleshooting easier). */
-export const PLUGIN_VERSION = '0.3.1'
+export const PLUGIN_VERSION = '0.3.2'
 
 /** Everything needed to run one generation. */
 export interface RunOptions {

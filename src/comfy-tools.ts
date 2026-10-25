@@ -570,18 +570,33 @@ function issueStringsFromValidation(validation: WorkflowValidation): string[] {
   return [...issueStrings(validation.errors), ...issueStrings(validation.warnings)]
 }
 
+/** Remove undefined recursively so tool results are lossless JSON (DSH rejects undefined). */
+function losslessJson(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.filter((item) => item !== undefined).map(losslessJson)
+  }
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>)
+        .filter(([, item]) => item !== undefined)
+        .map(([key, item]) => [key, losslessJson(item)])
+    )
+  }
+  return value
+}
+
 function workflowResultText(
   action: string,
   success: boolean,
   text: string,
   extra: Record<string, unknown> = {}
 ): Record<string, unknown> {
-  return {
+  return losslessJson({
     text,
     success,
     action,
     ...extra
-  }
+  }) as Record<string, unknown>
 }
 
 /** Build the comfyui_workflow tool definition. */

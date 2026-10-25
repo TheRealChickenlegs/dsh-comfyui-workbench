@@ -11,6 +11,7 @@
  */
 // Must come first: it points the plugin config file at a temp directory, and lib fixes that path at load time.
 import { CONFIG_PATH, LEGACY_CONFIG_PATH } from './env-setup.mjs'
+import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -88,4 +89,27 @@ export function assertDeclaredKeys(value, schema, label) {
   for (const key of schema.required) {
     if (!(key in value)) throw new Error(`${label}: missing required output field "${key}"`)
   }
+}
+
+/** Return paths of values that JSON cannot represent losslessly (undefined, NaN, Infinity, BigInt, cycles). */
+export function nonLosslessPaths(value, path = '$', seen = new Set()) {
+  if (value === undefined) return [`${path}=undefined`]
+  if (typeof value === 'number' && !Number.isFinite(value)) return [`${path}=${String(value)}`]
+  if (typeof value === 'bigint') return [`${path}=bigint`]
+  if (typeof value === 'function' || typeof value === 'symbol') return [`${path}=${typeof value}`]
+  if (value === null || typeof value !== 'object') return []
+  if (seen.has(value)) return [`${path}=cycle`]
+  seen.add(value)
+  const bad = []
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => bad.push(...nonLosslessPaths(item, `${path}[${index}]`, seen)))
+  } else {
+    for (const [key, item] of Object.entries(value)) bad.push(...nonLosslessPaths(item, `${path}.${key}`, seen))
+  }
+  seen.delete(value)
+  return bad
+}
+
+export function assertLosslessJson(value, label = 'value') {
+  assert.deepEqual(nonLosslessPaths(value), [], `${label} must be lossless JSON`)
 }

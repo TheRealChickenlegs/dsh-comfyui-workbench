@@ -3,6 +3,14 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.3.2] — 2026-10-25
+
+### Fixed
+
+- `comfyui_workflow` now returns lossless JSON when a validation issue has no suggestion. An optional `suggestion: undefined` field previously made DSH reject otherwise valid tool results with “value is not lossless JSON”.
+- Workflow results are recursively sanitised before returning, so optional undefined fields cannot leak from validation, path or output records.
+- Added a regression test for a workflow validation error with no close-match suggestion.
+
 ## [0.3.1] — 2026-10-21
 
 ### Fixed
@@ -18,7 +26,7 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - The page writes only changed fields to the active profile's plugin config; blank fields continue to inherit from `~/.dsh-comfyui-workbench/config.json`, environment variables or built-in defaults. Saves take effect without a DSH restart.
 - A volatile `Config` schema and browser bundle (`lib/client.js`) back the form. The package now depends on `@deepseek-ai/schemastery` for that schema; all other runtime behavior still uses Node built-ins.
 - README and configuration documentation now describe the plugin-page form alongside the file/env/profile methods.
-- Test suite: **139 tests**, including UI schema coverage and client-bundle checks.
+- Test suite: **140 tests**, including UI schema coverage and client-bundle checks.
 
 ### Changed
 

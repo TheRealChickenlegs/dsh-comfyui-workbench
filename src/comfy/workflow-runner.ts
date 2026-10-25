@@ -141,11 +141,12 @@ export function validateWorkflow(
     classTypes.push(classType)
     const info = objectInfo[classType]
     if (!info) {
+      const suggestion = suggestionText(closest(classType, Object.keys(objectInfo)))
       errors.push({
         node_id: nodeId,
         node_type: classType,
         message: `Unknown node type "${classType}" (not in ComfyUI's object_info).`,
-        suggestion: suggestionText(closest(classType, Object.keys(objectInfo)))
+        ...(suggestion ? { suggestion } : {})
       })
       continue
     }
@@ -165,12 +166,13 @@ export function validateWorkflow(
 
     for (const inputName of Object.keys(inputs)) {
       if (inputName in declared) continue
+      const suggestion = suggestionText(closest(inputName, Object.keys(declared)))
       errors.push({
         node_id: nodeId,
         node_type: classType,
         input: inputName,
         message: `Unknown input "${inputName}" on node ${classType}.`,
-        suggestion: suggestionText(closest(inputName, Object.keys(declared)))
+        ...(suggestion ? { suggestion } : {})
       })
     }
 

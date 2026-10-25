@@ -14,7 +14,7 @@ import {
   resolveConfig
 } from '../lib/index.js'
 import { createMockComfyUI, readPngSize } from './mock-comfyui.mjs'
-import { assertDeclaredKeys, tempDir, writePng } from './helpers.mjs'
+import { assertDeclaredKeys, assertLosslessJson, tempDir, writePng } from './helpers.mjs'
 
 const running = []
 
@@ -65,6 +65,18 @@ test('validate: a complete workflow passes and reports node/output counts', asyn
   assert.equal(result.data.validation.node_count, 7)
   assert.equal(result.data.validation.output_node_count, 1)
   assert.match(result.text, /Workflow is valid/)
+})
+
+test('validate: a workflow with no-suggestion errors is lossless JSON', async () => {
+  const { baseUrl } = await startMock()
+  const { tool, workflow, exec } = setup(baseUrl)
+  const candidate = structuredClone(workflow)
+  candidate['99'] = { class_type: 'XyzzyNoSuchNode', inputs: {} }
+
+  const result = await tool.execute({ action: 'validate', workflow: candidate }, exec)
+  assert.equal(result.success, false)
+  assertLosslessJson(result, 'workflow validation result')
+  assert.ok(result.data.validation.errors.some((issue) => !Object.prototype.hasOwnProperty.call(issue, 'suggestion')))
 })
 
 test('validate: unknown node, missing required input, unknown input and dangling links are clear', async () => {
