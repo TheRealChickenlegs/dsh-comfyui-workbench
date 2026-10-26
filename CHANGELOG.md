@@ -3,6 +3,16 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] — 2026-10-26
+
+### Added
+
+- **`generate_sprite_animation`**: one-call W2 → W3 sprite animation cards from a single base PNG. The tool generates turn clips for left/right/back, reuses each turn's last frame as the facing keyframe, runs Wan 2.2 i2v for the selected animations, removes the background with W3/BiRefNet, aligns and box-downsamples the cells, and packs an 8-column card.
+- The tool defaults to the full ten-row Draconid card (idle, four walks, four attacks, death) and accepts a single animation for quick tests.
+- Dependency-free PNG decode/encode, alpha-box alignment, alpha-weighted box downsampling and card packing, with configurable model filenames and prompts.
+- [docs/SPRITE_ANIMATION.md](docs/SPRITE_ANIMATION.md): turn-keyframe explanation, model requirements, parameters, output layout and cache workaround.
+- 152 tests, including PNG round-tripping, schema guards and the sprite tool contract.
+
 ## [0.4.0] — 2026-10-26
 
 ### Added
@@ -16,7 +26,7 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 
 ### Changed
 
-- Legacy `DSH_COMFYUI_IMAGE_*` and `~/.dsh-comfyui-image/config.json` fallbacks remain available through 0.4.x and will be removed in 0.5.0.
+- Legacy `DSH_COMFYUI_IMAGE_*` and `~/.dsh-comfyui-image/config.json` fallbacks remain available through 0.5.x and will be removed in 0.6.0.
 
 ## [0.3.2] — 2026-10-25
 

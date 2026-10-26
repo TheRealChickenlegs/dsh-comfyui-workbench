@@ -22,6 +22,7 @@ import {
 } from './comfy-tools.js'
 import { AUDIO_TOOL_NAME, VIDEO_TOOL_NAME, createGenerateAudioTool, createGenerateVideoTool } from './media-tools.js'
 import { HUGGINGFACE_TOOL_NAME, createHuggingFaceTool } from './huggingface-tool.js'
+import { SPRITE_TOOL_NAME, createSpriteAnimationTool } from './sprite-animation-tool.js'
 
 /** Plugin name (also the default id of the loader entry). */
 export const name = PLUGIN_ID
@@ -78,6 +79,7 @@ export function apply(ctx: HostContextLike, config?: unknown): void {
   tools.register(createComfyUIWorkflowTool(config))
   tools.register(createComfyUIApiTool(config))
   tools.register(createHuggingFaceTool(config))
+  tools.register(createSpriteAnimationTool(config))
 
   // The plugin page is custom, so tell DSH's settings service not to expose an
   // auto-generated form for this entry. The child is optional: the tools keep
@@ -94,7 +96,7 @@ export function apply(ctx: HostContextLike, config?: unknown): void {
 
   // Print one summary line at startup: do **not** make network requests during loading, to avoid slowing DSH startup.
   const resolved = resolveConfig(config)
-  const registered = [TOOL_NAME, AUDIO_TOOL_NAME, VIDEO_TOOL_NAME, ...ADVANCED_TOOL_NAMES, HUGGINGFACE_TOOL_NAME].join(', ')
+  const registered = [TOOL_NAME, AUDIO_TOOL_NAME, VIDEO_TOOL_NAME, ...ADVANCED_TOOL_NAMES, HUGGINGFACE_TOOL_NAME, SPRITE_TOOL_NAME].join(', ')
   logInfo(
     `${PLUGIN_DISPLAY_NAME} v${PLUGIN_VERSION} ready, registered tools: ${registered}. ComfyUI address: ${resolved.baseUrl}` +
       (resolved.checkpoint ? `, checkpoint: ${resolved.checkpoint}` : ', checkpoint: automatic')
@@ -112,6 +114,8 @@ export { DEFAULTS, CONFIG_FILE, LEGACY_CONFIG_FILE, readConfigFile, resolveConfi
 export { Config } from './config-schema.js'
 export { HUGGINGFACE_TOOL_NAME, HUGGINGFACE_DESCRIPTION, HUGGINGFACE_PARAMETERS_SCHEMA, HUGGINGFACE_OUTPUT_SCHEMA, createHuggingFaceTool } from './huggingface-tool.js'
 export { HuggingFaceClient, resolveDownloadDestination } from './huggingface.js'
+export { SPRITE_TOOL_NAME, SPRITE_DESCRIPTION, SPRITE_PARAMETERS_SCHEMA, SPRITE_OUTPUT_SCHEMA, createSpriteAnimationTool } from './sprite-animation-tool.js'
+export { decodePng, encodePng, alphaBox, downsampleBox, translateRgba } from './png.js'
 export { LEGACY_PLUGIN_ID, PLUGIN_DISPLAY_NAME, PLUGIN_ID } from './identity.js'
 export { formatError, ImagePluginError } from './errors.js'
 export { guessImageMime, planOutputFile, randomSeed, timestampSlug } from './files.js'

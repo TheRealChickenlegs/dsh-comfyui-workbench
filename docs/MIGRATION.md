@@ -2,7 +2,7 @@
 
 Version **0.2.0** renames the plugin from `dsh-comfyui-image` to `dsh-comfyui-workbench` and widens it into a full ComfyUI workbench. Tool names and call signatures are unchanged.
 
-This guide covers the one-time upgrade. Legacy compatibility is available throughout **0.4.x** and will be removed in **0.5.0**.
+This guide covers the one-time upgrade. Legacy compatibility is available throughout **0.5.x** and will be removed in **0.6.0**.
 
 ## 1. Update the DSH plugin entry
 
@@ -57,7 +57,7 @@ mv ~/.dsh-comfyui-image ~/.dsh-comfyui-workbench
 Move-Item "$env:USERPROFILE\.dsh-comfyui-image" "$env:USERPROFILE\.dsh-comfyui-workbench"
 ```
 
-If you do not move it, **0.4.x** still reads `~/.dsh-comfyui-image/config.json` when the new file is absent, and logs a warning. The new file always wins when both exist.
+If you do not move it, **0.5.x** still reads `~/.dsh-comfyui-image/config.json` when the new file is absent, and logs a warning. The new file always wins when both exist.
 
 ## 3. Rename environment variables
 
@@ -67,7 +67,7 @@ If you do not move it, **0.4.x** still reads `~/.dsh-comfyui-image/config.json` 
 | `DSH_COMFYUI_IMAGE_OUTPUT` | `DSH_COMFYUI_WORKBENCH_OUTPUT` |
 | `DSH_COMFYUI_IMAGE_DEBUG` | `DSH_COMFYUI_WORKBENCH_DEBUG` |
 
-The old names are still accepted in 0.4.x, but the new names take precedence. The generic `COMFYUI_*` variables (`COMFYUI_URL`, `COMFYUI_CHECKPOINT`, ...) are unchanged.
+The old names are still accepted in 0.5.x, but the new names take precedence. The generic `COMFYUI_*` variables (`COMFYUI_URL`, `COMFYUI_CHECKPOINT`, ...) are unchanged.
 
 ## 4. Output files and metadata
 
@@ -91,7 +91,7 @@ No Agent prompt changes are required.
 
 | Version | Behavior |
 |---|---|
-| **0.4.x** | Reads the legacy config file and accepts legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks |
-| **0.5.0** | Legacy config/env support removed; only the new names are read |
+| **0.5.x** | Reads the legacy config file and accepts legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks |
+| **0.6.0** | Legacy config/env support removed; only the new names are read |
 
 For a clean installation, move the config and rename the variables now rather than relying on the fallback.

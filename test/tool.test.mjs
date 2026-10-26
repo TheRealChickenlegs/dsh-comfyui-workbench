@@ -232,6 +232,7 @@ test('apply: registers image/audio/video tools plus the three advanced ComfyUI t
     'comfyui_workflow',
     'generate_audio',
     'generate_image',
+    'generate_sprite_animation',
     'generate_video',
     'huggingface_models'
   ])
