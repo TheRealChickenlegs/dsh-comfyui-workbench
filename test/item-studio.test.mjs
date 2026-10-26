@@ -65,6 +65,7 @@ test('item_studio: list exposes the bundled 108-item catalogue', async () => {
   assert.equal(result.success, true)
   assert.equal(result.count, 108)
   assert.equal(result.items[0].id, 'dagger')
+  assert.match(result.items[0].prompt, /vertical|front view/i)
 })
 
 test('item_studio: one generated item gets raw, cutout, 64px sprite and 32px icon', async () => {
@@ -72,6 +73,7 @@ test('item_studio: one generated item gets raw, cutout, 64px sprite and 32px ico
   const tool = createItemStudioTool({ baseUrl, requestTimeoutMs: 3000, timeoutMs: 5000, pollIntervalMs: 100 })
   const result = await tool.execute({
     action: 'generate',
+    generator: 'simple',
     item_id: 'potion_cure_light',
     output_dir: path.join(cwd, 'out')
   }, { agent: { meta: { cwd } } })

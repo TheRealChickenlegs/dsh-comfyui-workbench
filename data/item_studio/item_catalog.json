@@ -16,12 +16,12 @@
    "frame": "item_dagger",
    "icon_frame": "icon_dagger",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dagger, a short single-handed dagger, narrow blade, small crossguard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dagger, a short single-handed dagger, narrow blade, small crossguard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1000,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -53,12 +53,12 @@
    "frame": "item_short_sword",
    "icon_frame": "icon_short_sword",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single short sword, a short straight sword, one-handed, simple crossguard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single short sword, a short straight sword, one-handed, simple crossguard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1010,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -90,12 +90,12 @@
    "frame": "item_long_sword",
    "icon_frame": "icon_long_sword",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single long sword, a long straight sword, one-handed, wide crossguard, disc pommel, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single long sword, a long straight sword, one-handed, wide crossguard, disc pommel, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1020,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -127,12 +127,12 @@
    "frame": "item_broad_sword",
    "icon_frame": "icon_broad_sword",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single broad sword, a long straight sword, one-handed, wide crossguard, disc pommel, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single broad sword, a long straight sword, one-handed, wide crossguard, disc pommel, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1030,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -164,12 +164,12 @@
    "frame": "item_two_handed_sword",
    "icon_frame": "icon_two_handed_sword",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single two-handed sword, a two-handed greatsword, long broad blade, long two-hand grip, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single two-handed sword, a two-handed greatsword, long broad blade, long two-hand grip, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view, a massive two-handed greatsword, long broad blade, long two-hand grip",
    "variants": [
     {
      "id": "base",
      "seed": 1040,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -201,12 +201,12 @@
    "frame": "item_mace",
    "icon_frame": "icon_mace",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single mace, a flanged mace, heavy metal head on a short haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single mace, a flanged mace, heavy metal head on a short haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1050,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -238,12 +238,12 @@
    "frame": "item_war_hammer",
    "icon_frame": "icon_war_hammer",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single war hammer, a war hammer, blocky metal head on a wooden haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single war hammer, a war hammer, blocky metal head on a wooden haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1060,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -275,12 +275,12 @@
    "frame": "item_battle_axe",
    "icon_frame": "icon_battle_axe",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single battle axe, a single-bladed battle axe, curved head on a wooden haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single battle axe, a single-bladed battle axe, curved head on a wooden haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view, a large battle axe, broad curved steel blade on a long wooden haft",
    "variants": [
     {
      "id": "base",
      "seed": 1070,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -312,12 +312,12 @@
    "frame": "item_spear",
    "icon_frame": "icon_spear",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single spear, a long spear, narrow leaf-shaped point on a tall shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single spear, a long spear, narrow leaf-shaped point on a tall shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1080,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -349,12 +349,12 @@
    "frame": "item_halberd",
    "icon_frame": "icon_halberd",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single halberd, a halberd, axe blade and top spike on a tall shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single halberd, a halberd, axe blade and top spike on a tall shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1090,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -386,7 +386,7 @@
    "frame": "item_quarterstaff",
    "icon_frame": "icon_quarterstaff",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single quarterstaff, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single quarterstaff, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -423,12 +423,12 @@
    "frame": "item_cudgel",
    "icon_frame": "icon_cudgel",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single cudgel, a flanged mace, heavy metal head on a short haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single cudgel, a flanged mace, heavy metal head on a short haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1110,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -460,12 +460,12 @@
    "frame": "item_short_bow",
    "icon_frame": "icon_short_bow",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single short bow, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single short bow, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1120,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -497,12 +497,12 @@
    "frame": "item_long_bow",
    "icon_frame": "icon_long_bow",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single long bow, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single long bow, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1130,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -534,12 +534,12 @@
    "frame": "item_arrows",
    "icon_frame": "icon_arrows",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single arrows, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single arrows, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, vertical, upright, blade pointing up, centred, front view",
    "variants": [
     {
      "id": "base",
      "seed": 1140,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -571,12 +571,12 @@
    "frame": "item_robe",
    "icon_frame": "icon_robe",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single robe, a long plain robe, wide sleeves, hem at the ground, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single robe, a long plain robe, wide sleeves, hem at the ground, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical, a long grey cloth robe, no plate",
    "variants": [
     {
      "id": "base",
      "seed": 1150,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -608,12 +608,12 @@
    "frame": "item_leather_armour",
    "icon_frame": "icon_leather_armour",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather armour, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather armour, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1160,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -645,12 +645,12 @@
    "frame": "item_studded_leather",
    "icon_frame": "icon_studded_leather",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single studded leather, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single studded leather, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1170,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -682,12 +682,12 @@
    "frame": "item_ring_mail",
    "icon_frame": "icon_ring_mail",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1180,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -719,12 +719,12 @@
    "frame": "item_chain_mail",
    "icon_frame": "icon_chain_mail",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single chain mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single chain mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1190,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -756,12 +756,12 @@
    "frame": "item_plate_armour",
    "icon_frame": "icon_plate_armour",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single plate armour, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single plate armour, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1200,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -793,12 +793,12 @@
    "frame": "item_dwarven_mail",
    "icon_frame": "icon_dwarven_mail",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1210,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -830,12 +830,12 @@
    "frame": "item_gleaming_mail",
    "icon_frame": "icon_gleaming_mail",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gleaming mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gleaming mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1220,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -867,12 +867,12 @@
    "frame": "item_deep_plate",
    "icon_frame": "icon_deep_plate",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep plate, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep plate, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1230,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -904,12 +904,12 @@
    "frame": "item_understone_plate",
    "icon_frame": "icon_understone_plate",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone plate, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone plate, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
      "seed": 1240,
-     "prompt_suffix": "plain, well-used, neutral colours"
+     "prompt_suffix": "clean, plain, neutral colours, no rust, no damage"
     },
     {
      "id": "material",
@@ -941,7 +941,7 @@
    "frame": "item_iron_shod_boots",
    "icon_frame": "icon_iron_shod_boots",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron-shod boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron-shod boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -978,7 +978,7 @@
    "frame": "item_dwarven_boots",
    "icon_frame": "icon_dwarven_boots",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1015,7 +1015,7 @@
    "frame": "item_deep_boots",
    "icon_frame": "icon_deep_boots",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep-walker boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep-walker boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1052,7 +1052,7 @@
    "frame": "item_understone_boots",
    "icon_frame": "icon_understone_boots",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1089,7 +1089,7 @@
    "frame": "item_leather_gauntlets",
    "icon_frame": "icon_leather_gauntlets",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1126,7 +1126,7 @@
    "frame": "item_steel_gauntlets",
    "icon_frame": "icon_steel_gauntlets",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single steel gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single steel gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1163,7 +1163,7 @@
    "frame": "item_dwarven_gauntlets",
    "icon_frame": "icon_dwarven_gauntlets",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1200,7 +1200,7 @@
    "frame": "item_understone_gauntlets",
    "icon_frame": "icon_understone_gauntlets",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1237,7 +1237,7 @@
    "frame": "item_wool_cloak",
    "icon_frame": "icon_wool_cloak",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wool cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wool cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1274,7 +1274,7 @@
    "frame": "item_fur_cloak",
    "icon_frame": "icon_fur_cloak",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single fur cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single fur cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1311,7 +1311,7 @@
    "frame": "item_shadow_cloak",
    "icon_frame": "icon_shadow_cloak",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single shadow cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single shadow cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1348,7 +1348,7 @@
    "frame": "item_understone_cloak",
    "icon_frame": "icon_understone_cloak",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1385,7 +1385,7 @@
    "frame": "item_bronze_helm",
    "icon_frame": "icon_bronze_helm",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single bronze helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single bronze helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1422,7 +1422,7 @@
    "frame": "item_dwarven_helm",
    "icon_frame": "icon_dwarven_helm",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1459,7 +1459,7 @@
    "frame": "item_deep_helm",
    "icon_frame": "icon_deep_helm",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1496,7 +1496,7 @@
    "frame": "item_understone_helm",
    "icon_frame": "icon_understone_helm",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1533,7 +1533,7 @@
    "frame": "item_kite_shield",
    "icon_frame": "icon_kite_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single kite shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single kite shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1570,7 +1570,7 @@
    "frame": "item_dwarven_shield",
    "icon_frame": "icon_dwarven_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1607,7 +1607,7 @@
    "frame": "item_deep_shield",
    "icon_frame": "icon_deep_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1644,7 +1644,7 @@
    "frame": "item_understone_shield",
    "icon_frame": "icon_understone_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1681,7 +1681,7 @@
    "frame": "item_wooden_shield",
    "icon_frame": "icon_wooden_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wooden shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wooden shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1718,7 +1718,7 @@
    "frame": "item_iron_shield",
    "icon_frame": "icon_iron_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1755,7 +1755,7 @@
    "frame": "item_tower_shield",
    "icon_frame": "icon_tower_shield",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single tower shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single tower shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1792,7 +1792,7 @@
    "frame": "item_leather_cap",
    "icon_frame": "icon_leather_cap",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather cap, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather cap, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1829,7 +1829,7 @@
    "frame": "item_iron_helm",
    "icon_frame": "icon_iron_helm",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1866,7 +1866,7 @@
    "frame": "item_great_helm",
    "icon_frame": "icon_great_helm",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single great helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single great helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1903,7 +1903,7 @@
    "frame": "item_leather_cloak",
    "icon_frame": "icon_leather_cloak",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1940,7 +1940,7 @@
    "frame": "item_elven_cloak",
    "icon_frame": "icon_elven_cloak",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single supple cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single supple cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -1977,7 +1977,7 @@
    "frame": "item_gauntlets",
    "icon_frame": "icon_gauntlets",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -2014,7 +2014,7 @@
    "frame": "item_leather_boots",
    "icon_frame": "icon_leather_boots",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -2051,7 +2051,7 @@
    "frame": "item_iron_boots",
    "icon_frame": "icon_iron_boots",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron-shod boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron-shod boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, front view, centred, upright, symmetrical",
    "variants": [
     {
      "id": "base",
@@ -2088,7 +2088,7 @@
    "frame": "item_ring_protection",
    "icon_frame": "icon_ring_protection",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of protection, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of protection, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2125,7 +2125,7 @@
    "frame": "item_ring_strength",
    "icon_frame": "icon_ring_strength",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of strength, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of strength, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2162,7 +2162,7 @@
    "frame": "item_ring_dexterity",
    "icon_frame": "icon_ring_dexterity",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of dexterity, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of dexterity, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2199,7 +2199,7 @@
    "frame": "item_ring_weakness",
    "icon_frame": "icon_ring_weakness",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of weakness, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of weakness, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2236,7 +2236,7 @@
    "frame": "item_amulet_health",
    "icon_frame": "icon_amulet_health",
    "key_colour": "#FF00FF",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of health, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of health, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2273,7 +2273,7 @@
    "frame": "item_amulet_light",
    "icon_frame": "icon_amulet_light",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of light, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of light, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2310,7 +2310,7 @@
    "frame": "item_amulet_drain",
    "icon_frame": "icon_amulet_drain",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of draining, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of draining, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2347,7 +2347,7 @@
    "frame": "item_torch",
    "icon_frame": "icon_torch",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single torch, a burning torch with a wooden handle and a pitch-soaked head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single torch, a burning torch with a wooden handle and a pitch-soaked head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2384,7 +2384,7 @@
    "frame": "item_lantern",
    "icon_frame": "icon_lantern",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lantern, a hooded iron lantern with a ring handle and a candle burning inside, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lantern, a hooded iron lantern with a ring handle and a candle burning inside, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2421,7 +2421,7 @@
    "frame": "item_potion_cure_light",
    "icon_frame": "icon_potion_cure_light",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure light wounds, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure light wounds, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2458,7 +2458,7 @@
    "frame": "item_potion_cure_serious",
    "icon_frame": "icon_potion_cure_serious",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure serious wounds, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure serious wounds, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2495,7 +2495,7 @@
    "frame": "item_potion_mana",
    "icon_frame": "icon_potion_mana",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of restore mana, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of restore mana, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2532,7 +2532,7 @@
    "frame": "item_potion_cure_ailment",
    "icon_frame": "icon_potion_cure_ailment",
    "key_colour": "#FF00FF",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure ailment, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure ailment, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2569,7 +2569,7 @@
    "frame": "item_potion_cure_blindness",
    "icon_frame": "icon_potion_cure_blindness",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure blindness, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure blindness, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2606,7 +2606,7 @@
    "frame": "item_potion_restore",
    "icon_frame": "icon_potion_restore",
    "key_colour": "#FF00FF",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of restore attributes, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of restore attributes, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2643,7 +2643,7 @@
    "frame": "item_potion_heroism",
    "icon_frame": "icon_potion_heroism",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of heroism, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of heroism, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2680,7 +2680,7 @@
    "frame": "item_potion_poison",
    "icon_frame": "icon_potion_poison",
    "key_colour": "#FF00FF",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single foul potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single foul potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2717,7 +2717,7 @@
    "frame": "item_potion_sleep",
    "icon_frame": "icon_potion_sleep",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single cloudy potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single cloudy potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2754,7 +2754,7 @@
    "frame": "item_potion_confusion",
    "icon_frame": "icon_potion_confusion",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single fizzing potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single fizzing potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2791,7 +2791,7 @@
    "frame": "item_potion_booze",
    "icon_frame": "icon_potion_booze",
    "key_colour": "#FF00FF",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single watery potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single watery potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2828,7 +2828,7 @@
    "frame": "item_scroll_light",
    "icon_frame": "icon_scroll_light",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of light, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of light, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2865,7 +2865,7 @@
    "frame": "item_scroll_detect_traps",
    "icon_frame": "icon_scroll_detect_traps",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of detect traps, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of detect traps, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2902,7 +2902,7 @@
    "frame": "item_scroll_detect_monsters",
    "icon_frame": "icon_scroll_detect_monsters",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of detect monsters, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of detect monsters, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2939,7 +2939,7 @@
    "frame": "item_scroll_magic_mapping",
    "icon_frame": "icon_scroll_magic_mapping",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of magic mapping, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of magic mapping, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -2976,7 +2976,7 @@
    "frame": "item_scroll_teleport",
    "icon_frame": "icon_scroll_teleport",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of teleportation, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of teleportation, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3013,7 +3013,7 @@
    "frame": "item_scroll_phase_door",
    "icon_frame": "icon_scroll_phase_door",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of phase door, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of phase door, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3050,7 +3050,7 @@
    "frame": "item_scroll_enchant_weapon",
    "icon_frame": "icon_scroll_enchant_weapon",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of enchant weapon, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of enchant weapon, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3087,7 +3087,7 @@
    "frame": "item_scroll_enchant_armour",
    "icon_frame": "icon_scroll_enchant_armour",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of enchant armour, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of enchant armour, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3124,7 +3124,7 @@
    "frame": "item_scroll_remove_curse",
    "icon_frame": "icon_scroll_remove_curse",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of remove curse, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of remove curse, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3161,7 +3161,7 @@
    "frame": "item_scroll_town_portal",
    "icon_frame": "icon_scroll_town_portal",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of town portal, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of town portal, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3198,7 +3198,7 @@
    "frame": "item_scroll_identify",
    "icon_frame": "icon_scroll_identify",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of identify, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of identify, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3235,7 +3235,7 @@
    "frame": "item_scroll_curse",
    "icon_frame": "icon_scroll_curse",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of cursing, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of cursing, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3272,7 +3272,7 @@
    "frame": "item_wand_magic_missile",
    "icon_frame": "icon_wand_magic_missile",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of magic missile, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of magic missile, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3309,7 +3309,7 @@
    "frame": "item_wand_fire",
    "icon_frame": "icon_wand_fire",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of fire, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of fire, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3346,7 +3346,7 @@
    "frame": "item_wand_cold",
    "icon_frame": "icon_wand_cold",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of frost, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of frost, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3383,7 +3383,7 @@
    "frame": "item_wand_lightning",
    "icon_frame": "icon_wand_lightning",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of lightning, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of lightning, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3420,7 +3420,7 @@
    "frame": "item_wand_drain",
    "icon_frame": "icon_wand_drain",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of draining, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of draining, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3457,7 +3457,7 @@
    "frame": "item_wand_sleep",
    "icon_frame": "icon_wand_sleep",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of sleep, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of sleep, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3494,7 +3494,7 @@
    "frame": "item_staff_light",
    "icon_frame": "icon_staff_light",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of light, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of light, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3531,7 +3531,7 @@
    "frame": "item_staff_healing",
    "icon_frame": "icon_staff_healing",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of healing, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of healing, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3568,7 +3568,7 @@
    "frame": "item_staff_detect",
    "icon_frame": "icon_staff_detect",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of detection, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of detection, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3605,7 +3605,7 @@
    "frame": "item_gold_pile",
    "icon_frame": "icon_gold_pile",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gold pieces, a small heap of gold coins, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gold pieces, a small heap of gold coins, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3642,7 +3642,7 @@
    "frame": "item_ration",
    "icon_frame": "icon_ration",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ration of food, a wrapped bundle of trail food, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ration of food, a wrapped bundle of trail food, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3679,7 +3679,7 @@
    "frame": "item_iron_spike",
    "icon_frame": "icon_iron_spike",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron spike, a single iron spike, blunt at the head and tapering to a point, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron spike, a single iron spike, blunt at the head and tapering to a point, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3716,7 +3716,7 @@
    "frame": "item_shovel",
    "icon_frame": "icon_shovel",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single shovel, a wooden-handled shovel with a broad iron blade and a T grip, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single shovel, a wooden-handled shovel with a broad iron blade and a T grip, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3753,7 +3753,7 @@
    "frame": "item_pick",
    "icon_frame": "icon_pick",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single pick, a miner's pick with a curved iron head on a wooden shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single pick, a miner's pick with a curved iron head on a wooden shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3790,7 +3790,7 @@
    "frame": "item_flask_oil",
    "icon_frame": "icon_flask_oil",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single flask of oil, a small clay flask of lamp oil, stoppered, with a rag wick, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single flask of oil, a small clay flask of lamp oil, stoppered, with a rag wick, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3827,7 +3827,7 @@
    "frame": "item_spellbook_minor",
    "icon_frame": "icon_spellbook_minor",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single tattered spellbook, a heavy leather-bound tome, metal clasps, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single tattered spellbook, a heavy leather-bound tome, metal clasps, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3864,7 +3864,7 @@
    "frame": "item_holy_symbol",
    "icon_frame": "icon_holy_symbol",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single holy symbol, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single holy symbol, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3901,7 +3901,7 @@
    "frame": "item_lute",
    "icon_frame": "icon_lute",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lute, a wooden lute, round-bodied with a bent pegbox and four strings, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lute, a wooden lute, round-bodied with a bent pegbox and four strings, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3938,7 +3938,7 @@
    "frame": "item_herb_pouch",
    "icon_frame": "icon_herb_pouch",
    "key_colour": "#FF00FF",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single herb pouch, a drawstring leather pouch, full and tied at the neck, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single herb pouch, a drawstring leather pouch, full and tied at the neck, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",
@@ -3975,7 +3975,7 @@
    "frame": "item_lockpicks",
    "icon_frame": "icon_lockpicks",
    "key_colour": "#00FF00",
-   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lockpicks, a pair of slender steel lockpicks crossed over one another, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lockpicks, a pair of slender steel lockpicks crossed over one another, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon, upright, centred, front view",
    "variants": [
     {
      "id": "base",

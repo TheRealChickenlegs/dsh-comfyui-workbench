@@ -3,6 +3,17 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.7.0] — 2026-10-26
+
+### Added
+
+- **Local Flux.2 Klein Item Studio generation**: prefers `flux-2-klein-9b-fp8` through ComfyUI's native Flux.2 graph (`UNETLoader`, `CLIPLoader type=flux2`, `Flux2Scheduler`, `EmptyFlux2LatentImage`, `SamplerCustomAdvanced`). No external image API is used.
+- **Guided SDXL fallback**: the original ControlNet Union + IPAdapter Plus graph, with 36 bundled silhouette guides and the original style reference.
+- **Generator selection**: `auto` prefers local Flux.2, then guided small items, then the simple pack. Explicit `flux2`, `guided` and `simple` modes; tall items use Flux.2 or simple.
+- **Key cutout and palette finish**: Flux.2's flat background is border-keyed, largest-component isolated, cropped and snapped to the 32-colour Underdeep palette; implausible key removal falls back to BiRefNet.
+- Latest catalogue orientation clauses, palette data, guide/style assets and generator provenance in manifests.
+- Live-validated local Flux.2 small/tall items and the guided SDXL graph; 162 tests.
+
 ## [0.6.0] — 2026-10-26
 
 ### Added

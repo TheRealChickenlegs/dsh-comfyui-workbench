@@ -32,7 +32,7 @@ export const DEFAULT_BASE_URL = 'http://127.0.0.1:8188'
 export const CONFIG_FILE =
   process.env[ENV_CONFIG] || process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${PLUGIN_ID}`, 'config.json')
 
-/** Previous config location, read only when the new config file is absent (0.6.x migration). */
+/** Previous config location, read only when the new config file is absent (0.7.x migration). */
 export const LEGACY_CONFIG_FILE =
   process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${LEGACY_PLUGIN_ID}`, 'config.json')
 

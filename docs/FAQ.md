@@ -245,7 +245,7 @@ Check in order:
 
 ### Upgrading from `dsh-comfyui-image`
 
-The package/plugin id changed in 0.2.0. Remove the old bundle, install `dsh-comfyui-workbench`, and move the config from `~/.dsh-comfyui-image/` to `~/.dsh-comfyui-workbench/`. The old config/env names are accepted as fallbacks through 0.6.x and removed in 0.7.0. See [MIGRATION.md](./MIGRATION.md).
+The package/plugin id changed in 0.2.0. Remove the old bundle, install `dsh-comfyui-workbench`, and move the config from `~/.dsh-comfyui-image/` to `~/.dsh-comfyui-workbench/`. The old config/env names are accepted as fallbacks through 0.7.x and removed in 0.8.0. See [MIGRATION.md](./MIGRATION.md).
 
 ### Changing `~/.dsh-comfyui-workbench/config.json` has no effect
 

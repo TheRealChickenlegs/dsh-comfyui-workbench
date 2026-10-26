@@ -17,7 +17,7 @@ Why ① is highest: DSH's config tree is the authoritative source for the host/o
 
 > ✨ **Config is resolved on every call** — an edited `config.json` takes effect **immediately, with no DSH restart**.
 >
-> **Upgrading from `dsh-comfyui-image`?** 0.6.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.7.0. See [MIGRATION.md](./MIGRATION.md).
+> **Upgrading from `dsh-comfyui-image`?** 0.7.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.7.0. See [MIGRATION.md](./MIGRATION.md).
 
 ---
 
