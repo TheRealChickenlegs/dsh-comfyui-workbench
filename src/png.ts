@@ -273,3 +273,156 @@ export function alphaBox(rgba: Buffer, width: number, height: number, threshold 
   }
   return right > left && bottom > top ? { left, top, right, bottom } : undefined
 }
+
+/** Crop an RGBA image to an explicit box. */
+export function cropRgba(
+  rgba: Buffer,
+  width: number,
+  height: number,
+  box: AlphaBox
+): { width: number; height: number; rgba: Buffer } {
+  const outWidth = box.right - box.left
+  const outHeight = box.bottom - box.top
+  if (outWidth <= 0 || outHeight <= 0) throw new ImagePluginError('Cannot crop an empty image region.')
+  const out = Buffer.alloc(outWidth * outHeight * 4)
+  for (let y = 0; y < outHeight; y += 1) {
+    const sourceStart = ((box.top + y) * width + box.left) * 4
+    rgba.copy(out, y * outWidth * 4, sourceStart, sourceStart + outWidth * 4)
+  }
+  return { width: outWidth, height: outHeight, rgba: out }
+}
+
+/**
+ * Resize RGBA.
+ *
+ * Downscaling uses an alpha-weighted area average (no dark fringe around transparent edges).
+ * Upscaling uses nearest-neighbour, which is what pixel art wants.
+ */
+export function resizeRgba(
+  rgba: Buffer,
+  width: number,
+  height: number,
+  targetWidth: number,
+  targetHeight: number
+): { width: number; height: number; rgba: Buffer } {
+  const dw = Math.max(1, Math.round(targetWidth))
+  const dh = Math.max(1, Math.round(targetHeight))
+  const out = Buffer.alloc(dw * dh * 4)
+  if (dw === width && dh === height) return { width, height, rgba }
+  if (dw > width || dh > height) {
+    for (let y = 0; y < dh; y += 1) {
+      const sy = Math.min(height - 1, Math.floor((y * height) / dh))
+      for (let x = 0; x < dw; x += 1) {
+        const sx = Math.min(width - 1, Math.floor((x * width) / dw))
+        rgba.copy(out, (y * dw + x) * 4, (sy * width + sx) * 4, (sy * width + sx) * 4 + 4)
+      }
+    }
+    return { width: dw, height: dh, rgba: out }
+  }
+  for (let dy = 0; dy < dh; dy += 1) {
+    const y0 = Math.floor((dy * height) / dh)
+    const y1 = Math.max(y0 + 1, Math.ceil(((dy + 1) * height) / dh))
+    for (let dx = 0; dx < dw; dx += 1) {
+      const x0 = Math.floor((dx * width) / dw)
+      const x1 = Math.max(x0 + 1, Math.ceil(((dx + 1) * width) / dw))
+      let sa = 0
+      let sr = 0
+      let sg = 0
+      let sb = 0
+      let count = 0
+      for (let sy = y0; sy < y1 && sy < height; sy += 1) {
+        for (let sx = x0; sx < x1 && sx < width; sx += 1) {
+          const i = (sy * width + sx) * 4
+          const a = rgba[i + 3]
+          count += 1
+          if (a === 0) continue
+          sa += a
+          sr += rgba[i] * a
+          sg += rgba[i + 1] * a
+          sb += rgba[i + 2] * a
+        }
+      }
+      const d = (dy * dw + dx) * 4
+      if (sa === 0) continue
+      out[d] = Math.round(sr / sa)
+      out[d + 1] = Math.round(sg / sa)
+      out[d + 2] = Math.round(sb / sa)
+      out[d + 3] = Math.round(sa / Math.max(1, count))
+    }
+  }
+  return { width: dw, height: dh, rgba: out }
+}
+
+/** Add a one-pixel dark outline around opaque pixels. */
+export function outlineRgba(rgba: Buffer, width: number, height: number, colour: [number, number, number] = [0, 0, 0]): Buffer {
+  const out = Buffer.from(rgba)
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const i = (y * width + x) * 4
+      if (rgba[i + 3] > 8) continue
+      let neighbour = false
+      for (let ny = Math.max(0, y - 1); ny <= Math.min(height - 1, y + 1) && !neighbour; ny += 1) {
+        for (let nx = Math.max(0, x - 1); nx <= Math.min(width - 1, x + 1); nx += 1) {
+          if (rgba[(ny * width + nx) * 4 + 3] > 64) {
+            neighbour = true
+            break
+          }
+        }
+      }
+      if (neighbour) {
+        out[i] = colour[0]
+        out[i + 1] = colour[1]
+        out[i + 2] = colour[2]
+        out[i + 3] = 255
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * Keep only the largest 8-connected opaque component.
+ *
+ * The simple SDXL item template can paint a sheet of variants despite the prompt. The portable pack
+ * is review-gated; this is a safety net so the final 64px candidate contains one object, not three.
+ * The raw render and BiRefNet cutout are still written for inspection.
+ */
+export function keepLargestComponent(rgba: Buffer, width: number, height: number, threshold = 8): Buffer {
+  const labels = new Int32Array(width * height).fill(-1)
+  const areas: number[] = []
+  let next = 0
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const start = y * width + x
+      if (labels[start] !== -1 || rgba[start * 4 + 3] <= threshold) continue
+      const label = next
+      next += 1
+      let area = 0
+      const queue = [start]
+      labels[start] = label
+      for (let head = 0; head < queue.length; head += 1) {
+        const index = queue[head]
+        area += 1
+        const px = index % width
+        const py = Math.floor(index / width)
+        for (let ny = Math.max(0, py - 1); ny <= Math.min(height - 1, py + 1); ny += 1) {
+          for (let nx = Math.max(0, px - 1); nx <= Math.min(width - 1, px + 1); nx += 1) {
+            const ni = ny * width + nx
+            if (labels[ni] !== -1 || rgba[ni * 4 + 3] <= threshold) continue
+            labels[ni] = label
+            queue.push(ni)
+          }
+        }
+      }
+      areas.push(area)
+    }
+  }
+  if (areas.length === 0) return rgba
+  let best = 0
+  for (let i = 1; i < areas.length; i += 1) if (areas[i] > areas[best]) best = i
+  const out = Buffer.alloc(width * height * 4)
+  for (let i = 0; i < width * height; i += 1) {
+    if (labels[i] === best) rgba.copy(out, i * 4, i * 4, i * 4 + 4)
+  }
+  return out
+}

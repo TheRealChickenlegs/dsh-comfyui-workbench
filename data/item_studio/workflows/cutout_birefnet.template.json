@@ -1,0 +1,103 @@
+{
+ "1": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "{{input_image}}"
+  }
+ },
+ "10": {
+  "class_type": "BiRefNetRMBG",
+  "inputs": {
+   "image": [
+    "1",
+    0
+   ],
+   "model": "BiRefNet_lite-matting",
+   "sensitivity": 1.0,
+   "mask_blur": 0,
+   "mask_offset": 0,
+   "invert_output": false,
+   "refine_foreground": true,
+   "unload_model": false,
+   "background": "Alpha",
+   "background_color": "#222222"
+  }
+ },
+ "20": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "1",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "width": 1024,
+   "height": 1024,
+   "crop": "disabled"
+  }
+ },
+ "21": {
+  "class_type": "MaskToImage",
+  "inputs": {
+   "mask": [
+    "10",
+    1
+   ]
+  }
+ },
+ "22": {
+  "class_type": "ImageScale",
+  "inputs": {
+   "image": [
+    "21",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "width": 1024,
+   "height": 1024,
+   "crop": "disabled"
+  }
+ },
+ "23": {
+  "class_type": "ImageToMask",
+  "inputs": {
+   "image": [
+    "22",
+    0
+   ],
+   "channel": "red"
+  }
+ },
+ "24": {
+  "class_type": "InvertMask",
+  "inputs": {
+   "mask": [
+    "23",
+    0
+   ]
+  }
+ },
+ "25": {
+  "class_type": "JoinImageWithAlpha",
+  "inputs": {
+   "image": [
+    "20",
+    0
+   ],
+   "alpha": [
+    "24",
+    0
+   ]
+  }
+ },
+ "26": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "25",
+    0
+   ],
+   "filename_prefix": "item_studio/cutout"
+  }
+ }
+}

@@ -1,0 +1,4003 @@
+{
+ "version": 1,
+ "generated_from": "godot/assets/content.json",
+ "count": 108,
+ "items": [
+  {
+   "id": "dagger",
+   "name": "dagger",
+   "category": "weapon",
+   "group": "items",
+   "family": "dagger",
+   "tier": 0,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_dagger",
+   "icon_frame": "icon_dagger",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dagger, a short single-handed dagger, narrow blade, small crossguard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1000,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1001,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1002,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1003,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "short_sword",
+   "name": "short sword",
+   "category": "weapon",
+   "group": "items",
+   "family": "short_sword",
+   "tier": 0,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_short_sword",
+   "icon_frame": "icon_short_sword",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single short sword, a short straight sword, one-handed, simple crossguard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1010,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1011,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1012,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1013,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "long_sword",
+   "name": "long sword",
+   "category": "weapon",
+   "group": "items",
+   "family": "long_sword",
+   "tier": 1,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_long_sword",
+   "icon_frame": "icon_long_sword",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single long sword, a long straight sword, one-handed, wide crossguard, disc pommel, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1020,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1021,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1022,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1023,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "broad_sword",
+   "name": "broad sword",
+   "category": "weapon",
+   "group": "items",
+   "family": "long_sword",
+   "tier": 1,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_broad_sword",
+   "icon_frame": "icon_broad_sword",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single broad sword, a long straight sword, one-handed, wide crossguard, disc pommel, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1030,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1031,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1032,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1033,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "two_handed_sword",
+   "name": "two-handed sword",
+   "category": "weapon",
+   "group": "items",
+   "family": "great_sword",
+   "tier": 2,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_two_handed_sword",
+   "icon_frame": "icon_two_handed_sword",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single two-handed sword, a two-handed greatsword, long broad blade, long two-hand grip, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1040,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1041,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1042,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1043,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "mace",
+   "name": "mace",
+   "category": "weapon",
+   "group": "items",
+   "family": "mace",
+   "tier": 1,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_mace",
+   "icon_frame": "icon_mace",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single mace, a flanged mace, heavy metal head on a short haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1050,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1051,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1052,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1053,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "war_hammer",
+   "name": "war hammer",
+   "category": "weapon",
+   "group": "items",
+   "family": "hammer",
+   "tier": 2,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_war_hammer",
+   "icon_frame": "icon_war_hammer",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single war hammer, a war hammer, blocky metal head on a wooden haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1060,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1061,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1062,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1063,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "battle_axe",
+   "name": "battle axe",
+   "category": "weapon",
+   "group": "items",
+   "family": "axe",
+   "tier": 2,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_battle_axe",
+   "icon_frame": "icon_battle_axe",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single battle axe, a single-bladed battle axe, curved head on a wooden haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1070,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1071,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1072,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1073,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "spear",
+   "name": "spear",
+   "category": "weapon",
+   "group": "items",
+   "family": "spear",
+   "tier": 1,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_spear",
+   "icon_frame": "icon_spear",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single spear, a long spear, narrow leaf-shaped point on a tall shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1080,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1081,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1082,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1083,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "halberd",
+   "name": "halberd",
+   "category": "weapon",
+   "group": "items",
+   "family": "halberd",
+   "tier": 2,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_halberd",
+   "icon_frame": "icon_halberd",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single halberd, a halberd, axe blade and top spike on a tall shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1090,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1091,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1092,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1093,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "quarterstaff",
+   "name": "quarterstaff",
+   "category": "weapon",
+   "group": "items",
+   "family": "staff",
+   "tier": 0,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_quarterstaff",
+   "icon_frame": "icon_quarterstaff",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single quarterstaff, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1100,
+     "prompt_suffix": "plain wood, single stone head"
+    },
+    {
+     "id": "elemental",
+     "seed": 1101,
+     "prompt_suffix": "elemental gem head, carved shaft"
+    },
+    {
+     "id": "worn",
+     "seed": 1102,
+     "prompt_suffix": "cracked shaft, dull head"
+    },
+    {
+     "id": "runed",
+     "seed": 1103,
+     "prompt_suffix": "faint runes along the shaft, glowing head"
+    }
+   ]
+  },
+  {
+   "id": "cudgel",
+   "name": "cudgel",
+   "category": "weapon",
+   "group": "items",
+   "family": "mace",
+   "tier": 1,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_cudgel",
+   "icon_frame": "icon_cudgel",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single cudgel, a flanged mace, heavy metal head on a short haft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1110,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1111,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1112,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1113,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "short_bow",
+   "name": "short bow",
+   "category": "weapon",
+   "group": "items",
+   "family": "bow",
+   "tier": 2,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_short_bow",
+   "icon_frame": "icon_short_bow",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single short bow, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1120,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1121,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1122,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1123,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "long_bow",
+   "name": "long bow",
+   "category": "weapon",
+   "group": "items",
+   "family": "bow",
+   "tier": 2,
+   "material": "steel",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_long_bow",
+   "icon_frame": "icon_long_bow",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single long bow, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1130,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1131,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1132,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1133,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "arrows",
+   "name": "arrows",
+   "category": "weapon",
+   "group": "items",
+   "family": "bow",
+   "tier": 1,
+   "material": "wood",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_arrows",
+   "icon_frame": "icon_arrows",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single arrows, a wooden longbow with a bowstring, unstrung arrow beside it, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1140,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1141,
+     "prompt_suffix": "the next material tier: brighter metal, darker grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1142,
+     "prompt_suffix": "notched blade, worn grip, chipped edge, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1143,
+     "prompt_suffix": "a few faint runes along the blade, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "robe",
+   "name": "robe",
+   "category": "armour",
+   "group": "items",
+   "family": "robe",
+   "tier": 0,
+   "material": "steel",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_robe",
+   "icon_frame": "icon_robe",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single robe, a long plain robe, wide sleeves, hem at the ground, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1150,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1151,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1152,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1153,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "leather_armour",
+   "name": "leather armour",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 0,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_leather_armour",
+   "icon_frame": "icon_leather_armour",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather armour, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1160,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1161,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1162,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1163,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "studded_leather",
+   "name": "studded leather",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 1,
+   "material": "studded",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_studded_leather",
+   "icon_frame": "icon_studded_leather",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single studded leather, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1170,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1171,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1172,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1173,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "ring_mail",
+   "name": "ring mail",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 2,
+   "material": "ring",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_ring_mail",
+   "icon_frame": "icon_ring_mail",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1180,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1181,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1182,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1183,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "chain_mail",
+   "name": "chain mail",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 2,
+   "material": "chain",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_chain_mail",
+   "icon_frame": "icon_chain_mail",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single chain mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1190,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1191,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1192,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1193,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "plate_armour",
+   "name": "plate armour",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 3,
+   "material": "plate",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_plate_armour",
+   "icon_frame": "icon_plate_armour",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single plate armour, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1200,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1201,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1202,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1203,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "dwarven_mail",
+   "name": "dwarven mail",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 3,
+   "material": "dwarven",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_dwarven_mail",
+   "icon_frame": "icon_dwarven_mail",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1210,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1211,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1212,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1213,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "gleaming_mail",
+   "name": "gleaming mail",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 4,
+   "material": "gleaming",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_gleaming_mail",
+   "icon_frame": "icon_gleaming_mail",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gleaming mail, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1220,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1221,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1222,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1223,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "deep_plate",
+   "name": "deep plate",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 4,
+   "material": "deep",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_deep_plate",
+   "icon_frame": "icon_deep_plate",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep plate, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1230,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1231,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1232,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1233,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "understone_plate",
+   "name": "understone plate",
+   "category": "armour",
+   "group": "items",
+   "family": "armour",
+   "tier": 5,
+   "material": "understone",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_understone_plate",
+   "icon_frame": "icon_understone_plate",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone plate, a breastplate with shoulder pieces, plate armour, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1240,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "material",
+     "seed": 1241,
+     "prompt_suffix": "the next material tier: brighter plate, darker leather"
+    },
+    {
+     "id": "worn",
+     "seed": 1242,
+     "prompt_suffix": "dented, scratched, repaired straps, older"
+    },
+    {
+     "id": "runed",
+     "seed": 1243,
+     "prompt_suffix": "a few faint runes on the chest, subtle magical marks"
+    }
+   ]
+  },
+  {
+   "id": "iron_shod_boots",
+   "name": "iron-shod boots",
+   "category": "boots",
+   "group": "items",
+   "family": "boots",
+   "tier": 1,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_iron_shod_boots",
+   "icon_frame": "icon_iron_shod_boots",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron-shod boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1250,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1251,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1252,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1253,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "dwarven_boots",
+   "name": "dwarven boots",
+   "category": "boots",
+   "group": "items",
+   "family": "boots",
+   "tier": 3,
+   "material": "dwarven",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_dwarven_boots",
+   "icon_frame": "icon_dwarven_boots",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1260,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1261,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1262,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1263,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "deep_boots",
+   "name": "deep-walker boots",
+   "category": "boots",
+   "group": "items",
+   "family": "boots",
+   "tier": 4,
+   "material": "deep",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_deep_boots",
+   "icon_frame": "icon_deep_boots",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep-walker boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1270,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1271,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1272,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1273,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "understone_boots",
+   "name": "understone boots",
+   "category": "boots",
+   "group": "items",
+   "family": "boots",
+   "tier": 5,
+   "material": "understone",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_understone_boots",
+   "icon_frame": "icon_understone_boots",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1280,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1281,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1282,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1283,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "leather_gauntlets",
+   "name": "leather gauntlets",
+   "category": "gloves",
+   "group": "items",
+   "family": "gloves",
+   "tier": 0,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_leather_gauntlets",
+   "icon_frame": "icon_leather_gauntlets",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1290,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1291,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1292,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1293,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "steel_gauntlets",
+   "name": "steel gauntlets",
+   "category": "gloves",
+   "group": "items",
+   "family": "gloves",
+   "tier": 2,
+   "material": "steel",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_steel_gauntlets",
+   "icon_frame": "icon_steel_gauntlets",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single steel gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1300,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1301,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1302,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1303,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "dwarven_gauntlets",
+   "name": "dwarven gauntlets",
+   "category": "gloves",
+   "group": "items",
+   "family": "gloves",
+   "tier": 3,
+   "material": "dwarven",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_dwarven_gauntlets",
+   "icon_frame": "icon_dwarven_gauntlets",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1310,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1311,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1312,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1313,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "understone_gauntlets",
+   "name": "understone gauntlets",
+   "category": "gloves",
+   "group": "items",
+   "family": "gloves",
+   "tier": 5,
+   "material": "understone",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_understone_gauntlets",
+   "icon_frame": "icon_understone_gauntlets",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1320,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1321,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1322,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1323,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "wool_cloak",
+   "name": "wool cloak",
+   "category": "cloak",
+   "group": "items",
+   "family": "cloak",
+   "tier": 0,
+   "material": "wool",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wool_cloak",
+   "icon_frame": "icon_wool_cloak",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wool cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1330,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1331,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1332,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1333,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "fur_cloak",
+   "name": "fur cloak",
+   "category": "cloak",
+   "group": "items",
+   "family": "cloak",
+   "tier": 0,
+   "material": "fur",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_fur_cloak",
+   "icon_frame": "icon_fur_cloak",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single fur cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1340,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1341,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1342,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1343,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "shadow_cloak",
+   "name": "shadow cloak",
+   "category": "cloak",
+   "group": "items",
+   "family": "cloak",
+   "tier": 1,
+   "material": "shadow",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_shadow_cloak",
+   "icon_frame": "icon_shadow_cloak",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single shadow cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1350,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1351,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1352,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1353,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "understone_cloak",
+   "name": "understone cloak",
+   "category": "cloak",
+   "group": "items",
+   "family": "cloak",
+   "tier": 5,
+   "material": "understone",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_understone_cloak",
+   "icon_frame": "icon_understone_cloak",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1360,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1361,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1362,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1363,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "bronze_helm",
+   "name": "bronze helm",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 1,
+   "material": "bronze",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_bronze_helm",
+   "icon_frame": "icon_bronze_helm",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single bronze helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1370,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1371,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1372,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1373,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "dwarven_helm",
+   "name": "dwarven helm",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 3,
+   "material": "dwarven",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_dwarven_helm",
+   "icon_frame": "icon_dwarven_helm",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1380,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1381,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1382,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1383,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "deep_helm",
+   "name": "deep helm",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 4,
+   "material": "deep",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_deep_helm",
+   "icon_frame": "icon_deep_helm",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1390,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1391,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1392,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1393,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "understone_helm",
+   "name": "understone helm",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 5,
+   "material": "understone",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_understone_helm",
+   "icon_frame": "icon_understone_helm",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1400,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1401,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1402,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1403,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "kite_shield",
+   "name": "kite shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 0,
+   "material": "steel",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_kite_shield",
+   "icon_frame": "icon_kite_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single kite shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1410,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1411,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1412,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1413,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "dwarven_shield",
+   "name": "dwarven shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 3,
+   "material": "dwarven",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_dwarven_shield",
+   "icon_frame": "icon_dwarven_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single dwarven shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1420,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1421,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1422,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1423,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "deep_shield",
+   "name": "deep shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 4,
+   "material": "deep",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_deep_shield",
+   "icon_frame": "icon_deep_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single deep shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1430,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1431,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1432,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1433,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "understone_shield",
+   "name": "understone shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 5,
+   "material": "understone",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_understone_shield",
+   "icon_frame": "icon_understone_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single understone shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1440,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1441,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1442,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1443,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "wooden_shield",
+   "name": "wooden shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 0,
+   "material": "wooden",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wooden_shield",
+   "icon_frame": "icon_wooden_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wooden shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1450,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1451,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1452,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1453,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "iron_shield",
+   "name": "iron shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 1,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_iron_shield",
+   "icon_frame": "icon_iron_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1460,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1461,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1462,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1463,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "tower_shield",
+   "name": "tower shield",
+   "category": "shield",
+   "group": "items",
+   "family": "shield",
+   "tier": 0,
+   "material": "steel",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_tower_shield",
+   "icon_frame": "icon_tower_shield",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single tower shield, a round shield with an iron boss, plain face, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1470,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1471,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1472,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1473,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "leather_cap",
+   "name": "leather cap",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 0,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_leather_cap",
+   "icon_frame": "icon_leather_cap",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather cap, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1480,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1481,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1482,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1483,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "iron_helm",
+   "name": "iron helm",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 1,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_iron_helm",
+   "icon_frame": "icon_iron_helm",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1490,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1491,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1492,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1493,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "great_helm",
+   "name": "great helm",
+   "category": "helm",
+   "group": "items",
+   "family": "helm",
+   "tier": 0,
+   "material": "steel",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_great_helm",
+   "icon_frame": "icon_great_helm",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single great helm, a metal helmet, closed face, nasal guard, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1500,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1501,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1502,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1503,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "leather_cloak",
+   "name": "leather cloak",
+   "category": "cloak",
+   "group": "items",
+   "family": "cloak",
+   "tier": 0,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_leather_cloak",
+   "icon_frame": "icon_leather_cloak",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1510,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1511,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1512,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1513,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "elven_cloak",
+   "name": "supple cloak",
+   "category": "cloak",
+   "group": "items",
+   "family": "cloak",
+   "tier": 0,
+   "material": "elven",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_elven_cloak",
+   "icon_frame": "icon_elven_cloak",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single supple cloak, a hooded travelling cloak, fastened at the throat, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1520,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1521,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1522,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1523,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "gauntlets",
+   "name": "gauntlets",
+   "category": "gloves",
+   "group": "items",
+   "family": "gloves",
+   "tier": 0,
+   "material": "cloth",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_gauntlets",
+   "icon_frame": "icon_gauntlets",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gauntlets, a pair of armoured gauntlets, articulated fingers, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1530,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1531,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1532,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1533,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "leather_boots",
+   "name": "leather boots",
+   "category": "boots",
+   "group": "items",
+   "family": "boots",
+   "tier": 0,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_leather_boots",
+   "icon_frame": "icon_leather_boots",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single leather boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1540,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1541,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1542,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1543,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "iron_boots",
+   "name": "iron-shod boots",
+   "category": "boots",
+   "group": "items",
+   "family": "boots",
+   "tier": 1,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_iron_boots",
+   "icon_frame": "icon_iron_boots",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron-shod boots, a pair of leather boots, taller shafts, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1550,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1551,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1552,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1553,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "ring_protection",
+   "name": "ring of protection",
+   "category": "ring",
+   "group": "items",
+   "family": "ring",
+   "tier": 0,
+   "material": "ring",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_ring_protection",
+   "icon_frame": "icon_ring_protection",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of protection, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1560,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1561,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1562,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1563,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "ring_strength",
+   "name": "ring of strength",
+   "category": "ring",
+   "group": "items",
+   "family": "ring",
+   "tier": 0,
+   "material": "ring",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_ring_strength",
+   "icon_frame": "icon_ring_strength",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of strength, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1570,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1571,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1572,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1573,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "ring_dexterity",
+   "name": "ring of dexterity",
+   "category": "ring",
+   "group": "items",
+   "family": "ring",
+   "tier": 0,
+   "material": "ring",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_ring_dexterity",
+   "icon_frame": "icon_ring_dexterity",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of dexterity, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1580,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1581,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1582,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1583,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "ring_weakness",
+   "name": "ring of weakness",
+   "category": "ring",
+   "group": "items",
+   "family": "ring",
+   "tier": 0,
+   "material": "ring",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_ring_weakness",
+   "icon_frame": "icon_ring_weakness",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ring of weakness, a single gold ring with a small dark stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1590,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1591,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1592,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1593,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "amulet_health",
+   "name": "amulet of health",
+   "category": "amulet",
+   "group": "items",
+   "family": "amulet",
+   "tier": 0,
+   "material": "gold",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_amulet_health",
+   "icon_frame": "icon_amulet_health",
+   "key_colour": "#FF00FF",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of health, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1600,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1601,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1602,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1603,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "amulet_light",
+   "name": "amulet of light",
+   "category": "amulet",
+   "group": "items",
+   "family": "amulet",
+   "tier": 0,
+   "material": "gold",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_amulet_light",
+   "icon_frame": "icon_amulet_light",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of light, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1610,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1611,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1612,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1613,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "amulet_drain",
+   "name": "amulet of draining",
+   "category": "amulet",
+   "group": "items",
+   "family": "amulet",
+   "tier": 0,
+   "material": "gold",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_amulet_drain",
+   "icon_frame": "icon_amulet_drain",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single amulet of draining, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1620,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1621,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1622,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1623,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "torch",
+   "name": "torch",
+   "category": "light",
+   "group": "consumables",
+   "family": "light",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_torch",
+   "icon_frame": "icon_torch",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single torch, a burning torch with a wooden handle and a pitch-soaked head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1630,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1631,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1632,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1633,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "lantern",
+   "name": "lantern",
+   "category": "light",
+   "group": "consumables",
+   "family": "lantern",
+   "tier": 1,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_lantern",
+   "icon_frame": "icon_lantern",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lantern, a hooded iron lantern with a ring handle and a candle burning inside, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1640,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1641,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1642,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1643,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "potion_cure_light",
+   "name": "potion of cure light wounds",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_cure_light",
+   "icon_frame": "icon_potion_cure_light",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure light wounds, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1650,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1651,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1652,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1653,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_cure_serious",
+   "name": "potion of cure serious wounds",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_cure_serious",
+   "icon_frame": "icon_potion_cure_serious",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure serious wounds, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1660,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1661,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1662,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1663,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_mana",
+   "name": "potion of restore mana",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_mana",
+   "icon_frame": "icon_potion_mana",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of restore mana, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1670,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1671,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1672,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1673,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_cure_ailment",
+   "name": "potion of cure ailment",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_cure_ailment",
+   "icon_frame": "icon_potion_cure_ailment",
+   "key_colour": "#FF00FF",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure ailment, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1680,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1681,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1682,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1683,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_cure_blindness",
+   "name": "potion of cure blindness",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_cure_blindness",
+   "icon_frame": "icon_potion_cure_blindness",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of cure blindness, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1690,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1691,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1692,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1693,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_restore",
+   "name": "potion of restore attributes",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_restore",
+   "icon_frame": "icon_potion_restore",
+   "key_colour": "#FF00FF",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of restore attributes, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1700,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1701,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1702,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1703,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_heroism",
+   "name": "potion of heroism",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_heroism",
+   "icon_frame": "icon_potion_heroism",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single potion of heroism, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1710,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1711,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1712,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1713,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_poison",
+   "name": "foul potion",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_poison",
+   "icon_frame": "icon_potion_poison",
+   "key_colour": "#FF00FF",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single foul potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1720,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1721,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1722,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1723,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_sleep",
+   "name": "cloudy potion",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_sleep",
+   "icon_frame": "icon_potion_sleep",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single cloudy potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1730,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1731,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1732,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1733,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_confusion",
+   "name": "fizzing potion",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_confusion",
+   "icon_frame": "icon_potion_confusion",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single fizzing potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1740,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1741,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1742,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1743,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "potion_booze",
+   "name": "watery potion",
+   "category": "potion",
+   "group": "consumables",
+   "family": "potion",
+   "tier": 0,
+   "material": "glass",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_potion_booze",
+   "icon_frame": "icon_potion_booze",
+   "key_colour": "#FF00FF",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single watery potion, a glass flask of coloured liquid, cork stopper, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1750,
+     "prompt_suffix": "single clear glass bottle, cork, one liquid colour"
+    },
+    {
+     "id": "bright",
+     "seed": 1751,
+     "prompt_suffix": "brighter liquid, clean glass, fresh cork"
+    },
+    {
+     "id": "murky",
+     "seed": 1752,
+     "prompt_suffix": "cloudy liquid, stained glass, wax seal"
+    },
+    {
+     "id": "glowing",
+     "seed": 1753,
+     "prompt_suffix": "faint inner glow, rune on the glass, darker bottle"
+    }
+   ]
+  },
+  {
+   "id": "scroll_light",
+   "name": "scroll of light",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_light",
+   "icon_frame": "icon_scroll_light",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of light, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1760,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1761,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1762,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1763,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_detect_traps",
+   "name": "scroll of detect traps",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_detect_traps",
+   "icon_frame": "icon_scroll_detect_traps",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of detect traps, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1770,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1771,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1772,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1773,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_detect_monsters",
+   "name": "scroll of detect monsters",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_detect_monsters",
+   "icon_frame": "icon_scroll_detect_monsters",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of detect monsters, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1780,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1781,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1782,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1783,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_magic_mapping",
+   "name": "scroll of magic mapping",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_magic_mapping",
+   "icon_frame": "icon_scroll_magic_mapping",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of magic mapping, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1790,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1791,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1792,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1793,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_teleport",
+   "name": "scroll of teleportation",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_teleport",
+   "icon_frame": "icon_scroll_teleport",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of teleportation, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1800,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1801,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1802,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1803,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_phase_door",
+   "name": "scroll of phase door",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_phase_door",
+   "icon_frame": "icon_scroll_phase_door",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of phase door, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1810,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1811,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1812,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1813,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_enchant_weapon",
+   "name": "scroll of enchant weapon",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_enchant_weapon",
+   "icon_frame": "icon_scroll_enchant_weapon",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of enchant weapon, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1820,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1821,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1822,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1823,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_enchant_armour",
+   "name": "scroll of enchant armour",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_enchant_armour",
+   "icon_frame": "icon_scroll_enchant_armour",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of enchant armour, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1830,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1831,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1832,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1833,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_remove_curse",
+   "name": "scroll of remove curse",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_remove_curse",
+   "icon_frame": "icon_scroll_remove_curse",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of remove curse, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1840,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1841,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1842,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1843,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_town_portal",
+   "name": "scroll of town portal",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_town_portal",
+   "icon_frame": "icon_scroll_town_portal",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of town portal, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1850,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1851,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1852,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1853,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_identify",
+   "name": "scroll of identify",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_identify",
+   "icon_frame": "icon_scroll_identify",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of identify, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1860,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1861,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1862,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1863,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "scroll_curse",
+   "name": "scroll of cursing",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "scroll",
+   "tier": 0,
+   "material": "parchment",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_scroll_curse",
+   "icon_frame": "icon_scroll_curse",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single scroll of cursing, a rolled parchment scroll tied with cord, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1870,
+     "prompt_suffix": "single rolled parchment, plain cord"
+    },
+    {
+     "id": "aged",
+     "seed": 1871,
+     "prompt_suffix": "yellowed parchment, frayed edge, old cord"
+    },
+    {
+     "id": "gilded",
+     "seed": 1872,
+     "prompt_suffix": "gold end-caps, red ribbon, formal"
+    },
+    {
+     "id": "runed",
+     "seed": 1873,
+     "prompt_suffix": "a faint glowing sigil on the parchment"
+    }
+   ]
+  },
+  {
+   "id": "wand_magic_missile",
+   "name": "wand of magic missile",
+   "category": "wand",
+   "group": "consumables",
+   "family": "wand",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wand_magic_missile",
+   "icon_frame": "icon_wand_magic_missile",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of magic missile, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1880,
+     "prompt_suffix": "plain wood, single stone tip"
+    },
+    {
+     "id": "elemental",
+     "seed": 1881,
+     "prompt_suffix": "elemental gem colour, carved grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1882,
+     "prompt_suffix": "cracked wood, dull stone"
+    },
+    {
+     "id": "runed",
+     "seed": 1883,
+     "prompt_suffix": "faint runes along the shaft, glowing tip"
+    }
+   ]
+  },
+  {
+   "id": "wand_fire",
+   "name": "wand of fire",
+   "category": "wand",
+   "group": "consumables",
+   "family": "wand",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wand_fire",
+   "icon_frame": "icon_wand_fire",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of fire, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1890,
+     "prompt_suffix": "plain wood, single stone tip"
+    },
+    {
+     "id": "elemental",
+     "seed": 1891,
+     "prompt_suffix": "elemental gem colour, carved grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1892,
+     "prompt_suffix": "cracked wood, dull stone"
+    },
+    {
+     "id": "runed",
+     "seed": 1893,
+     "prompt_suffix": "faint runes along the shaft, glowing tip"
+    }
+   ]
+  },
+  {
+   "id": "wand_cold",
+   "name": "wand of frost",
+   "category": "wand",
+   "group": "consumables",
+   "family": "wand",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wand_cold",
+   "icon_frame": "icon_wand_cold",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of frost, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1900,
+     "prompt_suffix": "plain wood, single stone tip"
+    },
+    {
+     "id": "elemental",
+     "seed": 1901,
+     "prompt_suffix": "elemental gem colour, carved grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1902,
+     "prompt_suffix": "cracked wood, dull stone"
+    },
+    {
+     "id": "runed",
+     "seed": 1903,
+     "prompt_suffix": "faint runes along the shaft, glowing tip"
+    }
+   ]
+  },
+  {
+   "id": "wand_lightning",
+   "name": "wand of lightning",
+   "category": "wand",
+   "group": "consumables",
+   "family": "wand",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wand_lightning",
+   "icon_frame": "icon_wand_lightning",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of lightning, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1910,
+     "prompt_suffix": "plain wood, single stone tip"
+    },
+    {
+     "id": "elemental",
+     "seed": 1911,
+     "prompt_suffix": "elemental gem colour, carved grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1912,
+     "prompt_suffix": "cracked wood, dull stone"
+    },
+    {
+     "id": "runed",
+     "seed": 1913,
+     "prompt_suffix": "faint runes along the shaft, glowing tip"
+    }
+   ]
+  },
+  {
+   "id": "wand_drain",
+   "name": "wand of draining",
+   "category": "wand",
+   "group": "consumables",
+   "family": "wand",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wand_drain",
+   "icon_frame": "icon_wand_drain",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of draining, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1920,
+     "prompt_suffix": "plain wood, single stone tip"
+    },
+    {
+     "id": "elemental",
+     "seed": 1921,
+     "prompt_suffix": "elemental gem colour, carved grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1922,
+     "prompt_suffix": "cracked wood, dull stone"
+    },
+    {
+     "id": "runed",
+     "seed": 1923,
+     "prompt_suffix": "faint runes along the shaft, glowing tip"
+    }
+   ]
+  },
+  {
+   "id": "wand_sleep",
+   "name": "wand of sleep",
+   "category": "wand",
+   "group": "consumables",
+   "family": "wand",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_wand_sleep",
+   "icon_frame": "icon_wand_sleep",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single wand of sleep, a short slender wand tipped with a bright stone, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1930,
+     "prompt_suffix": "plain wood, single stone tip"
+    },
+    {
+     "id": "elemental",
+     "seed": 1931,
+     "prompt_suffix": "elemental gem colour, carved grip"
+    },
+    {
+     "id": "worn",
+     "seed": 1932,
+     "prompt_suffix": "cracked wood, dull stone"
+    },
+    {
+     "id": "runed",
+     "seed": 1933,
+     "prompt_suffix": "faint runes along the shaft, glowing tip"
+    }
+   ]
+  },
+  {
+   "id": "staff_light",
+   "name": "staff of light",
+   "category": "staff",
+   "group": "consumables",
+   "family": "staff",
+   "tier": 0,
+   "material": "wood",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_staff_light",
+   "icon_frame": "icon_staff_light",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of light, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1940,
+     "prompt_suffix": "plain wood, single stone head"
+    },
+    {
+     "id": "elemental",
+     "seed": 1941,
+     "prompt_suffix": "elemental gem head, carved shaft"
+    },
+    {
+     "id": "worn",
+     "seed": 1942,
+     "prompt_suffix": "cracked shaft, dull head"
+    },
+    {
+     "id": "runed",
+     "seed": 1943,
+     "prompt_suffix": "faint runes along the shaft, glowing head"
+    }
+   ]
+  },
+  {
+   "id": "staff_healing",
+   "name": "staff of healing",
+   "category": "staff",
+   "group": "consumables",
+   "family": "staff",
+   "tier": 0,
+   "material": "wood",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_staff_healing",
+   "icon_frame": "icon_staff_healing",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of healing, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1950,
+     "prompt_suffix": "plain wood, single stone head"
+    },
+    {
+     "id": "elemental",
+     "seed": 1951,
+     "prompt_suffix": "elemental gem head, carved shaft"
+    },
+    {
+     "id": "worn",
+     "seed": 1952,
+     "prompt_suffix": "cracked shaft, dull head"
+    },
+    {
+     "id": "runed",
+     "seed": 1953,
+     "prompt_suffix": "faint runes along the shaft, glowing head"
+    }
+   ]
+  },
+  {
+   "id": "staff_detect",
+   "name": "staff of detection",
+   "category": "staff",
+   "group": "consumables",
+   "family": "staff",
+   "tier": 0,
+   "material": "wood",
+   "size": "tall",
+   "anchor": "bottom_center",
+   "frame": "item_staff_detect",
+   "icon_frame": "icon_staff_detect",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single staff of detection, a plain wooden quarterstaff, no blade, no head, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1960,
+     "prompt_suffix": "plain wood, single stone head"
+    },
+    {
+     "id": "elemental",
+     "seed": 1961,
+     "prompt_suffix": "elemental gem head, carved shaft"
+    },
+    {
+     "id": "worn",
+     "seed": 1962,
+     "prompt_suffix": "cracked shaft, dull head"
+    },
+    {
+     "id": "runed",
+     "seed": 1963,
+     "prompt_suffix": "faint runes along the shaft, glowing head"
+    }
+   ]
+  },
+  {
+   "id": "gold_pile",
+   "name": "gold pieces",
+   "category": "gold",
+   "group": "consumables",
+   "family": "gold",
+   "tier": 0,
+   "material": "gold",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_gold_pile",
+   "icon_frame": "icon_gold_pile",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single gold pieces, a small heap of gold coins, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1970,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1971,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1972,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1973,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "ration",
+   "name": "ration of food",
+   "category": "food",
+   "group": "consumables",
+   "family": "food",
+   "tier": 0,
+   "material": "cloth",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_ration",
+   "icon_frame": "icon_ration",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single ration of food, a wrapped bundle of trail food, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1980,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1981,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1982,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1983,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "iron_spike",
+   "name": "iron spike",
+   "category": "chest",
+   "group": "consumables",
+   "family": "spike",
+   "tier": 0,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_iron_spike",
+   "icon_frame": "icon_iron_spike",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single iron spike, a single iron spike, blunt at the head and tapering to a point, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 1990,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 1991,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 1992,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 1993,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "shovel",
+   "name": "shovel",
+   "category": "chest",
+   "group": "consumables",
+   "family": "shovel",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_shovel",
+   "icon_frame": "icon_shovel",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single shovel, a wooden-handled shovel with a broad iron blade and a T grip, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2000,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2001,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2002,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2003,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "pick",
+   "name": "pick",
+   "category": "chest",
+   "group": "consumables",
+   "family": "pick",
+   "tier": 0,
+   "material": "iron",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_pick",
+   "icon_frame": "icon_pick",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single pick, a miner's pick with a curved iron head on a wooden shaft, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2010,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2011,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2012,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2013,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "flask_oil",
+   "name": "flask of oil",
+   "category": "chest",
+   "group": "consumables",
+   "family": "oilflask",
+   "tier": 0,
+   "material": "clay",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_flask_oil",
+   "icon_frame": "icon_flask_oil",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single flask of oil, a small clay flask of lamp oil, stoppered, with a rag wick, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2020,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2021,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2022,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2023,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "spellbook_minor",
+   "name": "tattered spellbook",
+   "category": "scroll",
+   "group": "consumables",
+   "family": "book",
+   "tier": 1,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_spellbook_minor",
+   "icon_frame": "icon_spellbook_minor",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single tattered spellbook, a heavy leather-bound tome, metal clasps, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2030,
+     "prompt_suffix": "plain leather, single clasp"
+    },
+    {
+     "id": "aged",
+     "seed": 2031,
+     "prompt_suffix": "worn leather, loose pages, old clasp"
+    },
+    {
+     "id": "gilded",
+     "seed": 2032,
+     "prompt_suffix": "gold clasps, coloured ribbon"
+    },
+    {
+     "id": "runed",
+     "seed": 2033,
+     "prompt_suffix": "a faint sigil on the cover"
+    }
+   ]
+  },
+  {
+   "id": "holy_symbol",
+   "name": "holy symbol",
+   "category": "amulet",
+   "group": "items",
+   "family": "amulet",
+   "tier": 1,
+   "material": "gold",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_holy_symbol",
+   "icon_frame": "icon_holy_symbol",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single holy symbol, a gold amulet on a chain, round pendant, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2040,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2041,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2042,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2043,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "lute",
+   "name": "lute",
+   "category": "chest",
+   "group": "consumables",
+   "family": "lute",
+   "tier": 0,
+   "material": "wood",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_lute",
+   "icon_frame": "icon_lute",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lute, a wooden lute, round-bodied with a bent pegbox and four strings, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2050,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2051,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2052,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2053,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "herb_pouch",
+   "name": "herb pouch",
+   "category": "chest",
+   "group": "consumables",
+   "family": "pouch",
+   "tier": 0,
+   "material": "leather",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_herb_pouch",
+   "icon_frame": "icon_herb_pouch",
+   "key_colour": "#FF00FF",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single herb pouch, a drawstring leather pouch, full and tied at the neck, centred, solitary object, plain solid #FF00FF background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2060,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2061,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2062,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2063,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  },
+  {
+   "id": "lockpicks",
+   "name": "lockpicks",
+   "category": "chest",
+   "group": "consumables",
+   "family": "lockpicks",
+   "tier": 0,
+   "material": "steel",
+   "size": "small",
+   "anchor": "bottom_center",
+   "frame": "item_lockpicks",
+   "icon_frame": "icon_lockpicks",
+   "key_colour": "#00FF00",
+   "prompt": "pixel art, 16-bit retro RPG inventory icon, a single lockpicks, a pair of slender steel lockpicks crossed over one another, centred, solitary object, plain solid #00FF00 background, perfectly flat, no gradient, no shadow, no vignette, limited colour palette, chunky visible pixels, crisp edges, no anti-aliasing, hard black outline, game item icon",
+   "variants": [
+    {
+     "id": "base",
+     "seed": 2070,
+     "prompt_suffix": "plain, well-used, neutral colours"
+    },
+    {
+     "id": "fine",
+     "seed": 2071,
+     "prompt_suffix": "better made, cleaner materials"
+    },
+    {
+     "id": "worn",
+     "seed": 2072,
+     "prompt_suffix": "older, scratched, repaired"
+    },
+    {
+     "id": "runed",
+     "seed": 2073,
+     "prompt_suffix": "a few faint magical marks"
+    }
+   ]
+  }
+ ]
+}

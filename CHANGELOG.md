@@ -3,6 +3,17 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] — 2026-10-26
+
+### Added
+
+- **`item_studio`**: the saved Item Studio pack as a native tool. Lists the bundled 108-item catalogue, generates a catalogue item/variant through SDXL + pixel-art LoRA, runs BiRefNet_lite-matting cutout, normalises small/tall sprites to 64×64 or 64×128 and produces 32×32 icons.
+- Actions for `list`, `generate`, `cutout` and `batch`; custom prompts without a catalogue entry; model, seed, outline and timeout overrides.
+- Largest-component isolation for the simple pack template when it paints an item sheet instead of one object. Raw and cutout candidates are retained for review.
+- Bundled `data/item_studio/item_catalog.json` and the four portable pack workflow templates; no Python dependency.
+- [docs/ITEM_STUDIO.md](docs/ITEM_STUDIO.md): catalogue, actions, output layout, background policy, review gate and template limitations.
+- 154 tests, including a mock Item Studio generate/cutout/finalize path.
+
 ## [0.5.0] — 2026-10-26
 
 ### Added

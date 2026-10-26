@@ -29,6 +29,8 @@ import {
   HUGGINGFACE_PARAMETERS_SCHEMA,
   SPRITE_OUTPUT_SCHEMA,
   SPRITE_PARAMETERS_SCHEMA,
+  ITEM_STUDIO_OUTPUT_SCHEMA,
+  ITEM_STUDIO_PARAMETERS_SCHEMA,
   OUTPUT_SCHEMA,
   PARAMETERS_SCHEMA,
   TOOL_DESCRIPTION,
@@ -218,7 +220,9 @@ const ADVANCED_SCHEMAS = [
   ['huggingface_models parameters', HUGGINGFACE_PARAMETERS_SCHEMA],
   ['huggingface_models output', HUGGINGFACE_OUTPUT_SCHEMA],
   ['generate_sprite_animation parameters', SPRITE_PARAMETERS_SCHEMA],
-  ['generate_sprite_animation output', SPRITE_OUTPUT_SCHEMA]
+  ['generate_sprite_animation output', SPRITE_OUTPUT_SCHEMA],
+  ['item_studio parameters', ITEM_STUDIO_PARAMETERS_SCHEMA],
+  ['item_studio output', ITEM_STUDIO_OUTPUT_SCHEMA]
 ]
 
 test('advanced schemas: every tree only uses the JSON Schema subset DSH supports', () => {
