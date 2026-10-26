@@ -25,6 +25,8 @@ import {
   INSPECT_DESCRIPTION,
   INSPECT_OUTPUT_SCHEMA,
   INSPECT_PARAMETERS_SCHEMA,
+  HUGGINGFACE_OUTPUT_SCHEMA,
+  HUGGINGFACE_PARAMETERS_SCHEMA,
   OUTPUT_SCHEMA,
   PARAMETERS_SCHEMA,
   TOOL_DESCRIPTION,
@@ -210,7 +212,9 @@ const ADVANCED_SCHEMAS = [
   ['generate_audio parameters', AUDIO_PARAMETERS_SCHEMA],
   ['generate_audio output', AUDIO_OUTPUT_SCHEMA],
   ['generate_video parameters', VIDEO_PARAMETERS_SCHEMA],
-  ['generate_video output', VIDEO_OUTPUT_SCHEMA]
+  ['generate_video output', VIDEO_OUTPUT_SCHEMA],
+  ['huggingface_models parameters', HUGGINGFACE_PARAMETERS_SCHEMA],
+  ['huggingface_models output', HUGGINGFACE_OUTPUT_SCHEMA]
 ]
 
 test('advanced schemas: every tree only uses the JSON Schema subset DSH supports', () => {

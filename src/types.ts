@@ -169,6 +169,11 @@ export interface PluginConfigInput {
   pollIntervalMs?: number
   requestTimeoutMs?: number
   rembgNode?: string
+  huggingFaceToken?: string
+  huggingFaceEndpoint?: string
+  comfyuiModelsDir?: string
+  modelDownloadDir?: string
+  maxDownloadBytes?: number
   saveToComfyUI?: boolean
   writeMetadata?: boolean
 }
@@ -198,6 +203,11 @@ export interface ResolvedConfig {
   pollIntervalMs: number
   requestTimeoutMs: number
   rembgNode?: string
+  huggingFaceToken?: string
+  huggingFaceEndpoint: string
+  comfyuiModelsDir?: string
+  modelDownloadDir?: string
+  maxDownloadBytes: number
   saveToComfyUI: boolean
   writeMetadata: boolean
 }

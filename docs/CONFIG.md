@@ -17,13 +17,13 @@ Why ① is highest: DSH's config tree is the authoritative source for the host/o
 
 > ✨ **Config is resolved on every call** — an edited `config.json` takes effect **immediately, with no DSH restart**.
 >
-> **Upgrading from `dsh-comfyui-image`?** 0.3.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.4.0. See [MIGRATION.md](./MIGRATION.md).
+> **Upgrading from `dsh-comfyui-image`?** 0.4.x reads the legacy `~/.dsh-comfyui-image/config.json` when the new file is absent, and accepts the legacy `DSH_COMFYUI_IMAGE_*` variables as fallbacks. New names win; legacy support ends in 0.5.0. See [MIGRATION.md](./MIGRATION.md).
 
 ---
 
 ## 0. Edit Everything in the Plugin Page
 
-Open **Plugins → ComfyUI Workbench → Configuration** in DSH. The page contains **all keys** from the table below, grouped as Connection, Image defaults, Output and Background removal.
+Open **Plugins → ComfyUI Workbench → Configuration** in DSH. The page contains **all keys** from the table below, grouped as Connection, Image defaults, Output, Background removal and Hugging Face downloads.
 
 - Every field is optional and blank means **inherit** from the config file, environment or built-in default.
 - Saving writes only the fields you changed into the active profile's plugin config (the highest-priority layer); file and environment settings still apply to untouched fields.
@@ -107,6 +107,10 @@ lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer
 |---|---|
 | `DSH_COMFYUI_WORKBENCH_CONFIG` | Overrides the **config file path itself** (default `~/.dsh-comfyui-workbench/config.json`). For tests and multi-environment switching |
 | `DSH_COMFYUI_WORKBENCH_DEBUG` | Set to `1` / `true` / `yes` to enable debug logging (prefixed `[dsh-comfyui-workbench]`): resolved config, the chosen background-removal plan, file names uploaded to ComfyUI, HTTP details, and so on. **Off by default** to avoid polluting DSH session output |
+| `HF_TOKEN` / `HUGGING_FACE_TOKEN` | Hugging Face read token; preferred over storing it in a file |
+| `HF_ENDPOINT` | Hugging Face Hub endpoint override |
+| `DSH_COMFYUI_WORKBENCH_MODELS_DIR` | Local `ComfyUI/models` path |
+| `DSH_COMFYUI_WORKBENCH_DOWNLOAD_DIR` | Model download staging directory |
 
 ---
 

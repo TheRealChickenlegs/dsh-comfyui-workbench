@@ -3,6 +3,21 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] — 2026-10-26
+
+### Added
+
+- **`huggingface_models` tool**: search Hugging Face, list repository files with sizes/LFS hashes, and download model files for ComfyUI.
+- **Hugging Face authentication**: configure a read token through the plugin page, `~/.dsh-comfyui-workbench/config.json`, or `HF_TOKEN` / `HUGGING_FACE_TOKEN`. The token is kept out of tool output and debug logs and is not forwarded to cross-origin CDN redirects.
+- **Model destinations**: set `comfyuiModelsDir` for direct installation into local `ComfyUI/models/<folder>/`, or use `modelDownloadDir`/the default staging directory for remote ComfyUI servers.
+- Atomic downloads with `.part` cleanup, a configurable `maxDownloadBytes` cap, overwrite protection, dry-run size checks, and 401/403/404 guidance for gated repositories.
+- [docs/HUGGINGFACE.md](docs/HUGGINGFACE.md): token setup, search/files/download examples, local-vs-remote paths and troubleshooting.
+- Test suite: **146 tests**, including a local Hub-like HTTP server, gated responses, redirect token isolation and destination handling.
+
+### Changed
+
+- Legacy `DSH_COMFYUI_IMAGE_*` and `~/.dsh-comfyui-image/config.json` fallbacks remain available through 0.4.x and will be removed in 0.5.0.
+
 ## [0.3.2] — 2026-10-25
 
 ### Fixed
@@ -26,7 +41,7 @@ and version numbers follow [Semantic Versioning](https://semver.org/).
 - The page writes only changed fields to the active profile's plugin config; blank fields continue to inherit from `~/.dsh-comfyui-workbench/config.json`, environment variables or built-in defaults. Saves take effect without a DSH restart.
 - A volatile `Config` schema and browser bundle (`lib/client.js`) back the form. The package now depends on `@deepseek-ai/schemastery` for that schema; all other runtime behavior still uses Node built-ins.
 - README and configuration documentation now describe the plugin-page form alongside the file/env/profile methods.
-- Test suite: **140 tests**, including UI schema coverage and client-bundle checks.
+- Test suite: **139 tests**, including UI schema coverage and client-bundle checks.
 
 ### Changed
 

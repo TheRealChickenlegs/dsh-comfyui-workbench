@@ -242,7 +242,7 @@ To disable the plugin temporarily: add `disabled: true`, or use the toggle in th
 
 ### 2.6 Upgrading from `dsh-comfyui-image`
 
-The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available through 0.3.x and will be removed in 0.4.0.
+The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available through 0.4.x and will be removed in 0.5.0.
 
 See [MIGRATION.md](./MIGRATION.md) for the full steps and environment-variable mapping.
 
@@ -253,6 +253,8 @@ See [MIGRATION.md](./MIGRATION.md) for the full steps and environment-variable m
 Open **Plugins → ComfyUI Workbench → Configuration**. The form exposes all server and generation settings, including the ComfyUI server address. Blank fields inherit from the config file, environment variables or defaults; saving writes only changed fields to the active profile.
 
 If you prefer file/env configuration, see [CONFIG.md](./CONFIG.md); both methods remain supported.
+
+For model downloads, set `comfyuiModelsDir` to the local `ComfyUI/models` path, or use `modelDownloadDir` for staging. A Hugging Face token is optional for public models and required for gated/private ones; see [HUGGINGFACE.md](./HUGGINGFACE.md).
 
 ## 4. How to Confirm the Install Succeeded
 

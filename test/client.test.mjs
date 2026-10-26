@@ -48,7 +48,12 @@ test('client: the package declares the client half and every UI field', () => {
     'inpaintGrowMask',
     'saveToComfyUI',
     'writeMetadata',
-    'rembgNode'
+    'rembgNode',
+    'huggingFaceToken',
+    'huggingFaceEndpoint',
+    'comfyuiModelsDir',
+    'modelDownloadDir',
+    'maxDownloadBytes'
   ]) {
     assert.match(source, new RegExp(`key: '${key}'`))
   }

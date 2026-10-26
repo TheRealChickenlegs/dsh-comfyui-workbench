@@ -162,7 +162,12 @@ const UI_CONFIG_KEYS = [
   'inpaintGrowMask',
   'saveToComfyUI',
   'writeMetadata',
-  'rembgNode'
+  'rembgNode',
+  'huggingFaceToken',
+  'huggingFaceEndpoint',
+  'comfyuiModelsDir',
+  'modelDownloadDir',
+  'maxDownloadBytes'
 ]
 
 test('UI: the Config schema exposes every config key as a volatile field', () => {
@@ -171,6 +176,7 @@ test('UI: the Config schema exposes every config key as a volatile field', () =>
     assert.equal(field.meta?.volatile, true, `${key} must be volatile`)
     assert.equal(field.meta?.default, undefined, `${key} must not inject a schema default`)
   }
+  assert.equal(Config.dict.huggingFaceToken.meta?.role, 'secret')
 })
 
 test('UI: plugin-page values win, while unset fields still inherit file/env/defaults', () => {

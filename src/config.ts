@@ -32,7 +32,7 @@ export const DEFAULT_BASE_URL = 'http://127.0.0.1:8188'
 export const CONFIG_FILE =
   process.env[ENV_CONFIG] || process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${PLUGIN_ID}`, 'config.json')
 
-/** Previous config location, read only when the new config file is absent (0.3.x migration). */
+/** Previous config location, read only when the new config file is absent (0.4.x migration). */
 export const LEGACY_CONFIG_FILE =
   process.env[LEGACY_ENV_CONFIG] || path.join(os.homedir(), `.${LEGACY_PLUGIN_ID}`, 'config.json')
 
@@ -53,7 +53,9 @@ export const DEFAULTS = {
   pollIntervalMs: 700,
   requestTimeoutMs: 30_000,
   saveToComfyUI: true,
-  writeMetadata: true
+  writeMetadata: true,
+  huggingFaceEndpoint: 'https://huggingface.co',
+  maxDownloadBytes: 50 * 1024 * 1024 * 1024
 } as const
 
 /** Environment variable name → plugin config key. */
@@ -67,6 +69,11 @@ const ENV_KEYS: Record<string, keyof PluginConfigInput> = {
   COMFYUI_SCHEDULER: 'scheduler',
   COMFYUI_TIMEOUT_MS: 'timeoutMs',
   COMFYUI_REMBG_NODE: 'rembgNode',
+  HF_TOKEN: 'huggingFaceToken',
+  HUGGING_FACE_TOKEN: 'huggingFaceToken',
+  HF_ENDPOINT: 'huggingFaceEndpoint',
+  DSH_COMFYUI_WORKBENCH_MODELS_DIR: 'comfyuiModelsDir',
+  DSH_COMFYUI_WORKBENCH_DOWNLOAD_DIR: 'modelDownloadDir',
   [ENV_OUTPUT]: 'outputDir'
 }
 
@@ -99,7 +106,7 @@ export function readConfigFile(): PluginConfigInput {
   const target = useLegacy ? LEGACY_CONFIG_FILE : CONFIG_FILE
   if (useLegacy && !legacyConfigWarningShown) {
     logWarn(
-      `Using the legacy config file ${LEGACY_CONFIG_FILE}. Move it to ${CONFIG_FILE}; legacy support ends in 0.4.0.`
+      `Using the legacy config file ${LEGACY_CONFIG_FILE}. Move it to ${CONFIG_FILE}; legacy support ends in 0.5.0.`
     )
     legacyConfigWarningShown = true
   }
@@ -206,7 +213,11 @@ export function resolveConfig(pluginConfig?: unknown, env: NodeJS.ProcessEnv = p
       pickNumber(1_000, 600_000, ...s('requestTimeoutMs')) ?? DEFAULTS.requestTimeoutMs
     ),
     saveToComfyUI: pickBoolean(...s('saveToComfyUI')) ?? DEFAULTS.saveToComfyUI,
-    writeMetadata: pickBoolean(...s('writeMetadata')) ?? DEFAULTS.writeMetadata
+    writeMetadata: pickBoolean(...s('writeMetadata')) ?? DEFAULTS.writeMetadata,
+    huggingFaceEndpoint: (pickString(...s('huggingFaceEndpoint')) ?? DEFAULTS.huggingFaceEndpoint).replace(/\/+$/, ''),
+    maxDownloadBytes: Math.round(
+      pickNumber(1_000_000, 500_000_000_000, ...s('maxDownloadBytes')) ?? DEFAULTS.maxDownloadBytes
+    )
   }
 
   const outputDir = pickString(...s('outputDir'))
@@ -215,6 +226,12 @@ export function resolveConfig(pluginConfig?: unknown, env: NodeJS.ProcessEnv = p
   if (checkpoint !== undefined) resolved.checkpoint = checkpoint
   const rembgNode = pickString(...s('rembgNode'))
   if (rembgNode !== undefined) resolved.rembgNode = rembgNode
+  const huggingFaceToken = pickString(...s('huggingFaceToken'))
+  if (huggingFaceToken !== undefined) resolved.huggingFaceToken = huggingFaceToken
+  const comfyuiModelsDir = pickString(...s('comfyuiModelsDir'))
+  if (comfyuiModelsDir !== undefined) resolved.comfyuiModelsDir = comfyuiModelsDir
+  const modelDownloadDir = pickString(...s('modelDownloadDir'))
+  if (modelDownloadDir !== undefined) resolved.modelDownloadDir = modelDownloadDir
 
   logDebug('Config resolved', {
     baseUrl: resolved.baseUrl,

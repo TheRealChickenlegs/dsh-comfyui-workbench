@@ -1,7 +1,7 @@
 {
   "name": "dsh-comfyui-workbench",
-  "version": "0.3.2",
-  "description": "A ComfyUI workbench for DeepSeek Harness (DSH): generate images, audio and video, inspect every installed model and node schema, build and run arbitrary workflows, and reach any ComfyUI endpoint.",
+  "version": "0.4.0",
+  "description": "A local ComfyUI workbench for DeepSeek Harness (DSH): image, audio and video generation, Hugging Face model search/download, model and node inspection, arbitrary workflows, and raw ComfyUI API access.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -69,7 +69,7 @@
   },
   "meta": {
     "title": "ComfyUI Workbench",
-    "description": "Adds image, audio and video generation plus full ComfyUI access to DSH: generate media, inspect every model and node schema, build arbitrary workflows, and call any endpoint."
+    "description": "Adds image, audio and video generation, Hugging Face model downloads, full ComfyUI inspection, arbitrary workflows and raw API access to DSH."
   },
   "icon": "./icon.svg",
   "dsh": {

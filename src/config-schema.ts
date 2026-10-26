@@ -29,5 +29,10 @@ export const Config = Schema.object({
   inpaintGrowMask: Schema.number().volatile(),
   saveToComfyUI: Schema.boolean().volatile(),
   writeMetadata: Schema.boolean().volatile(),
-  rembgNode: Schema.string().volatile()
+  rembgNode: Schema.string().volatile(),
+  huggingFaceToken: Schema.string().role('secret').volatile(),
+  huggingFaceEndpoint: Schema.string().volatile(),
+  comfyuiModelsDir: Schema.string().volatile(),
+  modelDownloadDir: Schema.string().volatile(),
+  maxDownloadBytes: Schema.number().volatile()
 })
