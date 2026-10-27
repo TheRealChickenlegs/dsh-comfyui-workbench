@@ -3,6 +3,16 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.8.0] — 2026-10-27
+
+### Changed
+
+- **walk_down** now uses the newer 25-frame W2/W3 cycle and the stronger eight-step walk prompt/negative.
+- **walk_up** now uses a **Qwen-Image-Edit back-view keyframe** of the front master, then 25 W2 frames away from the viewer and W3 cutout. This replaces the unreliable W2 up-turn as the preferred path.
+- W3 up frames are scale-locked to a constant subject height before packing, preventing W2's occasional zoom-out from shrinking the row.
+- Added Qwen/cutout graph builders, model preflight, `back_view`/Qwen model parameters and W2-turn fallback when the Qwen stack is unavailable.
+- 164 tests; live-validated 25-frame walk_down and Qwen-backed walk_up.
+
 ## [0.7.0] — 2026-10-26
 
 ### Added

@@ -19,7 +19,8 @@ import { resolveCwd } from './tool.js'
 import { ComfyUIClient } from './comfy/client.js'
 import { historyIssues, waitForPrompt } from './comfy/workflow-runner.js'
 import { ensureDir, readFileBytes, resolveUserPath } from './files.js'
-import { decodePng, encodePng, alphaBox, downsampleBox, translateRgba } from './png.js'
+import { alphaBox, cropRgba, decodePng, downsampleBox, encodePng, resizeRgba, translateRgba } from './png.js'
+import { buildQwenBackWorkflow, buildCutoutWorkflow, QWEN_CLIP, QWEN_LORA, QWEN_UNET, QWEN_VAE } from './sprite-qwen.js'
 import type { ResolvedConfig } from './types.js'
 
 export const SPRITE_TOOL_NAME = 'generate_sprite_animation'
@@ -87,10 +88,13 @@ const ANIMATIONS: AnimationDefinition[] = [
   {
     name: 'walk_down', key: 'front', loop: true,
     prompt:
-      'walking toward the viewer in a front view, walking cycle, legs stepping alternately, ' +
-      'arms swinging naturally, body bobbing slightly, facing the camera, the same character in every frame',
+      'walking toward the viewer in a front view, a full walking cycle with eight distinct steps, ' +
+      'the legs alternate clearly, each knee bends and each foot lifts off the ground, the arms swing ' +
+      'opposite the legs, the hips and shoulders counter-rotate, the body bobs up and down, facing the ' +
+      'camera, the same character in every frame',
     negative:
-      'standing still, running, turning away, side view, faceless, hood covering the face, blank face'
+      'standing still, feet together, sliding feet, squatting, legs splitting apart sideways, jumping, ' +
+      'turning, side view, idle, frozen legs, moonwalking, camera movement, zoom, pan, changing size'
   },
   {
     name: 'walk_left', key: 'left', loop: true,
@@ -111,9 +115,14 @@ const ANIMATIONS: AnimationDefinition[] = [
   {
     name: 'walk_up', key: 'up', loop: true,
     prompt:
-      'walking away from the viewer in a back view, facing away, walking cycle, legs stepping alternately, ' +
-      'tail swaying, back of the character visible, the same character in every frame',
-    negative: 'standing still, running, facing the camera, front view, turning'
+      'walking away from the viewer in a full back view, a full walking cycle with eight distinct steps, ' +
+      'the legs alternate clearly, each knee bends and each foot lifts off the ground, the arms swing ' +
+      'opposite the legs, the shoulders counter-rotate, the tail sways behind, the body bobs up and down, ' +
+      'back of the character visible, the same character in every frame',
+    negative:
+      'standing still, feet together, sliding feet, legs splitting apart sideways, squatting, turning ' +
+      'around, front view, face visible, chest visible, idle, frozen legs, camera movement, zoom, pan, ' +
+      'changing size'
   },
   {
     name: 'attack_down', key: 'front', loop: false,
@@ -190,6 +199,7 @@ const ROW_FPS: Record<AnimationName, number> = {
 
 const SHORT_ANIMATIONS = new Set<AnimationName>(['idle', 'walk_down', 'walk_left', 'walk_right', 'walk_up'])
 const TURN_FRAMES = 13
+const WALK_W2_FRAMES = 25
 const SHORT_FRAMES = 9
 const LONG_FRAMES = 13
 const W3_CELL = 128
@@ -210,7 +220,7 @@ export const SPRITE_PARAMETERS_SCHEMA = {
     prompt: { type: 'string', description: 'Override the positive prompt for every selected animation.' },
     negative_prompt: { type: 'string', description: 'Override the negative prompt for every selected animation.' },
     seed: { type: 'integer', description: 'Seed for all W2 clips; omit for the deterministic per-character/per-animation seed.' },
-    frames: { type: 'integer', description: 'Frame count override (must satisfy 4n+1); default 9 for idle/walks, 13 for attacks/death and turns.' },
+    frames: { type: 'integer', description: 'Frame count override (4n+1); default 25 for walk_down/walk_up, 9 for other walks/idle, 13 for attacks/death/turns.' },
     cell_size: { type: 'integer', enum: [32, 64, 128], description: 'Final card cell size (default 64).' },
     width: { type: 'integer', description: 'W2 width (default 384).' },
     height: { type: 'integer', description: 'W2 height (default 384).' },
@@ -221,6 +231,11 @@ export const SPRITE_PARAMETERS_SCHEMA = {
     clip_model: { type: 'string', description: 'UMT5 GGUF encoder (default Q5_K_M).' },
     vae_model: { type: 'string', description: 'WAN 2.1 VAE (default wan_2.1_vae.safetensors).' },
     rmbg_model: { type: 'string', description: 'BiRefNet model for W3 (default BiRefNet_lite).' },
+    back_view: { type: 'string', enum: ['qwen', 'turn'], description: 'walk_up keyframe: Qwen back-view edit (default) or the older W2 turn.' },
+    qwen_model: { type: 'string', description: 'Qwen-Image-Edit GGUF (default Qwen-Image-Edit-2509-Q4_K_M.gguf).' },
+    qwen_lora: { type: 'string', description: 'Qwen Lightning 4-step LoRA.' },
+    qwen_clip: { type: 'string', description: 'Qwen text encoder.' },
+    qwen_vae: { type: 'string', description: 'Qwen image VAE.' },
     job_timeout_ms: { type: 'integer', description: 'Per-ComfyUI-job timeout, 60000-3600000 (default 600000).' }
   },
   required: ['sprite_path'],
@@ -272,6 +287,15 @@ function slug(value: string, fallback = 'sprite'): string {
 
 function frameCountFor(definition: AnimationDefinition, override: unknown): number {
   const requested = typeof override === 'number' && Number.isFinite(override) ? Math.round(override) : undefined
+  if (definition.name === 'walk_down' || definition.name === 'walk_up') {
+    if (requested !== undefined) {
+      if (requested < 5 || requested > 81 || (requested - 1) % 4 !== 0) {
+        throw new ImagePluginError(`Invalid frame count ${requested}: Wan Image-to-Video requires 4n+1 frames (9, 13, 17, 21, 25, 33, 49, 81).`)
+      }
+      return requested
+    }
+    return WALK_W2_FRAMES
+  }
   if (requested !== undefined) {
     if (requested < 5 || requested > 81 || (requested - 1) % 4 !== 0) {
       throw new ImagePluginError(
@@ -437,6 +461,15 @@ function lastFrameWorkflow(options: { video: string; frames: number; prefix: str
 
 /* ─────────────────────────────── runner ─────────────────────────────── */
 
+interface QwenAvailability {
+  available: boolean
+  reason?: string
+  model?: string
+  lora?: string
+  clip?: string
+  vae?: string
+}
+
 interface SpriteRunOptions {
   character: string
   outputDir: string
@@ -454,6 +487,8 @@ interface SpriteRunOptions {
   clipModel: string
   vaeModel: string
   rmbgModel: string
+  qwen: QwenAvailability
+  backView: 'qwen' | 'turn'
   explicitPrompt?: string
   explicitNegative?: string
   explicitSeed?: number
@@ -497,6 +532,35 @@ async function downloadSpec(client: ComfyUIClient, spec: { filename: string; sub
   ensureDir(path.dirname(destination))
   writeFileSync(destination, bytes)
   return destination
+}
+
+async function probeQwen(client: ComfyUIClient, input: Record<string, unknown>): Promise<QwenAvailability> {
+  const required = [
+    'UnetLoaderGGUF', 'LoraLoaderModelOnly', 'ModelSamplingAuraFlow', 'CFGNorm',
+    'CLIPLoader', 'VAELoader', 'TextEncodeQwenImageEditPlus', 'VRAMUnloadClip',
+    'KSampler', 'VRAMUnloadModel', 'VAEDecode', 'SaveImage', 'ImageScale',
+    'BiRefNetRMBG', 'MaskToImage', 'ImageToMask', 'InvertMask', 'JoinImageWithAlpha'
+  ]
+  try {
+    const info = await client.objectInfo()
+    const missing = required.filter((name) => !info[name])
+    if (missing.length > 0) return { available: false, reason: `Missing Qwen/cutout nodes: ${missing.join(', ')}` }
+    const unets = (await client.modelFiles('unet_gguf')) ?? []
+    const model = asString(input.qwen_model) ?? QWEN_UNET
+    if (!unets.includes(model)) return { available: false, reason: `Qwen model not found: ${model}` }
+    const loras = (await client.modelFiles('loras')) ?? []
+    const lora = asString(input.qwen_lora) ?? QWEN_LORA
+    if (!loras.includes(lora)) return { available: false, reason: `Qwen Lightning LoRA not found: ${lora}` }
+    const encoders = (await client.modelFiles('text_encoders')) ?? []
+    const clip = asString(input.qwen_clip) ?? QWEN_CLIP
+    if (!encoders.includes(clip)) return { available: false, reason: `Qwen text encoder not found: ${clip}` }
+    const vaes = (await client.modelFiles('vae')) ?? []
+    const vae = asString(input.qwen_vae) ?? QWEN_VAE
+    if (!vaes.includes(vae)) return { available: false, reason: `Qwen VAE not found: ${vae}` }
+    return { available: true, model, lora, clip, vae }
+  } catch (error) {
+    return { available: false, reason: `Qwen preflight failed: ${formatError(error)}` }
+  }
 }
 
 function firstPng(entry: ComfyHistoryLike): { filename: string; subfolder?: string; type?: string } | undefined {
@@ -584,6 +648,73 @@ async function extractLastFrame(options: SpriteRunOptions, videoPath: string, fr
   return destination
 }
 
+
+const BACK_PROMPT =
+  'Full body character, head to toe, standing with white space below the feet and above the head. ' +
+  'Turn the character around to face directly away from the camera into a full back view. Show the ' +
+  'back of the head, the back of the armour, the back of the legs, and the tail hanging behind. Keep ' +
+  'the same clothing, colours, proportions and pixel-art style. Pure white background.'
+const BACK_NEG =
+  'front-facing face, face visible, chest, looking at the camera, side view, three-quarter view, ' +
+  'cropped head, cut off head, cropped feet, missing feet, different character, different clothes, ' +
+  'background, shadow'
+
+async function runQwenBack(options: SpriteRunOptions, frontKeyframe: string): Promise<string> {
+  const qwen = options.qwen
+  if (!qwen.available || !qwen.model || !qwen.lora || !qwen.clip || !qwen.vae) {
+    throw new ImagePluginError('Qwen back view is unavailable.', qwen.reason)
+  }
+  const source = decodePng(readFileBytes(frontKeyframe, 'front keyframe'))
+  const frontBytes = encodePng(source.width, source.height, flattenWhite(source))
+  const remote = await upload(options.client, frontBytes, 'front.png', 'image/png', `sprite_animation/${slug(options.character)}/qwen`, options.signal)
+  const seed = options.explicitSeed ?? SEED_BASE + (parseInt(createHash('sha1').update(`${options.character}|back_view`).digest('hex').slice(0, 8), 16) % 100000)
+  const workflow = buildQwenBackWorkflow({
+    image: remote,
+    positive: BACK_PROMPT,
+    negative: BACK_NEG,
+    seed,
+    model: qwen.model,
+    lora: qwen.lora,
+    clip: qwen.clip,
+    vae: qwen.vae,
+    filenamePrefix: `sprite_animation/${slug(options.character)}/back_qwen`
+  })
+  const rawEntry = await runComfy(options.client, workflow, 'Qwen back view', options.jobTimeoutMs, options.pollIntervalMs, options.signal)
+  const rawSpec = firstPng(rawEntry)
+  if (!rawSpec) throw new ImagePluginError('Qwen back view produced no PNG.')
+  const rawPath = path.join(options.outputDir, 'keyframes', 'back_qwen_raw.png')
+  await downloadSpec(options.client, rawSpec, rawPath, options.signal)
+
+  const uploaded = await upload(options.client, readFileBytes(rawPath, 'back view'), 'back_qwen_raw.png', 'image/png', `sprite_animation/${slug(options.character)}/qwen`, options.signal)
+  const cutWorkflow = uniqueIds(
+    buildCutoutWorkflow({ image: uploaded, model: options.rmbgModel, size: 512, filenamePrefix: `sprite_animation/${slug(options.character)}/back_qwen_cut` }),
+    `qwen_cut_${Date.now().toString(36)}_`
+  )
+  const cutEntry = await runComfy(options.client, cutWorkflow, 'Qwen back cutout', options.jobTimeoutMs, options.pollIntervalMs, options.signal)
+  const cutSpec = firstPng(cutEntry)
+  if (!cutSpec) throw new ImagePluginError('Qwen back cutout produced no PNG.')
+  const cutPath = path.join(options.outputDir, 'keyframes', 'back_qwen_cut.png')
+  await downloadSpec(options.client, cutSpec, cutPath, options.signal)
+
+  const cut = decodePng(readFileBytes(cutPath, 'back cutout'))
+  const box = alphaBox(cut.rgba, cut.width, cut.height)
+  if (!box) throw new ImagePluginError('Qwen back view cutout is fully transparent.')
+  const cropped = cropRgba(cut.rgba, cut.width, cut.height, box)
+  const scale = Math.min(350 / cropped.width, 350 / cropped.height)
+  const subject = resizeRgba(cropped.rgba, cropped.width, cropped.height,
+    Math.max(1, Math.round(cropped.width * scale)), Math.max(1, Math.round(cropped.height * scale)))
+  const canvas = Buffer.alloc(384 * 384 * 4)
+  const x = Math.floor((384 - subject.width) / 2)
+  const y = Math.max(0, 384 - 14 - subject.height)
+  for (let row = 0; row < subject.height; row += 1) {
+    subject.rgba.copy(canvas, ((y + row) * 384 + x) * 4, row * subject.width * 4, (row + 1) * subject.width * 4)
+  }
+  const destination = path.join(options.outputDir, 'keyframes', 'back_qwen.png')
+  ensureDir(path.dirname(destination))
+  writeFileSync(destination, encodePng(384, 384, canvas))
+  return destination
+}
+
 function pickFrames(paths: string[], count: number): string[] {
   if (paths.length === 0) return []
   if (paths.length <= count) return [...paths, ...Array(count - paths.length).fill(paths[paths.length - 1])]
@@ -595,12 +726,27 @@ function pickFrames(paths: string[], count: number): string[] {
   return selected
 }
 
-function prepareCell(pathName: string, cellSize: number, fixed: { dx: number; dy: number } | undefined): { rgba: Buffer; offset: { dx: number; dy: number } } {
+function prepareCell(pathName: string, cellSize: number, fixed: { dx: number; dy: number } | undefined, lockHeight = false): { rgba: Buffer; offset: { dx: number; dy: number } } {
   const decoded = decodePng(readFileSync(pathName))
   if (decoded.width !== W3_CELL || decoded.height !== W3_CELL) {
     throw new ImagePluginError(`W3 frame ${pathName} is ${decoded.width}x${decoded.height}; expected ${W3_CELL}x${W3_CELL}.`)
   }
   const box = alphaBox(decoded.rgba, W3_CELL, W3_CELL)
+  if (lockHeight && box) {
+    const cropped = cropRgba(decoded.rgba, W3_CELL, W3_CELL, box)
+    const targetHeight = Math.max(1, Math.round((116 * cellSize) / W3_CELL))
+    const scale = targetHeight / cropped.height
+    const subject = resizeRgba(cropped.rgba, cropped.width, cropped.height,
+      Math.max(1, Math.round(cropped.width * scale)), targetHeight)
+    const canvas = Buffer.alloc(cellSize * cellSize * 4)
+    const bottom = Math.round((120 * cellSize) / W3_CELL)
+    const x = Math.max(0, Math.floor((cellSize - subject.width) / 2))
+    const y = Math.max(0, bottom - subject.height)
+    for (let row = 0; row < subject.height; row += 1) {
+      subject.rgba.copy(canvas, ((y + row) * cellSize + x) * 4, row * subject.width * 4, (row + 1) * subject.width * 4)
+    }
+    return { rgba: canvas, offset: { dx: 0, dy: 0 } }
+  }
   let dx = 0
   let dy = 0
   if (box) {
@@ -645,7 +791,7 @@ function packSheet(
       : pickFrames(files, COLUMNS)
     let fixedOffset: { dx: number; dy: number } | undefined
     cells.forEach((file, column) => {
-      const first = prepareCell(file, cellSize, definition.name === 'death' ? fixedOffset : undefined)
+      const first = prepareCell(file, cellSize, definition.name === 'death' ? fixedOffset : undefined, definition.name === 'walk_up')
       if (definition.name === 'death' && !fixedOffset) fixedOffset = first.offset
       const source = first.rgba
       for (let y = 0; y < cellSize; y += 1) {
@@ -689,18 +835,17 @@ export function createSpriteAnimationTool(pluginConfig?: unknown): Record<string
     description: [
       'Generate a complete animated sprite card from one base PNG.',
       '',
-      'This is the reusable W2/W3 pipeline: it generates turn clips for left/right/back, reuses each',
-      "turn's last frame as the keyframe for that facing, runs Wan 2.2 image-to-video for the selected",
-      'animations, removes the background with W3/BiRefNet, aligns and downsamples each cell, and packs',
-      'an 8-column sprite card.',
+      'This is the current W2/W3 sprite pipeline. Left/right turns are generated with W2 and their',
+      "last frames become directional keyframes. walk_down uses 25 W2 frames from the front master.",
+      "walk_up uses a Qwen-Image-Edit back view (falling back to a W2 turn) and a per-frame scale lock,",
+      'then 25 W2 frames away from the viewer. W3/BiRefNet removes the background; cells are aligned,',
+      'downsampled and packed into an 8-column card.',
       '',
-      'Default is the full ten-row card: idle, four walks, four attacks, death. It is slow (typically',
-      '5-12 minutes per character on an RTX 5060 Ti) and needs the W2 GGUF models, the',
-      'comfyui_vram_helpers custom node and ComfyUI-RMBG. Pass animation=idle (or any single row) for',
-      'a faster test.',
+      'Default is the full ten-row card: idle, four walks, four attacks, death. It needs the W2 GGUF',
+      'models, comfyui_vram_helpers and ComfyUI-RMBG; walk_up additionally prefers the Qwen-Image-Edit',
+      'GGUF stack. Pass animation=idle or walk_down for a faster test.',
       '',
-      'The base sprite is flattened onto white before W2 sees it. W2 output is aligned by feet and',
-      'centre, then box-downsampled to 64 px cells. The tool returns the card, manifest and videos.'
+      'The tool returns the card, manifest, videos and a report with generator/back-view provenance.'
     ].join('\n'),
     parameters: SPRITE_PARAMETERS_SCHEMA,
     output: {
@@ -748,6 +893,14 @@ export function createSpriteAnimationTool(pluginConfig?: unknown): Record<string
 
         const config = resolveConfig(pluginConfig)
         const client = new ComfyUIClient({ baseUrl: config.baseUrl, requestTimeoutMs: config.requestTimeoutMs })
+        const backView = asString(input.back_view) === 'turn' ? 'turn' : 'qwen'
+        const needsWalkUp = selected.some((definition) => definition.name === 'walk_up')
+        const qwen: QwenAvailability = backView === 'qwen' && needsWalkUp
+          ? await probeQwen(client, input)
+          : { available: false, reason: 'back_view=turn' }
+        if (backView === 'qwen' && needsWalkUp && !qwen.available) {
+          warnings.push(`Qwen back view unavailable: ${qwen.reason}; falling back to the W2 up turn`)
+        }
         const cellSize = clampInt(input.cell_size, 32, 128, 64)
         if (![32, 64, 128].includes(cellSize)) throw new ImagePluginError('cell_size must be 32, 64 or 128.')
         const options: SpriteRunOptions = {
@@ -767,6 +920,8 @@ export function createSpriteAnimationTool(pluginConfig?: unknown): Record<string
           clipModel: asString(input.clip_model) ?? 'umt5-xxl-encoder-Q5_K_M.gguf',
           vaeModel: asString(input.vae_model) ?? 'wan_2.1_vae.safetensors',
           rmbgModel: asString(input.rmbg_model) ?? 'BiRefNet_lite',
+          qwen,
+          backView,
           ...(asString(input.prompt) ? { explicitPrompt: asString(input.prompt) } : {}),
           ...(asString(input.negative_prompt) ? { explicitNegative: asString(input.negative_prompt) } : {}),
           ...(typeof input.seed === 'number' && Number.isFinite(input.seed) ? { explicitSeed: Math.round(input.seed) } : {}),
@@ -792,9 +947,24 @@ export function createSpriteAnimationTool(pluginConfig?: unknown): Record<string
 
         const videos: string[] = []
         const timings: Array<{ stage: string; seconds: number; promptId?: string }> = []
-        const neededFacings = [...new Set(selected.map((definition) => definition.key))]
-        for (const facing of ['left', 'right', 'up'] as const) {
-          if (!neededFacings.includes(facing)) continue
+        const neededFacings = new Set(selected.map((definition) => definition.key))
+        const qwenBack = needsWalkUp && options.backView === 'qwen' && options.qwen.available
+        if (needsWalkUp && !qwenBack) neededFacings.add('up')
+        if (!selected.some((definition) => definition.name === 'attack_up') && qwenBack) neededFacings.delete('up')
+        let qwenBackKeyframe: string | undefined
+        if (qwenBack) {
+          const begin = Date.now()
+          try {
+            qwenBackKeyframe = await runQwenBack(options, keyframes.front)
+            timings.push({ stage: 'qwen_back', seconds: (Date.now() - begin) / 1000 })
+          } catch (error) {
+            warnings.push(`Qwen back view failed: ${formatError(error)}; using the W2 up turn`)
+            neededFacings.add('up')
+          }
+        }
+        const facings = ['left', 'right', 'up'] as const
+        for (const facing of facings) {
+          if (!neededFacings.has(facing)) continue
           const turn = TURNS[facing]
           const begin = Date.now()
           const { videoPath } = await runW2(
@@ -816,7 +986,8 @@ export function createSpriteAnimationTool(pluginConfig?: unknown): Record<string
           const begin = Date.now()
           const positive = options.explicitPrompt ?? `${POSITIVE_BASE}, ${definition.prompt}`
           const negative = options.explicitNegative ?? `${NEGATIVE_BASE}, ${definition.negative}`
-          const { videoPath } = await runW2(options, keyframes[definition.key], positive, negative, frames, definition.name)
+          const keyframe = definition.name === 'walk_up' && qwenBackKeyframe ? qwenBackKeyframe : keyframes[definition.key]
+          const { videoPath } = await runW2(options, keyframe, positive, negative, frames, definition.name)
           videos.push(videoPath)
           const framePaths = await runW3(options, videoPath, frames, definition.name)
           if (framePaths.length !== frames) warnings.push(`${definition.name}: received ${framePaths.length}/${frames} W3 frames`)

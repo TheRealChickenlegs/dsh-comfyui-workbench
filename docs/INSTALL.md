@@ -242,7 +242,7 @@ To disable the plugin temporarily: add `disabled: true`, or use the toggle in th
 
 ### 2.6 Upgrading from `dsh-comfyui-image`
 
-The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available through 0.7.x and will be removed in 0.8.0.
+The plugin/package id changed in 0.2.0. Remove the old profile entry, install `dsh-comfyui-workbench`, and move `~/.dsh-comfyui-image/config.json` to `~/.dsh-comfyui-workbench/config.json`. Legacy config/env compatibility is available through 0.8.x and will be removed in 0.9.0.
 
 See [MIGRATION.md](./MIGRATION.md) for the full steps and environment-variable mapping.
 

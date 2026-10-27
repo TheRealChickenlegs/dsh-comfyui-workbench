@@ -1,7 +1,7 @@
 {
   "name": "dsh-comfyui-workbench",
-  "version": "0.7.0",
-  "description": "A local ComfyUI workbench for DeepSeek Harness (DSH): image/audio/video generation, W2/W3 sprite cards, local Flux.2-item generation with guided SDXL fallback, Hugging Face downloads, inspection and arbitrary workflows.",
+  "version": "0.8.0",
+  "description": "A local ComfyUI workbench for DeepSeek Harness (DSH): image/audio/video generation, W2/W3 sprite cards with Qwen back-view walk-up, local Flux.2 Item Studio assets with guided SDXL fallback, Hugging Face downloads, inspection and arbitrary workflows.",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -70,7 +70,7 @@
   },
   "meta": {
     "title": "ComfyUI Workbench",
-    "description": "Adds image/audio/video generation, W2/W3 sprite cards, local Flux.2 Item Studio assets with guided SDXL fallback, Hugging Face model downloads, inspection and arbitrary workflows to DSH."
+    "description": "Adds image/audio/video generation, W2/W3 sprite cards with Qwen back-view walk-up, local Flux.2 Item Studio assets with guided SDXL fallback, Hugging Face model downloads, inspection and arbitrary workflows to DSH."
   },
   "icon": "./icon.svg",
   "dsh": {
