@@ -108,18 +108,8 @@ function issueStrings(issues: WorkflowIssue[]): string[] {
 
 /* ────────────────────────────── comfyui_inspect ────────────────────────────── */
 
-export const INSPECT_DESCRIPTION = [
-  'Inspect the connected ComfyUI server (read-only): installed models, every available node and its full input/output schema, embeddings, system status, queue and history.',
-  '',
-  'Use this before building a custom workflow:',
-  '  scope=models   every model file grouped by ComfyUI model folder (checkpoints, loras, vae, controlnet, ...), including model enums added by custom nodes.',
-  '  scope=nodes    search all node classes by name/category/description; returns compact summaries.',
-  '  scope=node     full schema for specific node classes (pass node="KSampler" or a comma-separated list).',
-  '  scope=overview counts + system summary in one call.',
-  '',
-  'Model files and node schemas are exactly what workflows reference; use scope=node to confirm required inputs, enum values and defaults before authoring a workflow.',
-  'The generate_image tool remains the simplest path for text2img / img2img / inpaint / remove_background.'
-].join('\n')
+export const INSPECT_DESCRIPTION =
+  'Read-only ComfyUI discovery: models, nodes and schemas, embeddings, system, queue, or history. Use scope=node before custom workflows; generate_image handles common image tasks.'
 
 export const INSPECT_PARAMETERS_SCHEMA = {
   type: 'object',
@@ -402,25 +392,8 @@ export function createComfyUIInspectTool(pluginConfig?: unknown): Record<string,
 
 /* ────────────────────────────── comfyui_workflow ────────────────────────────── */
 
-export const WORKFLOW_DESCRIPTION = [
-  'Validate, run, wait on, and manage arbitrary ComfyUI API-format workflows. Use comfyui_inspect first to discover node schemas and model file names.',
-  '',
-  'Workflow format: {"<node id>": {"class_type": "KSampler", "inputs": {"seed": 1, "model": ["4", 0], ...}}, ...}.',
-  'Links are [upstream node id, output index]. Use comfyui_inspect scope=node to see required inputs, enum values and defaults.',
-  '',
-  'Actions:',
-  '  validate      local validation against /object_info (unknown nodes/inputs, missing required inputs, dangling links, bad enum values).',
-  '  run           validate (unless validate=false) then submit; with wait=true (default) poll until done and save outputs.',
-  '  wait          collect an existing prompt_id (submit with wait=false first).',
-  '  upload        upload a local file into ComfyUI input and return the name to use in LoadImage / LoadImageMask.',
-  '  interrupt     cancel the currently running job.',
-  '  free          unload models / free memory (unload_models, free_memory).',
-  '  queue         show running and pending jobs.',
-  '  queue_clear   clear all pending jobs.',
-  '  queue_delete  delete specific pending prompt ids (queue_ids).',
-  '',
-  'Output files are saved next to output_path (default: current project root) and never overwrite. A .json metadata sidecar records the workflow and history.'
-].join('\n')
+export const WORKFLOW_DESCRIPTION =
+  'Validate and run arbitrary ComfyUI API workflows (validate, run, wait); also upload files, inspect/clear queues, interrupt jobs, or free memory. Links use [node_id, output_index]. Use comfyui_inspect for node schemas. Downloads default to project root without overwriting.'
 
 export const WORKFLOW_PARAMETERS_SCHEMA = {
   type: 'object',
@@ -924,19 +897,8 @@ export function createComfyUIWorkflowTool(pluginConfig?: unknown): Record<string
 
 /* ────────────────────────────── comfyui_api ────────────────────────────── */
 
-export const API_DESCRIPTION = [
-  'Raw HTTP access to the configured ComfyUI server. Use this for endpoints not covered by comfyui_inspect / comfyui_workflow, such as settings, user data, custom-node manager APIs, or newer ComfyUI endpoints.',
-  '',
-  'The base URL is fixed to the plugin configuration; path must start with "/". JSON responses are parsed, text is returned, and binary responses (images, audio, video) are saved to save_path or the current project root.',
-  'Multipart uploads are not supported here: use comfyui_workflow action=upload for /upload/image (images, masks and other input files).',
-  '',
-  'Examples:',
-  '  GET  /models                       list model folders',
-  '  GET  /history                      recent jobs',
-  '  POST /free                         {"unload_models": true, "free_memory": true}',
-  '  GET  /settings                     current server settings',
-  '  POST /api/...                      any extension endpoint'
-].join('\n')
+export const API_DESCRIPTION =
+  'Raw HTTP access to the configured ComfyUI server for endpoints not covered by comfyui_inspect/workflow. The base URL is fixed; pass an API path, not a URL. JSON/text are returned; binary responses are saved. Use comfyui_workflow for multipart uploads.'
 
 export const API_PARAMETERS_SCHEMA = {
   type: 'object',

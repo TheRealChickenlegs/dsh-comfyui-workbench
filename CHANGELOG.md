@@ -3,6 +3,12 @@
 This file records version changes of **dsh-comfyui-workbench**. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and version numbers follow [Semantic Versioning](https://semver.org/).
 
+## [0.8.1] — 2026-11-13
+
+### Changed
+
+- Condensed model-facing tool descriptions and argument guidance to reduce active prompt context.
+
 ## [0.8.0] — 2026-10-27
 
 ### Changed

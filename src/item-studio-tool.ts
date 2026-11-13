@@ -929,25 +929,8 @@ function customEntry(input: Record<string, unknown>, seed: number): ItemEntry {
 export function createItemStudioTool(pluginConfig?: unknown): Record<string, unknown> {
   return {
     name: ITEM_STUDIO_TOOL_NAME,
-    description: [
-      'Native Item Studio: the saved 108-item catalogue, prompt/orientation policy, local Flux.2 Klein',
-      'preference, guided SDXL fallback, 64/tall sprite finalization and 32 px icons.',
-      '',
-      'Actions:',
-      '  list      browse the bundled catalogue',
-      '  generate  one item/variant through auto (local Flux.2 first) or an explicit generator',
-      '  cutout    re-cut an existing raw render',
-      '  batch     generate selected items/variants and write a candidate manifest',
-      '',
-      'Generators:',
-      '  auto      Flux.2 Klein if local nodes/models are available, then guided SDXL, then simple',
-      '  flux2     local Flux.2 Klein 9B FP8 native ComfyUI graph + key/palette finish',
-      '  guided    original ControlNet Union + IPAdapter Plus SDXL graph (small items)',
-      '  simple    the portable SDXL + pixel-LoRA pack templates',
-      '',
-      'Nothing is auto-adopted; sprites/icons are candidates for the review gate in ART-DIRECTION.md.',
-      'Pass item_id and variant to test one item first.'
-    ].join('\n'),
+    description:
+      'Browse or generate RPG inventory item sprites/icons, recut a render, or batch-create candidates. Auto prefers local Flux.2, then guided SDXL, then the portable workflow. Outputs are candidates, not auto-adopted.',
     parameters: ITEM_STUDIO_PARAMETERS_SCHEMA,
     output: {
       schema: ITEM_STUDIO_OUTPUT_SCHEMA,
